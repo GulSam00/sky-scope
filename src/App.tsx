@@ -1,15 +1,20 @@
 import { useState } from "react";
+
+import getWeatherShort from "./API/getWeatherShort";
+import getWeatherLong from "./API/getWeatherLong";
+
+import { format } from "date-fns";
+
 import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
 import "./App.css";
-import testAPI from "./API/test";
-import longAPI from "./API/long";
+
 function App() {
   const [count, setCount] = useState(0);
 
   const testing = async () => {
-    await testAPI();
-    await longAPI();
+    await getWeatherShort(format(new Date(), "yyyyMMdd"));
+    await getWeatherLong(format(new Date(), "yyyyMMdd"));
   };
   testing();
 
