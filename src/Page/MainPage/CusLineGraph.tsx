@@ -1,20 +1,45 @@
+import { useState, useEffect } from "react";
 import { ResponsiveLine } from "@nivo/line";
 import { styled } from "styled-components";
+import { IDateData } from "@src/API/getWeatherShort";
 
-const CusLineGraph = ({ temp }: any) => {
-  console.log("temp : ", temp);
+interface IProps {
+  shortData: IDateData;
+}
+
+interface tempertureDataTypes {
+  x: string;
+  y: number;
+}
+// 탭을 만들어서 전환??
+
+const CusLineGraph = ({ shortData }: IProps) => {
+  const [tempertureData, setTempertureData] = useState<tempertureDataTypes[]>(
+    []
+  );
+
   const data = [
     {
-      id: "Series 1",
-      data: [
-        { x: 0, y: 4 },
-        { x: 1, y: 7 },
-        { x: 2, y: 1 },
-        { x: 3, y: 2 },
-        { x: 4, y: 3 },
-      ],
+      id: "temperture",
+      data: tempertureData,
     },
   ];
+
+  useEffect(() => {
+    const temp: tempertureDataTypes[] = [];
+    for (let i = 0; i <= 2400; i += 100) {
+      const time = String(i).padStart(4, "0");
+      const value = shortData[time]?.TMP;
+      const hour = time.slice(0, 2);
+      const min = time.slice(2, 4);
+
+      if (value) {
+        temp.push({ x: hour + ":" + min, y: Number(value) });
+      }
+    }
+    setTempertureData(temp);
+  }, []);
+
   return (
     <GraphContainer>
       <ResponsiveLine
@@ -33,6 +58,41 @@ const CusLineGraph = ({ temp }: any) => {
         pointColor={{ theme: "background" }}
         pointBorderWidth={2}
         pointBorderColor={{ from: "serieColor" }}
+        axisBottom={{
+          tickSize: 5,
+          tickPadding: 5,
+          tickRotation: 0,
+          legend: "시간",
+          legendOffset: 36,
+          legendPosition: "middle",
+          truncateTickAt: 0,
+        }}
+        axisLeft={{
+          tickSize: 5,
+          tickPadding: 5,
+          tickRotation: 0,
+          legend: "온도",
+          legendOffset: -40,
+          legendPosition: "middle",
+          truncateTickAt: 0,
+        }}
+        // legends={[
+        //   {
+        //     anchor: "bottom-right",
+        //     direction: "column",
+        //     justify: false,
+        //     translateX: 100,
+        //     translateY: 0,
+        //     itemsSpacing: 0,
+        //     itemDirection: "left-to-right",
+        //     itemWidth: 80,
+        //     itemHeight: 20,
+        //     itemOpacity: 0.75,
+        //     symbolSize: 12,
+        //     symbolShape: "circle",
+        //     symbolBorderColor: "rgba(0, 0, 0, .5)",
+        //   },
+        // ]}
       />
     </GraphContainer>
   );
@@ -41,7 +101,7 @@ const CusLineGraph = ({ temp }: any) => {
 export default CusLineGraph;
 
 const GraphContainer = styled.div`
-  width: 800px;
+  min-width: 1000px;
   height: 500px;
   margin: 0 auto;
 `;

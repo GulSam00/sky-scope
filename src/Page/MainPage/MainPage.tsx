@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { getWeatherShort, getWeatherLong } from "@src/API";
-import { IParseObj, IDateData } from "@src/API/getWeatherShort";
+import { IDateData } from "@src/API/getWeatherShort";
 import CusLineGraph from "./CusLineGraph";
 
 import Card from "react-bootstrap/Card";
@@ -18,29 +18,29 @@ const MainPage = () => {
     return format(date, "yyyy/MM/dd");
   });
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const shortData = await getWeatherShort(format(today, "yyyyMMdd"));
-      const longData = await getWeatherLong(format(today, "yyyyMMdd"));
-      console.log("SHORT", shortData);
-      if (shortData) {
-        for (let i in shortData) {
-          console.log(i);
-          console.log(shortData[i]);
-          short.push(shortData[i]);
-        }
+  const fetchData = async () => {
+    const shortData = await getWeatherShort(format(today, "yyyyMMdd"));
+    const longData = await getWeatherLong(format(today, "yyyyMMdd"));
+    console.log("SHORT", shortData);
+    if (shortData) {
+      const temp = [];
+      for (let i in shortData) {
+        temp.push(shortData[i]);
       }
-    };
+      setShort(temp);
+    }
+  };
 
+  useEffect(() => {
     fetchData();
-  }, []); // Empty dependency array ensures this effect runs only once on component mount
+  }, []);
 
   return (
     <DayContainer>
       <DayRecent>
         {short &&
-          short.map((date, index) => {
-            return <CusLineGraph key={index} temp={date} />;
+          short.map((data, index) => {
+            return <CusLineGraph key={index} shortData={data} />;
           })}
       </DayRecent>
 
