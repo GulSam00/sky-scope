@@ -4,7 +4,7 @@ const url: string = "http://apis.data.go.kr/1360000/MidFcstInfoService";
 
 const instance: AxiosInstance = axios.create({
   baseURL: url,
-  timeout: 5000,
+  // timeout: 5000,
   headers: {
     "Content-Type": "application/json",
   },
@@ -12,15 +12,14 @@ const instance: AxiosInstance = axios.create({
 
 const serviceKey: string =
   "2Z194UJg1zEaizlFzp0Yz5nwql6oKpNl2wkM3Eow8FjthKY2IJ%2FzAt3nzTx4kmdx6lzXthcxntmaYAkLbLAIxg%3D%3D";
-
 const params = {
   serviceKey: serviceKey,
   dataType: "JSON",
   tmFc: "",
-  regId: "11B00000",
+  regId: "11B10101",
 };
 
-const getWeatherLong = async (base_date: string): Promise<void> => {
+const getWeatherLong = async (base_date: string): Promise<any | undefined> => {
   const urlRain = "/getMidLandFcst";
   const urlTem = "/getMidTa";
 
@@ -29,15 +28,14 @@ const getWeatherLong = async (base_date: string): Promise<void> => {
   params.tmFc = base_date + "0600";
 
   try {
+    params.regId = "11B00000"; // 서울 경기 인천
     const responseRain = await instance.get(urlRain, { params });
-    // console.log(responseRain);
-    const data = await responseRain.data.response.body.items.item[0];
-    console.log("rain : ", data);
+    const data = responseRain.data.response.body.items.item[0];
 
+    params.regId = "11B10101"; // 서울
     const responseTem = await instance.get(urlTem, { params });
-    // console.log(responseTem);
-    const dataTem = await responseTem.data.response.body.items.item[0];
-    console.log("tem : ", dataTem);
+    const dataTem = responseTem.data.response.body.items.item[0];
+    return { data, dataTem };
   } catch (e) {
     let message;
     if (e instanceof Error) message = e.message;

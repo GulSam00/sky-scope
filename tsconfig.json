@@ -18,8 +18,14 @@
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+
+    "esModuleInterop": true, // Required for Jest
+
+    "baseUrl": "./src",
+    "paths": {
+      "@src/*": ["*"]
+    }
   },
-  "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

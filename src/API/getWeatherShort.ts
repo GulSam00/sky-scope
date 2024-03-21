@@ -13,15 +13,17 @@ const instance: AxiosInstance = axios.create({
 const serviceKey: string =
   "2Z194UJg1zEaizlFzp0Yz5nwql6oKpNl2wkM3Eow8FjthKY2IJ/zAt3nzTx4kmdx6lzXthcxntmaYAkLbLAIxg==";
 
-interface ITimeData {
-  [category: string]: string | number; // Modify the value to allow array or single value
+// type ITimeData = Record<VaildCategory, string >; // Modify the value to allow array or single value
+export interface ITimeData {
+  [category: string]: string; // Modify the value to allow array or single value
 }
 
-interface IParseArr {
-  [fcstDate: string]: {
-    // Group by fcstDate
-    [fcstTime: string]: ITimeData;
-  };
+export interface IDateData {
+  [fcstTime: string]: ITimeData;
+}
+
+export interface IParseObj {
+  [fcstDate: string]: IDateData;
 }
 
 interface IItem {
@@ -51,20 +53,25 @@ const isVaildCategory = (category: string) => {
   return vaildCategory.includes(category);
 };
 
-const getWeatherShort = async (base_date: string): Promise<void> => {
+const getWeatherShort = async (
+  base_date: string
+): Promise<IParseObj | undefined> => {
   const url = "/getVilageFcst";
   params.base_date = base_date;
   try {
     const response = await instance.get(url, { params });
     // console.log(response);
     const dataArr = response.data.response.body.items.item;
-    const parseArr: IParseArr = {};
+    const parseArr: IParseObj = {};
+    let count = 0;
 
     dataArr.forEach((item: IItem) => {
       const { fcstDate, fcstTime } = item;
       // Initialize the object if not already exists
       if (!parseArr[fcstDate]) {
+        if (count > 2) return;
         parseArr[fcstDate] = {};
+        count++;
       }
       // Initialize the array for the fcstTime if not already exists
       if (!parseArr[fcstDate][fcstTime]) {
@@ -76,7 +83,8 @@ const getWeatherShort = async (base_date: string): Promise<void> => {
       if (isVaildCategory(category))
         parseArr[fcstDate][fcstTime][category] = fcstValue;
     });
-    console.log(parseArr);
+
+    return parseArr;
   } catch (e) {
     let message;
     if (e instanceof Error) message = e.message;
