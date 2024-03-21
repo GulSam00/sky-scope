@@ -4,7 +4,7 @@ import { styled } from "styled-components";
 import { IDateData } from "@src/API/getWeatherShort";
 
 interface IProps {
-  shortData: IDateData;
+  recentData: IDateData;
 }
 
 interface tempertureDataTypes {
@@ -13,7 +13,7 @@ interface tempertureDataTypes {
 }
 // 탭을 만들어서 전환??
 
-const CusLineGraph = ({ shortData }: IProps) => {
+const CusLineGraph = ({ recentData }: IProps) => {
   const [tempertureData, setTempertureData] = useState<tempertureDataTypes[]>(
     []
   );
@@ -29,7 +29,7 @@ const CusLineGraph = ({ shortData }: IProps) => {
     const temp: tempertureDataTypes[] = [];
     for (let i = 0; i <= 2400; i += 100) {
       const time = String(i).padStart(4, "0");
-      const value = shortData[time]?.TMP;
+      const value = recentData[time]?.TMP;
       const hour = time.slice(0, 2);
       const min = time.slice(2, 4);
 
@@ -53,7 +53,7 @@ const CusLineGraph = ({ shortData }: IProps) => {
           stacked: true,
           reverse: false,
         }}
-        yFormat=" >-.2f"
+        yFormat=">-.2f"
         pointSize={10}
         pointColor={{ theme: "background" }}
         pointBorderWidth={2}
@@ -71,7 +71,7 @@ const CusLineGraph = ({ shortData }: IProps) => {
           tickSize: 5,
           tickPadding: 5,
           tickRotation: 0,
-          legend: "온도",
+          legend: "온도(°C)",
           legendOffset: -40,
           legendPosition: "middle",
           truncateTickAt: 0,
