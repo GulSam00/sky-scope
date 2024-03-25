@@ -7,41 +7,44 @@ interface IProps {
   recentData: IDateData;
 }
 
-interface tempertureDataTypes {
+interface rainDataTypes {
   x: string;
-  y: number;
+  y: string;
 }
-// 탭을 만들어서 전환??
 
-const TempertureLineGraph = ({ recentData }: IProps) => {
-  const [tempertureData, setTempertureData] = useState<tempertureDataTypes[]>(
-    []
-  );
-
+const WeatherLineGraph = ({ recentData }: IProps) => {
+  const [weatherData, setWeatherData] = useState<rainDataTypes[]>([]);
   const data = [
     {
-      id: "temperture",
-      data: tempertureData,
+      id: "날씨",
+      data: weatherData,
     },
   ];
 
-  const initTempertureData = () => {
-    const temp: tempertureDataTypes[] = [];
+  const transValue = (value: string) => {
+    if (value === "1") return "맑음";
+    if (value === "3") return "구름많음";
+    if (value === "4") return "흐림";
+    return "알 수 없음";
+  };
+  const initWeatherData = () => {
+    // 맑음, 구름많음, 흐림 3가지 문자열
+    const temp: rainDataTypes[] = [];
     for (let i = 0; i <= 2400; i += 100) {
       const time = String(i).padStart(4, "0");
-      const value = recentData[time]?.TMP;
+      const value = recentData[time]?.SKY;
       const hour = time.slice(0, 2);
       const min = time.slice(2, 4);
 
       if (value) {
-        temp.push({ x: hour + ":" + min, y: Number(value) });
+        temp.push({ x: hour + ":" + min, y: transValue(value) });
       }
     }
-    setTempertureData(temp);
+    setWeatherData(temp);
   };
 
   useEffect(() => {
-    initTempertureData();
+    initWeatherData();
   }, []);
 
   return (
@@ -51,11 +54,7 @@ const TempertureLineGraph = ({ recentData }: IProps) => {
         margin={{ top: 50, right: 110, bottom: 50, left: 60 }}
         xScale={{ type: "point" }}
         yScale={{
-          type: "linear",
-          min: "auto",
-          max: "auto",
-          stacked: true,
-          reverse: false,
+          type: "point",
         }}
         yFormat=">-.2f"
         pointSize={10}
@@ -75,7 +74,7 @@ const TempertureLineGraph = ({ recentData }: IProps) => {
           tickSize: 5,
           tickPadding: 5,
           tickRotation: 0,
-          legend: "온도(°C)",
+          legend: "날씨",
           legendOffset: -40,
           legendPosition: "middle",
           truncateTickAt: 0,
@@ -85,7 +84,7 @@ const TempertureLineGraph = ({ recentData }: IProps) => {
   );
 };
 
-export default TempertureLineGraph;
+export default WeatherLineGraph;
 
 const GraphContainer = styled.div`
   min-width: 1000px;

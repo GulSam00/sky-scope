@@ -1,34 +1,38 @@
-import { useState, useEffect } from "react";
-import { IDateData } from "@src/API/getWeatherShort";
+import { useState } from "react";
+
 import TempertureLineGraph from "./TempertureLineGraph";
+import RainLineGraph from "./RainLineGraph";
+import WeatherLineGraph from "./WeatherLineGraph";
 
-import Tab from "react-bootstrap/Tab";
-import Tabs from "react-bootstrap/Tabs";
+import { IDateData } from "@src/API/getWeatherShort";
 
+import { Button } from "react-bootstrap";
 import { styled } from "styled-components";
 
 interface IProps {
   recentData: IDateData;
+  recentDate: string;
 }
-
-const RecentDay = ({ recentData }: IProps) => {
-  const [key, setKey] = useState<string>("temperture");
+const RecentDay = ({ recentData, recentDate }: IProps) => {
+  const [tab, setTab] = useState<string>("weather");
 
   const onClickTab = (k: string | null) => {
     console.log(k);
-    if (k) setKey(k);
+    if (k) setTab(k);
   };
 
   return (
     <RecentDayContainer>
-      <Tabs defaultActiveKey="temperture" activeKey={key} onSelect={onClickTab}>
-        <Tab eventKey="temperture" title="temperture">
-          <TempertureLineGraph recentData={recentData} />
-        </Tab>
-        <Tab eventKey="rain" title="rain">
-          <div>rain</div>
-        </Tab>
-      </Tabs>
+      <div>
+        <text>{recentDate}</text>
+        <Button onClick={() => onClickTab("weather")}>날씨</Button>
+
+        <Button onClick={() => onClickTab("temperture")}>온도</Button>
+        <Button onClick={() => onClickTab("rain")}>강수량</Button>
+      </div>
+      {tab === "weather" && <WeatherLineGraph recentData={recentData} />}
+      {tab === "temperture" && <TempertureLineGraph recentData={recentData} />}
+      {tab === "rain" && <RainLineGraph recentData={recentData} />}
     </RecentDayContainer>
   );
 };
@@ -39,9 +43,12 @@ const RecentDayContainer = styled.div`
   display: flex;
   flex-direction: column;
   flex-grow: 1;
-  > div {
-    margin: 10px;
-    padding: 10px;
-    border: 1px solid black;
+  margin: 10rem;
+  padding: 10rem;
+  border: 1rem solid black;
+  border-radius: 1rem;
+
+  button {
+    margin: 0.5rem;
   }
 `;

@@ -8,17 +8,21 @@ import { styled } from "styled-components";
 
 const RecentDays = () => {
   const [recentData, setRecentData] = useState<IDateData[]>([]);
+  const [recentDates, setRecentDates] = useState<string[]>([]); // ["20210801", "20210802", "20210803"
   const today = new Date();
 
   const fetchData = async () => {
-    const recentDataData = await getWeatherShort(format(today, "yyyyMMdd"));
-    console.log("SHORT", recentDataData);
-    if (recentDataData) {
-      const temp = [];
-      for (let i in recentDataData) {
-        temp.push(recentDataData[i]);
+    const response = await getWeatherShort(format(today, "yyyyMMdd"));
+    console.log("SHORT", response);
+    if (response) {
+      const dataArr = [];
+      const dateArr = [];
+      for (let i in response) {
+        dataArr.push(response[i]);
+        dateArr.push(i);
       }
-      setRecentData(temp);
+      setRecentData(dataArr);
+      setRecentDates(dateArr);
     }
   };
 
@@ -30,7 +34,9 @@ const RecentDays = () => {
     <RecentDayContainer>
       {recentData &&
         recentData.map((data, index) => {
-          return <RecentDay recentData={data} />;
+          return (
+            <RecentDay recentData={data} recentDate={recentDates[index]} />
+          );
         })}
     </RecentDayContainer>
   );
@@ -42,6 +48,7 @@ const RecentDayContainer = styled.div`
   display: flex;
   flex-direction: column;
   flex-grow: 1;
+  min-width: 1200px;
   > div {
     margin: 10px;
     padding: 10px;
