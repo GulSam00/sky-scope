@@ -107,7 +107,6 @@ const RainLineGraph = ({ recentData }: IProps) => {
             translateX: 90,
             translateY: 0,
             itemsSpacing: 0,
-            itemDirection: "left-to-right",
             itemWidth: 80,
             itemHeight: 20,
             itemOpacity: 0.75,
@@ -126,5 +125,4 @@ export default RainLineGraph;
 const GraphContainer = styled.div`
   min-width: 1000px;
   height: 500px;
-  margin: 0 auto;
 `;

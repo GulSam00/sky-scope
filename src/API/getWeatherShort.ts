@@ -1,5 +1,5 @@
 import axios, { AxiosInstance } from "axios";
-
+import { format } from "date-fns";
 const url: string = "http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0";
 
 const instance: AxiosInstance = axios.create({
@@ -15,7 +15,7 @@ const serviceKey: string =
 
 // type ITimeData = Record<VaildCategory, string >; // Modify the value to allow array or single value
 export interface ITimeData {
-  [category: string]: string; // Modify the value to allow array or single value
+  [category: string]: string;
 }
 
 export interface IDateData {
@@ -40,24 +40,25 @@ interface IItem {
 const params = {
   serviceKey: serviceKey,
   dataType: "JSON",
-  base_date: "20240318",
+  base_date: "",
   base_time: "0500",
   numOfRows: "1000",
   nx: 93,
   ny: 89,
 };
+// nx와 ny를 조절해서 지역을 변경할 수 있어야 함
 
 const isVaildCategory = (category: string) => {
   const vaildCategory = ["SKY", "POP", "PCP", "TMP", "TMN", "TMX"];
-  // TMN, TMX를 내가 그냥 파싱할까?
   return vaildCategory.includes(category);
 };
 
 const getWeatherShort = async (
-  base_date: string
+  base_date: Date
 ): Promise<IParseObj | undefined> => {
   const url = "/getVilageFcst";
-  params.base_date = base_date;
+  const date = format(base_date, "yyyyMMdd");
+  params.base_date = date;
   try {
     const response = await instance.get(url, { params });
     // console.log(response);
@@ -67,19 +68,18 @@ const getWeatherShort = async (
 
     dataArr.forEach((item: IItem) => {
       const { fcstDate, fcstTime } = item;
-      // Initialize the object if not already exists
       if (!parseArr[fcstDate]) {
+        // 오늘부터 최대 3일치만 가져옴
         if (count > 2) return;
         parseArr[fcstDate] = {};
         count++;
       }
-      // Initialize the array for the fcstTime if not already exists
+
       if (!parseArr[fcstDate][fcstTime]) {
         parseArr[fcstDate][fcstTime] = {};
       }
-      // Extract relevant category and value from item and add to the array
-      const { category, fcstValue } = item;
 
+      const { category, fcstValue } = item;
       if (isVaildCategory(category))
         parseArr[fcstDate][fcstTime][category] = fcstValue;
     });

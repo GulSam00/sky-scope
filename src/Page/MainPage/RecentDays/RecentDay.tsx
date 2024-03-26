@@ -14,22 +14,28 @@ interface IProps {
   recentDate: string;
 }
 const RecentDay = ({ recentData, recentDate }: IProps) => {
-  const [tab, setTab] = useState<string>("weather");
+  const [tab, setTab] = useState<string>("temperture");
 
   const onClickTab = (k: string | null) => {
-    console.log(k);
     if (k) setTab(k);
   };
 
+  const transDate = (date: string) => {
+    const year = date.slice(0, 4);
+    const month = date.slice(4, 6);
+    const day = date.slice(6, 8);
+    return `${year}/${month}/${day}`;
+  };
   return (
     <RecentDayContainer>
-      <div>
-        <text>{recentDate}</text>
-        <Button onClick={() => onClickTab("weather")}>날씨</Button>
+      <RecentDayHeader>
+        <text>{transDate(recentDate)}</text>
 
         <Button onClick={() => onClickTab("temperture")}>온도</Button>
+        <Button onClick={() => onClickTab("weather")}>날씨</Button>
         <Button onClick={() => onClickTab("rain")}>강수량</Button>
-      </div>
+      </RecentDayHeader>
+
       {tab === "weather" && <WeatherLineGraph recentData={recentData} />}
       {tab === "temperture" && <TempertureLineGraph recentData={recentData} />}
       {tab === "rain" && <RainLineGraph recentData={recentData} />}
@@ -50,5 +56,16 @@ const RecentDayContainer = styled.div`
 
   button {
     margin: 0.5rem;
+  }
+`;
+
+const RecentDayHeader = styled.div`
+  display: flex;
+  align-items: center;
+  margin: 1rem;
+  text {
+    margin-right: 1rem;
+    font-size: 1.5rem;
+    font-weight: bold;
   }
 `;

@@ -3,7 +3,6 @@ import { getWeatherShort } from "@src/API";
 import RecentDay from "./RecentDay";
 import { IDateData } from "@src/API/getWeatherShort";
 
-import { format } from "date-fns";
 import { styled } from "styled-components";
 
 const RecentDays = () => {
@@ -12,7 +11,7 @@ const RecentDays = () => {
   const today = new Date();
 
   const fetchData = async () => {
-    const response = await getWeatherShort(format(today, "yyyyMMdd"));
+    const response = await getWeatherShort(today);
     console.log("SHORT", response);
     if (response) {
       const dataArr = [];
