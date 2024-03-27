@@ -11,9 +11,9 @@ import { styled } from "styled-components";
 
 interface IProps {
   recentData: IDateData;
-  recentDate: string;
+  keyDate: string;
 }
-const RecentDay = ({ recentData, recentDate }: IProps) => {
+const RecentDay = ({ recentData, keyDate }: IProps) => {
   const [tab, setTab] = useState<string>("temperture");
 
   const onClickTab = (k: string | null) => {
@@ -29,7 +29,7 @@ const RecentDay = ({ recentData, recentDate }: IProps) => {
   return (
     <RecentDayContainer>
       <RecentDayHeader>
-        <text>{transDate(recentDate)}</text>
+        <text>{transDate(keyDate)}</text>
 
         <Button onClick={() => onClickTab("temperture")}>온도</Button>
         <Button onClick={() => onClickTab("weather")}>날씨</Button>

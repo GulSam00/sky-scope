@@ -7,7 +7,7 @@ import { styled } from "styled-components";
 
 const RecentDays = () => {
   const [recentData, setRecentData] = useState<IDateData[]>([]);
-  const [recentDates, setRecentDates] = useState<string[]>([]); // ["20210801", "20210802", "20210803"
+  const [keyDates, setKeyDates] = useState<string[]>([]); // ["20210801", "20210802", "20210803"
   const today = new Date();
 
   const fetchData = async () => {
@@ -21,7 +21,7 @@ const RecentDays = () => {
         dateArr.push(i);
       }
       setRecentData(dataArr);
-      setRecentDates(dateArr);
+      setKeyDates(dateArr);
     }
   };
 
@@ -33,9 +33,7 @@ const RecentDays = () => {
     <RecentDayContainer>
       {recentData &&
         recentData.map((data, index) => {
-          return (
-            <RecentDay recentData={data} recentDate={recentDates[index]} />
-          );
+          return <RecentDay recentData={data} keyDate={keyDates[index]} />;
         })}
     </RecentDayContainer>
   );
