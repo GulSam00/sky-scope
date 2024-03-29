@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
-import { ResponsiveLine } from "@nivo/line";
+
+import { IDateData } from "@src/API/getWeatherLong";
 
 import { styled } from "styled-components";
-import { IDateData } from "@src/API/getWeatherLong";
+import { ResponsiveLine } from "@nivo/line";
 
 interface IProps {
   futureData: IDateData[];

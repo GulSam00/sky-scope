@@ -1,69 +1,54 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 import RainLineGraph from "./RainLineGraph";
 import TempertureGraph from "./TempertureGraph";
 
-import { getWeatherLong } from "@src/API";
-import { IDateData } from "@src/API/getWeatherLong";
+import { TempLoading } from "@src/Component";
+import { useLongDataQuery } from "@src/Queries";
 
 import { Button } from "react-bootstrap";
 import { styled } from "styled-components";
 import { format, addDays } from "date-fns";
 
-const FurtureDays = () => {
-  const [futureData, setFutureData] = useState<IDateData[]>([]);
+const FutureDays = () => {
   const [tab, setTab] = useState<string>("temperture");
-
   const today = new Date();
+  const { data, isLoading, error } = useLongDataQuery(today);
 
   const onClickTab = (k: string | null) => {
     if (k) setTab(k);
   };
 
-  const fetchData = async () => {
-    const response = await getWeatherLong(today);
-    console.log("long", response);
-
-    if (response) {
-      const dataArr = [];
-      let index = -1;
-      for (let i in response) {
-        dataArr.push(response[i]);
-        index++;
-        dataArr[index].date = i;
-      }
-      setFutureData(dataArr);
-    }
+  const TitleText = () => {
+    const dateleft = format(addDays(today, 3), "yyyy/MM/dd");
+    const dateright = format(addDays(today, 7), "yyyy/MM/dd");
+    return dateleft + " ~ " + dateright;
   };
-  useEffect(() => {
-    fetchData();
-  }, []);
-
   return (
     <FutureDayContainer>
       <FurtureDayHeader>
-        <text>
-          {format(addDays(today, 3), "yyyy/MM/dd")} ~{" "}
-          {format(addDays(today, 7), "yyyy/MM/dd")}
-        </text>
+        <text>{TitleText()}</text>
         <Button onClick={() => onClickTab("temperture")}>온도</Button>
         <Button onClick={() => onClickTab("rain")}>강수확률</Button>
       </FurtureDayHeader>
-
-      {tab === "temperture" && <TempertureGraph futureData={futureData} />}
-
-      {tab === "rain" && <RainLineGraph futureData={futureData} />}
+      {isLoading ? (
+        <TempLoading />
+      ) : (
+        <>
+          {tab === "temperture" && <TempertureGraph futureData={data} />}
+          {tab === "rain" && <RainLineGraph futureData={data} />}
+        </>
+      )}
     </FutureDayContainer>
   );
 };
 
-export default FurtureDays;
+export default FutureDays;
 
 const FutureDayContainer = styled.div`
   display: flex;
   flex-direction: column;
 
-  flex-grow: 1;
   min-width: 1200px;
   margin: 10px;
   padding: 10px;

@@ -3,6 +3,7 @@ import { useState } from "react";
 import TempertureLineGraph from "./TempertureLineGraph";
 import RainLineGraph from "./RainLineGraph";
 import WeatherLineGraph from "./WeatherLineGraph";
+import { TempLoading } from "@src/Component";
 
 import { IDateData } from "@src/API/getWeatherShort";
 
@@ -12,8 +13,9 @@ import { styled } from "styled-components";
 interface IProps {
   recentData: IDateData;
   keyDate: string;
+  isLoading: boolean;
 }
-const RecentDay = ({ recentData, keyDate }: IProps) => {
+const RecentDay = ({ recentData, keyDate, isLoading }: IProps) => {
   const [tab, setTab] = useState<string>("temperture");
 
   const onClickTab = (k: string | null) => {
@@ -35,10 +37,17 @@ const RecentDay = ({ recentData, keyDate }: IProps) => {
         <Button onClick={() => onClickTab("weather")}>날씨</Button>
         <Button onClick={() => onClickTab("rain")}>강수확률</Button>
       </RecentDayHeader>
-
-      {tab === "weather" && <WeatherLineGraph recentData={recentData} />}
-      {tab === "temperture" && <TempertureLineGraph recentData={recentData} />}
-      {tab === "rain" && <RainLineGraph recentData={recentData} />}
+      {isLoading ? (
+        <TempLoading />
+      ) : (
+        <>
+          {tab === "weather" && <WeatherLineGraph recentData={recentData} />}
+          {tab === "temperture" && (
+            <TempertureLineGraph recentData={recentData} />
+          )}
+          {tab === "rain" && <RainLineGraph recentData={recentData} />}
+        </>
+      )}
     </RecentDayContainer>
   );
 };

@@ -1,39 +1,26 @@
 import { useState, useEffect } from "react";
-import { getWeatherShort } from "@src/API";
+
 import RecentDay from "./RecentDay";
-import { IDateData } from "@src/API/getWeatherShort";
+import { useShortDataQuery } from "@src/Queries";
 
 import { styled } from "styled-components";
 
 const RecentDays = () => {
-  const [recentData, setRecentData] = useState<IDateData[]>([]);
-  const [keyDates, setKeyDates] = useState<string[]>([]); // ["20210801", "20210802", "20210803"
   const today = new Date();
 
-  const fetchData = async () => {
-    const response = await getWeatherShort(today);
-    console.log("SHORT", response);
-    if (response) {
-      const dataArr = [];
-      const dateArr = [];
-      for (let i in response) {
-        dataArr.push(response[i]);
-        dateArr.push(i);
-      }
-      setRecentData(dataArr);
-      setKeyDates(dateArr);
-    }
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, []);
+  const { data, date, isLoading, error } = useShortDataQuery(today);
 
   return (
     <RecentDayContainer>
-      {recentData &&
-        recentData.map((data, index) => {
-          return <RecentDay recentData={data} keyDate={keyDates[index]} />;
+      {data &&
+        data.map((arrItem, index) => {
+          return (
+            <RecentDay
+              recentData={arrItem}
+              keyDate={date[index]}
+              isLoading={isLoading}
+            />
+          );
         })}
     </RecentDayContainer>
   );
