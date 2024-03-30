@@ -4,6 +4,7 @@ import useKakaoLoader from "@src/useKakaoLoader";
 import { getKakaoLocal } from "@src/API";
 
 import Form from "react-bootstrap/Form";
+import styled from "styled-components";
 
 interface MarkerType {
   position: {
@@ -23,6 +24,8 @@ const KaKaoMap = () => {
   const mapRef = useRef<kakao.maps.Map>(null);
 
   const [address, setAddress] = useState<string>("");
+
+  const [tempText, setTempText] = useState<string>("");
 
   const handleInput = (e: any) => {
     if (e.key === "Enter") e.preventDefault();
@@ -47,25 +50,35 @@ const KaKaoMap = () => {
 
     console.log("map info ", center);
   };
-  const moveMarkerPos = (marker: MarkerType) => async () => {
+
+  const overMarkerPos = (marker: MarkerType) => {
     if (!map) return;
 
+    // 맵 레벨 제어
     const position = marker.position;
     map.setLevel(2);
     setMapLevel(map.getLevel());
 
     map.panTo(new kakao.maps.LatLng(position.lat, position.lng));
+
+    // region_2depth_name 를 기준으로 검색
+    // 스페이스 바 사이의 공백 제거 필요
+  };
+
+  const onClickMarker = async (marker: MarkerType) => {
+    if (!map) return;
+    const position = marker.position;
+
     const result = await getKakaoLocal.getKakaoSearchCoord(
       position.lng,
       position.lat
     );
 
-    // region_2depth_name 를 기준으로 검색
-    // 스페이스 바 사이의 공백 제거 필요
+    console.log("결과", result);
 
-    // 맵 레벨 제어
-    // const map = mapRef.current;
-    // if (!map) return;
+    if (result) {
+      setTempText(result.address_name);
+    }
   };
 
   const searchPlaces = (keyword: string) => {
@@ -129,27 +142,28 @@ const KaKaoMap = () => {
         ref={mapRef}
         onCreate={setMap}
       >
+        <h2>현재 선택한 마커의 정보 : {tempText}</h2>
         {markers.map((marker: MarkerType) => (
-          <MapMarker
-            key={`marker-${marker.content}-${marker.position.lat},${marker.position.lng}`}
-            position={marker.position}
-            onClick={() => setInfo(marker)}
-          >
+          <MapMarker position={marker.position} onClick={() => setInfo(marker)}>
             {info && info.content === marker.content && (
-              <div style={{ color: "#000" }}>{marker.content}</div>
+              <div>{marker.content}</div>
             )}
           </MapMarker>
         ))}
       </Map>
 
       {markers.length > 0 && (
-        <ul>
+        <MarkersContainer>
           {markers.map((marker: MarkerType, index: number) => (
-            <li key={index} onClick={moveMarkerPos(marker)}>
+            <div
+              key={index}
+              onMouseOver={() => overMarkerPos(marker)}
+              onClick={() => onClickMarker(marker)}
+            >
               {marker.content}
-            </li>
+            </div>
           ))}
-        </ul>
+        </MarkersContainer>
       )}
 
       <button onClick={testAPI}>API 테스트</button>
@@ -162,3 +176,13 @@ const KaKaoMap = () => {
 };
 
 export default KaKaoMap;
+
+const MarkersContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  div {
+    cursor: pointer;
+    padding: 5px;
+    border: 1px solid black;
+  }
+`;

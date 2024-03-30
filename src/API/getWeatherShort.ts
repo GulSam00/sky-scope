@@ -42,8 +42,8 @@ const params = {
   base_date: "",
   base_time: "0500",
   numOfRows: "1000",
-  nx: 93,
-  ny: 89,
+  nx: 53,
+  ny: 38,
 };
 // nx와 ny를 조절해서 지역을 변경할 수 있어야 함
 
@@ -82,7 +82,7 @@ const getWeatherShort = async (
       if (isVaildCategory(category))
         parseArr[fcstDate][fcstTime][category] = fcstValue;
     });
-
+    console.log("parseArr", parseArr);
     return parseArr;
   } catch (e) {
     let message;
