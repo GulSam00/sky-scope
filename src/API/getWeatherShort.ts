@@ -1,6 +1,8 @@
 import axios, { AxiosInstance } from "axios";
 import { format } from "date-fns";
-const url: string = "http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0";
+
+const url: string = import.meta.env.VITE_API_SHORT_URL;
+const serviceKey: string = import.meta.env.VITE_API_SERVICE_KEY;
 
 const instance: AxiosInstance = axios.create({
   baseURL: url,
@@ -9,9 +11,6 @@ const instance: AxiosInstance = axios.create({
     "Content-Type": "application/json",
   },
 });
-
-const serviceKey: string =
-  "2Z194UJg1zEaizlFzp0Yz5nwql6oKpNl2wkM3Eow8FjthKY2IJ/zAt3nzTx4kmdx6lzXthcxntmaYAkLbLAIxg==";
 
 // type ITimeData = Record<VaildCategory, string >; // Modify the value to allow array or single value
 export interface ITimeData {
