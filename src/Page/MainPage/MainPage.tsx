@@ -1,13 +1,13 @@
 import RecentDays from "./RecentDays";
 import FutureDays from "./FutureDays";
+import Map from "./Map";
 
-import Card from "react-bootstrap/Card";
-import { format } from "date-fns";
 import { styled } from "styled-components";
 
 const MainPage = () => {
   return (
     <DayContainer>
+      <Map />
       <RecentDays />
       <FutureDays />
     </DayContainer>
