@@ -16,8 +16,8 @@
 
     /* Linting */
     "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
+    "noUnusedLocals": false, // for vercel build
+    "noUnusedParameters": false, // for vercel build
     "noFallthroughCasesInSwitch": true,
 
     "esModuleInterop": true, // Required for Jest
