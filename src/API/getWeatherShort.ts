@@ -25,6 +25,11 @@ export interface IParseObj {
   [fcstDate: string]: IDateData;
 }
 
+export interface ICoord {
+  nx: number;
+  ny: number;
+}
+
 interface IItem {
   baseDate: string;
   baseTime: string;
@@ -42,8 +47,8 @@ const params = {
   base_date: "",
   base_time: "0500",
   numOfRows: "1000",
-  nx: 53,
-  ny: 38,
+  nx: 0,
+  ny: 0,
 };
 // nx와 ny를 조절해서 지역을 변경할 수 있어야 함
 
@@ -53,11 +58,14 @@ const isVaildCategory = (category: string) => {
 };
 
 const getWeatherShort = async (
-  base_date: Date
+  base_date: Date,
+  location: ICoord
 ): Promise<IParseObj | undefined> => {
   const url = "/getVilageFcst";
   const date = format(base_date, "yyyyMMdd");
   params.base_date = date;
+  params.nx = location.nx;
+  params.ny = location.ny;
   try {
     const response = await instance.get(url, { params });
     // console.log(response);

@@ -1,10 +1,24 @@
 import { useState, useRef, useEffect } from "react";
 import { Map, MapMarker } from "react-kakao-maps-sdk";
 import useKakaoLoader from "@src/useKakaoLoader";
+
 import { getKakaoLocal } from "@src/API";
+import { ICoord } from "@src/API/getWeatherShort";
+import _short_local from "@src/JSON/short_api_locals.json";
 
 import Form from "react-bootstrap/Form";
 import styled from "styled-components";
+
+const short_local = _short_local as ICoordJson;
+
+interface ICoordJson {
+  [depth1: string]: {
+    [depth2: string]: {
+      x: number;
+      y: number;
+    };
+  };
+}
 
 interface MarkerType {
   position: {
@@ -14,7 +28,17 @@ interface MarkerType {
   content: string;
 }
 
-const KaKaoMap = () => {
+interface IProps {
+  handleChangeCoord: (coord: ICoord) => void;
+}
+
+const transName = (name: string) => {
+  if (name === "강원특별자치도") return "강원도";
+
+  return name;
+};
+
+const KaKaoMap = ({ handleChangeCoord }: IProps) => {
   useKakaoLoader();
 
   const [map, setMap] = useState<kakao.maps.Map | null>(null);
@@ -35,11 +59,6 @@ const KaKaoMap = () => {
   const insertAddress = () => {
     searchPlaces(address);
     setAddress("");
-  };
-
-  const testAPI = () => {
-    // getKakaoLocal.getKakaoSearchAddress("왕곡");
-    getKakaoLocal.getKakaoSearchCoord(126.98164166666668, 37.57037777777778);
   };
 
   const getInfo = () => {
@@ -78,6 +97,10 @@ const KaKaoMap = () => {
 
     if (result) {
       setTempText(result.address_name);
+      const depth1 = transName(result.region_1depth_name);
+      const depth2 = result.region_2depth_name.replace(" ", "");
+      const coord = short_local[depth1][depth2];
+      handleChangeCoord({ nx: coord.x, ny: coord.y });
     }
   };
 
@@ -165,8 +188,6 @@ const KaKaoMap = () => {
           ))}
         </MarkersContainer>
       )}
-
-      <button onClick={testAPI}>API 테스트</button>
 
       <button id="getInfoBtn" onClick={getInfo}>
         맵정보 가져오기

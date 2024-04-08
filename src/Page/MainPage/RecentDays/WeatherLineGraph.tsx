@@ -44,8 +44,9 @@ const WeatherLineGraph = ({ recentData }: IProps) => {
   };
 
   useEffect(() => {
+    console.log("Change!");
     initWeatherData();
-  }, []);
+  }, [recentData]);
 
   return (
     <GraphContainer>

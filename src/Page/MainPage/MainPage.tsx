@@ -1,13 +1,11 @@
 import RecentDays from "./RecentDays";
 import FutureDays from "./FutureDays";
-import Map from "./Map";
 
 import { styled } from "styled-components";
 
 const MainPage = () => {
   return (
     <DayContainer>
-      <Map />
       <RecentDays />
       <FutureDays />
     </DayContainer>

@@ -13,9 +13,9 @@ import { styled } from "styled-components";
 interface IProps {
   recentData: IDateData;
   keyDate: string;
-  isLoading: boolean;
+  status: string;
 }
-const RecentDay = ({ recentData, keyDate, isLoading }: IProps) => {
+const RecentDay = ({ recentData, keyDate, status }: IProps) => {
   const [tab, setTab] = useState<string>("temperture");
 
   const onClickTab = (k: string | null) => {
@@ -28,6 +28,7 @@ const RecentDay = ({ recentData, keyDate, isLoading }: IProps) => {
     const day = date.slice(6, 8);
     return `${year}/${month}/${day}`;
   };
+
   return (
     <RecentDayContainer>
       <RecentDayHeader>
@@ -37,7 +38,8 @@ const RecentDay = ({ recentData, keyDate, isLoading }: IProps) => {
         <Button onClick={() => onClickTab("weather")}>날씨</Button>
         <Button onClick={() => onClickTab("rain")}>강수확률</Button>
       </RecentDayHeader>
-      {isLoading ? (
+      {/* status가 변경되지 않아서 WeatherLineGraph의 init이 진행되지 않음 */}
+      {status !== "success" ? (
         <TempLoading />
       ) : (
         <>

@@ -1,5 +1,4 @@
 import axios, { AxiosInstance } from "axios";
-import { ca } from "date-fns/locale";
 
 const url = import.meta.env.VITE_KAKAO_REST_URL;
 const serviceKey = import.meta.env.VITE_KAKAO_REST_KEY;
