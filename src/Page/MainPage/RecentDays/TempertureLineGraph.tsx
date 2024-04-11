@@ -41,8 +41,10 @@ const TempertureLineGraph = ({ recentData }: IProps) => {
   };
 
   useEffect(() => {
+    console.log("temp Change!");
+
     initTempertureData();
-  }, []);
+  }, [recentData]);
 
   return (
     <GraphContainer>

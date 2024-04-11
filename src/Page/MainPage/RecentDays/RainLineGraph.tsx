@@ -56,10 +56,11 @@ const RainLineGraph = ({ recentData }: IProps) => {
     }
     setRainAmount(temp);
   };
+
   useEffect(() => {
     initRainProb();
     initRainAmount();
-  }, []);
+  }, [recentData]);
 
   return (
     <GraphContainer>

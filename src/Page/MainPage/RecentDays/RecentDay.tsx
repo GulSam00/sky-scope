@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import TempertureLineGraph from "./TempertureLineGraph";
 import RainLineGraph from "./RainLineGraph";
@@ -13,10 +13,11 @@ import { styled } from "styled-components";
 interface IProps {
   recentData: IDateData;
   keyDate: string;
-  status: string;
+  isLoading: boolean;
 }
-const RecentDay = ({ recentData, keyDate, status }: IProps) => {
+const RecentDay = ({ recentData, keyDate, isLoading }: IProps) => {
   const [tab, setTab] = useState<string>("temperture");
+  const [isInit, setIsInit] = useState<boolean>(false);
 
   const onClickTab = (k: string | null) => {
     if (k) setTab(k);
@@ -29,6 +30,10 @@ const RecentDay = ({ recentData, keyDate, status }: IProps) => {
     return `${year}/${month}/${day}`;
   };
 
+  useEffect(() => {
+    console.log("data Change!");
+  }, [recentData]);
+
   return (
     <RecentDayContainer>
       <RecentDayHeader>
@@ -39,14 +44,14 @@ const RecentDay = ({ recentData, keyDate, status }: IProps) => {
         <Button onClick={() => onClickTab("rain")}>강수확률</Button>
       </RecentDayHeader>
       {/* status가 변경되지 않아서 WeatherLineGraph의 init이 진행되지 않음 */}
-      {status !== "success" ? (
+      {isLoading ? (
         <TempLoading />
       ) : (
         <>
-          {tab === "weather" && <WeatherLineGraph recentData={recentData} />}
           {tab === "temperture" && (
             <TempertureLineGraph recentData={recentData} />
           )}
+          {tab === "weather" && <WeatherLineGraph recentData={recentData} />}
           {tab === "rain" && <RainLineGraph recentData={recentData} />}
         </>
       )}
