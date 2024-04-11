@@ -1,6 +1,5 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect } from "react";
 
-import { Context } from "@src/App";
 import { ResponsiveLine } from "@nivo/line";
 import { styled } from "styled-components";
 import { IDateData } from "@src/API/getWeatherShort";
@@ -22,8 +21,6 @@ const WeatherLineGraph = ({ recentData }: IProps) => {
       data: weatherData,
     },
   ];
-
-  const context = useContext(Context);
 
   const transValue = (value: string) => {
     if (value === "1") return "맑음";
@@ -49,7 +46,7 @@ const WeatherLineGraph = ({ recentData }: IProps) => {
 
   useEffect(() => {
     initWeatherData();
-  }, [isLoading, recentData]);
+  }, [recentData]);
 
   return (
     <GraphContainer>
@@ -92,5 +89,5 @@ export default WeatherLineGraph;
 
 const GraphContainer = styled.div`
   min-width: 1000px;
-  height: 500px;
+  height: 600px;
 `;

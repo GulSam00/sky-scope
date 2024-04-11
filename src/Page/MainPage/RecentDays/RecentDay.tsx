@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import TempertureLineGraph from "./TempertureLineGraph";
 import RainLineGraph from "./RainLineGraph";
 import WeatherLineGraph from "./WeatherLineGraph";
-import { TempLoading } from "@src/Component";
+import EmptyGraph from "./EmptyGraph";
 
 import { IDateData } from "@src/API/getWeatherShort";
 
@@ -14,8 +14,9 @@ interface IProps {
   recentData: IDateData;
   keyDate: string;
   isLoading: boolean;
+  status: string;
 }
-const RecentDay = ({ recentData, keyDate, isLoading }: IProps) => {
+const RecentDay = ({ recentData, keyDate, isLoading, status }: IProps) => {
   const [tab, setTab] = useState<string>("temperture");
   const [isInit, setIsInit] = useState<boolean>(false);
 
@@ -45,7 +46,7 @@ const RecentDay = ({ recentData, keyDate, isLoading }: IProps) => {
       </RecentDayHeader>
       {/* status가 변경되지 않아서 WeatherLineGraph의 init이 진행되지 않음 */}
       {isLoading ? (
-        <TempLoading />
+        <EmptyGraph />
       ) : (
         <>
           {tab === "temperture" && (

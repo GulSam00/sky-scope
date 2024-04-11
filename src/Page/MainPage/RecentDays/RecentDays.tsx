@@ -1,8 +1,9 @@
-import { useState, useEffect, useContext } from "react";
+import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 
-import { Context } from "@src/App";
-import Map from "./Map";
+import LocationHeader from "./LocationHeader";
+import MapModal from "./MapModal";
+import EmptyGraph from "./EmptyGraph";
 import RecentDay from "./RecentDay";
 import { useShortDataQuery } from "@src/Queries";
 import { ICoord } from "@src/API/getWeatherShort";
@@ -12,10 +13,10 @@ import { styled } from "styled-components";
 const RecentDays = () => {
   const today = new Date();
   const queryClient = useQueryClient();
-  const context = useContext(Context);
 
   // 서울 종로구 기준
   const [coord, setCoord] = useState<ICoord>({ nx: 60, ny: 127 });
+  const [isMapModal, setIsMapModal] = useState<boolean>(false);
   const { data, date, isLoading, status, error } = useShortDataQuery(
     today,
     coord
@@ -23,31 +24,49 @@ const RecentDays = () => {
 
   const handleChangeCoord = (coord: ICoord) => {
     setCoord(coord);
-    context.recentLoading = true;
 
     queryClient.invalidateQueries({ queryKey: ["short"] });
 
     console.log("쿼리 다시 요청");
     console.log("data : ", data);
-    console.log(context.recentLoading);
-    // 쿼리 다시 요청
-    context.recentLoading = false;
-    console.log(context.recentLoading);
+  };
+
+  const toggleModal = () => {
+    setIsMapModal(!isMapModal);
   };
 
   return (
     <RecentDayContainer>
-      <Map handleChangeCoord={handleChangeCoord} />
-      {data &&
+      {isMapModal && (
+        <MapModal
+          handleChangeCoord={handleChangeCoord}
+          toggleModal={toggleModal}
+        />
+      )}
+
+      <LocationHeader
+        toggleModal={toggleModal}
+        handleChangeCoord={handleChangeCoord}
+      />
+
+      {data.length ? (
         data.map((arrItem, index) => {
           return (
             <RecentDay
               recentData={arrItem}
               keyDate={date[index]}
               isLoading={isLoading}
+              status={status}
             />
           );
-        })}
+        })
+      ) : (
+        <>
+          <EmptyGraph />
+          <EmptyGraph />
+          <EmptyGraph />
+        </>
+      )}
     </RecentDayContainer>
   );
 };

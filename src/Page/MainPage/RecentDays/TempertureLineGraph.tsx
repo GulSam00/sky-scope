@@ -41,8 +41,6 @@ const TempertureLineGraph = ({ recentData }: IProps) => {
   };
 
   useEffect(() => {
-    console.log("temp Change!");
-
     initTempertureData();
   }, [recentData]);
 
@@ -91,5 +89,5 @@ export default TempertureLineGraph;
 
 const GraphContainer = styled.div`
   min-width: 1000px;
-  height: 500px;
+  height: 600px;
 `;

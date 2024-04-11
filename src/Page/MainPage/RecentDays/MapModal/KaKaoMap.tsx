@@ -201,6 +201,7 @@ export default KaKaoMap;
 const MarkersContainer = styled.div`
   display: flex;
   flex-direction: column;
+
   div {
     cursor: pointer;
     padding: 5px;
