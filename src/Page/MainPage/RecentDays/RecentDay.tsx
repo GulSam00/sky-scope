@@ -18,7 +18,6 @@ interface IProps {
 }
 const RecentDay = ({ recentData, keyDate, isLoading, status }: IProps) => {
   const [tab, setTab] = useState<string>("temperture");
-  const [isInit, setIsInit] = useState<boolean>(false);
 
   const onClickTab = (k: string | null) => {
     if (k) setTab(k);
@@ -31,9 +30,8 @@ const RecentDay = ({ recentData, keyDate, isLoading, status }: IProps) => {
     return `${year}/${month}/${day}`;
   };
 
-  useEffect(() => {
-    console.log("data Change!");
-  }, [recentData]);
+  // useEffect(() => {}, [recentData]);
+  // useEffect 없이도 자동 갱신
 
   return (
     <RecentDayContainer>
@@ -41,10 +39,11 @@ const RecentDay = ({ recentData, keyDate, isLoading, status }: IProps) => {
         <text>{transDate(keyDate)}</text>
 
         <Button onClick={() => onClickTab("temperture")}>온도</Button>
-        <Button onClick={() => onClickTab("weather")}>날씨</Button>
-        <Button onClick={() => onClickTab("rain")}>강수확률</Button>
+        <Button onClick={() => onClickTab("rain")}>강수 확률</Button>
+
+        {/* <Button onClick={() => onClickTab("weather")}>날씨</Button> */}
       </RecentDayHeader>
-      {/* status가 변경되지 않아서 WeatherLineGraph의 init이 진행되지 않음 */}
+
       {isLoading ? (
         <EmptyGraph />
       ) : (

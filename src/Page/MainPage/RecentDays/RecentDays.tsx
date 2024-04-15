@@ -28,6 +28,7 @@ const RecentDays = () => {
     queryClient.invalidateQueries({ queryKey: ["short"] });
 
     console.log("쿼리 다시 요청");
+    console.log("요청하는 동안 로딩중 구현?");
     console.log("data : ", data);
   };
 
