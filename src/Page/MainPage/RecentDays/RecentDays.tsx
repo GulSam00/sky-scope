@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 
 import LocationHeader from "./LocationHeader";
@@ -10,12 +10,22 @@ import { ICoord } from "@src/API/getWeatherShort";
 
 import { styled } from "styled-components";
 
+const getInitCoord = () => {
+  if (localStorage.getItem("coord")) {
+    const coord = JSON.parse(localStorage.getItem("coord") as string);
+    return coord;
+  }
+  return { nx: 60, ny: 127 };
+};
+
 const RecentDays = () => {
   const today = new Date();
   const queryClient = useQueryClient();
 
   // 서울 종로구 기준
-  const [coord, setCoord] = useState<ICoord>({ nx: 60, ny: 127 });
+  // localstorage에 저장된 값이 있으면 그 값으로 초기화?
+
+  const [coord, setCoord] = useState<ICoord>(getInitCoord());
   const [isMapModal, setIsMapModal] = useState<boolean>(false);
   const { data, date, isLoading, status, error } = useShortDataQuery(
     today,
@@ -35,6 +45,15 @@ const RecentDays = () => {
   const toggleModal = () => {
     setIsMapModal(!isMapModal);
   };
+
+  useEffect(() => {
+    if (localStorage.getItem("coord")) {
+      const coord = JSON.parse(localStorage.getItem("coord") as string);
+      console.log(coord);
+      setCoord(coord);
+      queryClient.invalidateQueries({ queryKey: ["short"] });
+    }
+  }, []);
 
   return (
     <RecentDayContainer>

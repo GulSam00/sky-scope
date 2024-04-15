@@ -40,8 +40,7 @@ const RecentDay = ({ recentData, keyDate, isLoading, status }: IProps) => {
 
         <Button onClick={() => onClickTab("temperture")}>온도</Button>
         <Button onClick={() => onClickTab("rain")}>강수 확률</Button>
-
-        {/* <Button onClick={() => onClickTab("weather")}>날씨</Button> */}
+        <Button onClick={() => onClickTab("weather")}>날씨</Button>
       </RecentDayHeader>
 
       {isLoading ? (
