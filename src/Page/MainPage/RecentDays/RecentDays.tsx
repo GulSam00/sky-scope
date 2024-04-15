@@ -5,6 +5,7 @@ import LocationHeader from "./LocationHeader";
 import MapModal from "./MapModal";
 import EmptyGraph from "./EmptyGraph";
 import RecentDay from "./RecentDay";
+
 import { useShortDataQuery } from "@src/Queries";
 import { ICoord } from "@src/API/getWeatherShort";
 
