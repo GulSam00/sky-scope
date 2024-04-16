@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import { ICoord } from "@src/API/getWeatherShort";
 
-import { Form, Button } from "react-bootstrap";
+import { useDispatch } from "react-redux";
+import { open } from "@src/Store/kakaoModalSlice";
 
+import { Form, Button } from "react-bootstrap";
 import styled from "styled-components";
 
 import _short_local from "@src/JSON/short_api_locals.json";
@@ -19,12 +21,12 @@ interface ICoordJson {
 
 interface IProps {
   handleChangeCoord: (coord: ICoord) => void;
-  toggleModal: () => void;
 }
 
-const LocationHeader = ({ toggleModal, handleChangeCoord }: IProps) => {
+const LocationHeader = ({ handleChangeCoord }: IProps) => {
   const [province, setProvince] = useState<string>("");
   const [city, setCity] = useState<string>("");
+  const dispatch = useDispatch();
 
   const onChangeProvince = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const value = e.target.value;
@@ -70,7 +72,7 @@ const LocationHeader = ({ toggleModal, handleChangeCoord }: IProps) => {
         <text>의 날씨는?</text>
       </LocationHeaderSelector>
 
-      <Button onClick={toggleModal}>지도에서 선택하기</Button>
+      <Button onClick={() => dispatch(open())}>지도에서 선택하기</Button>
     </LocationHeaderContainer>
   );
 };

@@ -5,6 +5,7 @@ import { IDateData } from "@src/API/getWeatherShort";
 
 interface IProps {
   recentData: IDateData;
+  callbackLoadedData: () => void;
 }
 
 interface tempertureDataTypes {
@@ -13,7 +14,7 @@ interface tempertureDataTypes {
 }
 // 탭을 만들어서 전환??
 
-const TempertureLineGraph = ({ recentData }: IProps) => {
+const TempertureLineGraph = ({ recentData, callbackLoadedData }: IProps) => {
   const [tempertureData, setTempertureData] = useState<tempertureDataTypes[]>(
     []
   );
@@ -38,6 +39,7 @@ const TempertureLineGraph = ({ recentData }: IProps) => {
       }
     }
     setTempertureData(temp);
+    callbackLoadedData();
   };
 
   useEffect(() => {

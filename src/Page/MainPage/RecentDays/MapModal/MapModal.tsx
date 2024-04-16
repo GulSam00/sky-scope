@@ -1,19 +1,24 @@
 import KaKaoMap from "./KaKaoMap";
 
+import { useDispatch } from "react-redux";
+import { close } from "@src/Store/kakaoModalSlice";
+
 import { ICoord } from "@src/API/getWeatherShort";
+
 import styled from "styled-components";
 
 interface IProps {
   handleChangeCoord: (coord: ICoord) => void;
-  toggleModal: () => void;
 }
 
-const MapModal = ({ handleChangeCoord, toggleModal }: IProps) => {
+const MapModal = ({ handleChangeCoord }: IProps) => {
+  const dispatch = useDispatch();
+
   return (
     <MapModalContainer>
       <MapModalBody>
         <KaKaoMap handleChangeCoord={handleChangeCoord} />
-        <button onClick={toggleModal}> 모달 닫기</button>
+        <button onClick={() => dispatch(close())}> 모달 닫기</button>
       </MapModalBody>
     </MapModalContainer>
   );

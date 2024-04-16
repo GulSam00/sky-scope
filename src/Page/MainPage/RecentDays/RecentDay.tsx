@@ -1,10 +1,12 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
 
 import TempertureLineGraph from "./TempertureLineGraph";
 import RainLineGraph from "./RainLineGraph";
 import WeatherLineGraph from "./WeatherLineGraph";
 import EmptyGraph from "./EmptyGraph";
 
+import { loadedData } from "@src/Store/shortDataSlice";
 import { IDateData } from "@src/API/getWeatherShort";
 
 import { Button } from "react-bootstrap";
@@ -17,6 +19,7 @@ interface IProps {
   status: string;
 }
 const RecentDay = ({ recentData, keyDate, isLoading, status }: IProps) => {
+  const dispatch = useDispatch();
   const [tab, setTab] = useState<string>("temperture");
 
   const onClickTab = (k: string | null) => {
@@ -30,7 +33,11 @@ const RecentDay = ({ recentData, keyDate, isLoading, status }: IProps) => {
     return `${year}/${month}/${day}`;
   };
 
-  // useEffect(() => {}, [recentData]);
+  const callbackLoadedData = () => {
+    console.log("callbackLoadedData");
+    dispatch(loadedData());
+  };
+
   // useEffect 없이도 자동 갱신
 
   return (
@@ -48,7 +55,10 @@ const RecentDay = ({ recentData, keyDate, isLoading, status }: IProps) => {
       ) : (
         <>
           {tab === "temperture" && (
-            <TempertureLineGraph recentData={recentData} />
+            <TempertureLineGraph
+              recentData={recentData}
+              callbackLoadedData={callbackLoadedData}
+            />
           )}
           {tab === "weather" && <WeatherLineGraph recentData={recentData} />}
           {tab === "rain" && <RainLineGraph recentData={recentData} />}

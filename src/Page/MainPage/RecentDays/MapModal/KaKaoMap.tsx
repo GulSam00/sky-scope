@@ -1,7 +1,9 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
+import { useDispatch } from "react-redux";
 import { Map, MapMarker } from "react-kakao-maps-sdk";
 import useKakaoLoader from "@src/useKakaoLoader";
 
+import { close } from "@src/Store/kakaoModalSlice";
 import { getKakaoLocal } from "@src/API";
 import { ICoord } from "@src/API/getWeatherShort";
 import _short_local from "@src/JSON/short_api_locals.json";
@@ -39,6 +41,8 @@ const transName = (name: string) => {
 };
 
 const KaKaoMap = ({ handleChangeCoord }: IProps) => {
+  const dispatch = useDispatch();
+
   useKakaoLoader();
 
   const [map, setMap] = useState<kakao.maps.Map | null>(null);
@@ -46,9 +50,7 @@ const KaKaoMap = ({ handleChangeCoord }: IProps) => {
   const [markers, setMarkers] = useState<MarkerType[]>([]);
   const [mapLevel, setMapLevel] = useState<number>(3);
   const mapRef = useRef<kakao.maps.Map>(null);
-
   const [address, setAddress] = useState<string>("");
-
   const [tempText, setTempText] = useState<string>("");
 
   const handleInput = (e: any) => {
@@ -101,6 +103,7 @@ const KaKaoMap = ({ handleChangeCoord }: IProps) => {
       const depth2 = result.region_2depth_name.replace(" ", "");
       const coord = short_local[depth1][depth2];
       handleChangeCoord({ nx: coord.x, ny: coord.y });
+      dispatch(close());
     }
   };
 
