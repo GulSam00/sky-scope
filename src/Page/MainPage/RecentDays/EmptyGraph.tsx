@@ -6,9 +6,9 @@ const EmptyGraph = () => {
   return (
     <EmptyGraphContainer>
       <Spinner animation="border" role="status">
-        <span className="visually-hidden">Loading...</span>
+        <span className="visually-hidden">Loading</span>
       </Spinner>
-      <h1>데이터가 없습니다.</h1>
+      <h1>데이터를 불러오는 중...</h1>
     </EmptyGraphContainer>
   );
 };
@@ -33,7 +33,7 @@ const EmptyGraphContainer = styled.div`
     height: 8rem;
   }
   h1 {
-    width: 30rem;
+    width: 35rem;
 
     font-size: 3rem;
     text-align: center;

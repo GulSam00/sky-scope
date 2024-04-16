@@ -28,18 +28,6 @@ const instance: AxiosInstance = axios.create({
 });
 
 const getKakaoLocal = {
-  // getKakaoSearchAddress: async (address: string) => {
-  //   const params = {
-  //     query: address,
-  //   };
-  //   const url = "/search/address";
-  //   try {
-  //     const result = await instance.get(url, { params });
-  //     console.log(result.data.documents);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // },
   // 좌표
   getKakaoSearchCoord: async (
     x: number,

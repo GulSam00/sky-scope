@@ -1,10 +1,9 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { MainPage } from "@src/Page";
+import { Provider } from "react-redux";
+import store from "@src/Store";
 
-const contextData = {
-  recentLoading: false,
-};
+import { MainPage } from "@src/Page";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -17,10 +16,12 @@ const queryClient = new QueryClient({
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <MainPage />
-      <ReactQueryDevtools />
-    </QueryClientProvider>
+    <Provider store={store}>
+      <QueryClientProvider client={queryClient}>
+        <MainPage />
+        <ReactQueryDevtools />
+      </QueryClientProvider>
+    </Provider>
   );
 }
 

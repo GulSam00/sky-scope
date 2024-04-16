@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
+import { useSelector, useDispatch } from "react-redux";
 
 import LocationHeader from "./LocationHeader";
 import MapModal from "./MapModal";
 import EmptyGraph from "./EmptyGraph";
 import RecentDay from "./RecentDay";
 
+import { open, close, toggle } from "@src/Store/kakaoModalSlice";
+import { RootState } from "@src/Store/store";
 import { useShortDataQuery } from "@src/Queries";
 import { ICoord } from "@src/API/getWeatherShort";
 
@@ -23,11 +26,15 @@ const RecentDays = () => {
   const today = new Date();
   const queryClient = useQueryClient();
 
+  const isMapModal = useSelector(
+    (state: RootState) => state.kakaoModalSliceReducer.isOpen
+  );
+  const dispatch = useDispatch();
+
   // 서울 종로구 기준
   // localstorage에 저장된 값이 있으면 그 값으로 초기화?
 
   const [coord, setCoord] = useState<ICoord>(getInitCoord());
-  const [isMapModal, setIsMapModal] = useState<boolean>(false);
   const { data, date, isLoading, status, error } = useShortDataQuery(
     today,
     coord
@@ -44,7 +51,7 @@ const RecentDays = () => {
   };
 
   const toggleModal = () => {
-    setIsMapModal(!isMapModal);
+    dispatch(toggle());
   };
 
   useEffect(() => {
