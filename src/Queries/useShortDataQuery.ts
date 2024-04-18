@@ -1,22 +1,25 @@
+// import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { useDispatch } from "react-redux";
-
-import { loadingData, loadedData } from "@src/Store/shortDataSlice";
 
 import { getWeatherShort } from "@src/API";
-
 import { IParseObj, ICoord } from "@src/API/getWeatherShort";
 
 const useShortDataQuery = (today: Date, location: ICoord) => {
-  console.log("쿼리 호출");
-  const dispatch = useDispatch();
+  console.log("useShortDataQuery 호출");
 
-  dispatch(loadingData());
-
-  const { data, isLoading, error, status } = useQuery<IParseObj | undefined>({
+  const { data, isLoading, error, status, refetch } = useQuery<
+    IParseObj | undefined
+  >({
     queryKey: ["short"],
     queryFn: () => getWeatherShort(today, location),
+    // enabled: false, // Disable automatic data fetching
   });
+
+  // 왜 refetch를 사용할 때 성능이 더 좋을까?
+
+  // useEffect(() => {
+  //   refetch();
+  // }, [today, location]);
 
   const dataArr = [];
   const dateArr = [];
@@ -27,7 +30,6 @@ const useShortDataQuery = (today: Date, location: ICoord) => {
       dataArr.push(data[i]);
       dateArr.push(i);
     }
-    dispatch(loadedData());
   }
 
   return { data: dataArr, date: dateArr, isLoading, status, error };

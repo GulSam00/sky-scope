@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 
 import LocationHeader from "./LocationHeader";
 import MapModal from "./MapModal";
@@ -10,6 +10,7 @@ import RecentDay from "./RecentDay";
 import { RootState } from "@src/Store/store";
 import { useShortDataQuery } from "@src/Queries";
 import { ICoord } from "@src/API/getWeatherShort";
+import { loadingData, loadedData } from "@src/Store/shortDataSlice";
 
 import { styled } from "styled-components";
 
@@ -24,27 +25,34 @@ const getInitCoord = () => {
 const RecentDays = () => {
   const today = new Date();
   const queryClient = useQueryClient();
+  const dispatch = useDispatch();
 
   const isMapModal = useSelector(
     (state: RootState) => state.kakaoModalSliceReducer.isOpen
   );
-
-  // 서울 종로구 기준
-  // localstorage에 저장된 값이 있으면 그 값으로 초기화?
-
-  const [coord, setCoord] = useState<ICoord>(getInitCoord());
-  const { data, date, isLoading, status, error } = useShortDataQuery(
-    today,
-    coord
+  const isLoading = useSelector(
+    (state: RootState) => state.shortDataSliceReducer.isLoading
   );
 
+  const [coord, setCoord] = useState<ICoord>(getInitCoord());
+  const { data, date } = useShortDataQuery(today, coord);
+
   const handleChangeCoord = (coord: ICoord) => {
-    console.log("handleChangeCoord");
+    dispatch(loadingData());
     setCoord(coord);
+
+    console.log("handleChangeCoord invalidateQueries");
 
     queryClient.invalidateQueries({ queryKey: ["short"] });
 
     console.log("data : ", data);
+
+    setTimeout(() => {
+      if (!isLoading) {
+        console.log("자동 해제!");
+        dispatch(loadedData());
+      }
+    }, 3000);
   };
 
   useEffect(() => {
@@ -52,6 +60,7 @@ const RecentDays = () => {
       const coord = JSON.parse(localStorage.getItem("coord") as string);
       console.log(coord);
       setCoord(coord);
+      console.log("UseEffect invalidateQueries");
       queryClient.invalidateQueries({ queryKey: ["short"] });
     }
   }, []);
@@ -64,14 +73,7 @@ const RecentDays = () => {
 
       {data.length ? (
         data.map((arrItem, index) => {
-          return (
-            <RecentDay
-              recentData={arrItem}
-              keyDate={date[index]}
-              isLoading={isLoading}
-              status={status}
-            />
-          );
+          return <RecentDay recentData={arrItem} keyDate={date[index]} />;
         })
       ) : (
         <>

@@ -1,7 +1,13 @@
 import { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+
 import { ResponsiveLine } from "@nivo/line";
-import { styled } from "styled-components";
+
+import { RootState } from "@src/Store/store";
+import { loadingData, loadedData } from "@src/Store/shortDataSlice";
 import { IDateData } from "@src/API/getWeatherShort";
+
+import { styled } from "styled-components";
 
 interface IProps {
   recentData: IDateData;
@@ -19,6 +25,7 @@ const TempertureLineGraph = ({ recentData, callbackLoadedData }: IProps) => {
     []
   );
 
+  const dispatch = useDispatch();
   const data = [
     {
       id: "temperture",
@@ -39,7 +46,7 @@ const TempertureLineGraph = ({ recentData, callbackLoadedData }: IProps) => {
       }
     }
     setTempertureData(temp);
-    callbackLoadedData();
+    dispatch(loadedData());
   };
 
   useEffect(() => {

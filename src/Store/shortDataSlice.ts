@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { useQueryClient } from "@tanstack/react-query";
 
 export const shortDataSlice = createSlice({
   name: "shortData",
@@ -12,12 +11,14 @@ export const shortDataSlice = createSlice({
   },
   reducers: {
     loadingData: (state) => {
+      console.log("loadingData 호출");
       state.isLoading = true;
-      console.log("loadingData");
     },
     loadedData: (state) => {
       state.isLoading = false;
-      console.log("loadedData");
+    },
+    toggleLoadingState: (state) => {
+      state.isLoading = !state.isLoading;
     },
     setCoord: (state, action) => {
       state.coord = action.payload;
@@ -25,6 +26,7 @@ export const shortDataSlice = createSlice({
   },
 });
 
-export const { loadingData, loadedData, setCoord } = shortDataSlice.actions;
+export const { loadingData, loadedData, toggleLoadingState, setCoord } =
+  shortDataSlice.actions;
 
 export default shortDataSlice.reducer;

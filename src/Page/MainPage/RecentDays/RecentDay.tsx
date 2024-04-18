@@ -1,10 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useDispatch } from "react-redux";
 
 import TempertureLineGraph from "./TempertureLineGraph";
 import RainLineGraph from "./RainLineGraph";
 import WeatherLineGraph from "./WeatherLineGraph";
-import EmptyGraph from "./EmptyGraph";
 
 import { loadedData } from "@src/Store/shortDataSlice";
 import { IDateData } from "@src/API/getWeatherShort";
@@ -15,10 +14,8 @@ import { styled } from "styled-components";
 interface IProps {
   recentData: IDateData;
   keyDate: string;
-  isLoading: boolean;
-  status: string;
 }
-const RecentDay = ({ recentData, keyDate, isLoading, status }: IProps) => {
+const RecentDay = ({ recentData, keyDate }: IProps) => {
   const dispatch = useDispatch();
   const [tab, setTab] = useState<string>("temperture");
 
@@ -34,11 +31,8 @@ const RecentDay = ({ recentData, keyDate, isLoading, status }: IProps) => {
   };
 
   const callbackLoadedData = () => {
-    console.log("callbackLoadedData");
     dispatch(loadedData());
   };
-
-  // useEffect 없이도 자동 갱신
 
   return (
     <RecentDayContainer>
@@ -50,20 +44,19 @@ const RecentDay = ({ recentData, keyDate, isLoading, status }: IProps) => {
         <Button onClick={() => onClickTab("weather")}>날씨</Button>
       </RecentDayHeader>
 
-      {isLoading ? (
-        <EmptyGraph />
-      ) : (
-        <>
-          {tab === "temperture" && (
-            <TempertureLineGraph
-              recentData={recentData}
-              callbackLoadedData={callbackLoadedData}
-            />
-          )}
-          {tab === "weather" && <WeatherLineGraph recentData={recentData} />}
-          {tab === "rain" && <RainLineGraph recentData={recentData} />}
-        </>
+      {/* 이 컴포넌트에서 삼항 연산자로 Loading 중일 때 렌더링을 하지 않게 되면
+ TempertureLineGraph, WeatherLineGraph 컴포넌트 내부에서 dispatch로 loadedData를 실행할 수 없어 
+ isLoading이 영원히 걸리게 된다.*/}
+      {/* 삼항 연산자가 아닌 메인 페이지 단에서 로딩창을 덧씌어주는 것으로
+ 렌더링 자체는 되면서 차트가 바뀌기 전 상호작용이 불가능한 것을 막아주는 것을 구현 */}
+      {tab === "temperture" && (
+        <TempertureLineGraph
+          recentData={recentData}
+          callbackLoadedData={callbackLoadedData}
+        />
       )}
+      {tab === "weather" && <WeatherLineGraph recentData={recentData} />}
+      {tab === "rain" && <RainLineGraph recentData={recentData} />}
     </RecentDayContainer>
   );
 };
