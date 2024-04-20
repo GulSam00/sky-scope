@@ -6,6 +6,7 @@ import { IDateData } from "@src/API/getWeatherShort";
 
 interface IProps {
   recentData: IDateData;
+  callbackLoadedData: () => void;
 }
 
 interface rainDataTypes {
@@ -13,7 +14,7 @@ interface rainDataTypes {
   y: string;
 }
 
-const WeatherLineGraph = ({ recentData }: IProps) => {
+const WeatherLineGraph = ({ recentData, callbackLoadedData }: IProps) => {
   const [weatherData, setWeatherData] = useState<rainDataTypes[]>([]);
   const data = [
     {
@@ -42,6 +43,7 @@ const WeatherLineGraph = ({ recentData }: IProps) => {
       }
     }
     setWeatherData(temp);
+    callbackLoadedData();
   };
 
   useEffect(() => {

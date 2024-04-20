@@ -39,6 +39,7 @@ const RecentDay = ({ recentData, keyDate }: IProps) => {
       <RecentDayHeader>
         <text>{transDate(keyDate)}</text>
 
+        {/* 버튼으로 말고 토글로 온도/강수 확률 두개만? */}
         <Button onClick={() => onClickTab("temperture")}>온도</Button>
         <Button onClick={() => onClickTab("rain")}>강수 확률</Button>
         <Button onClick={() => onClickTab("weather")}>날씨</Button>
@@ -55,8 +56,18 @@ const RecentDay = ({ recentData, keyDate }: IProps) => {
           callbackLoadedData={callbackLoadedData}
         />
       )}
-      {tab === "weather" && <WeatherLineGraph recentData={recentData} />}
-      {tab === "rain" && <RainLineGraph recentData={recentData} />}
+      {tab === "weather" && (
+        <WeatherLineGraph
+          recentData={recentData}
+          callbackLoadedData={callbackLoadedData}
+        />
+      )}
+      {tab === "rain" && (
+        <RainLineGraph
+          recentData={recentData}
+          callbackLoadedData={callbackLoadedData}
+        />
+      )}
     </RecentDayContainer>
   );
 };
@@ -79,11 +90,14 @@ const RecentDayHeader = styled.div`
   margin: 1rem;
   text {
     margin-right: 1rem;
-    font-size: 1.5rem;
+    font-size: 3rem;
     font-weight: bold;
   }
   button {
-    min-width: 6rem;
-    margin: 0.5rem;
+    min-width: 8.5rem;
+    min-height: 4rem;
+    margin: 1rem;
+
+    text-align: center;
   }
 `;

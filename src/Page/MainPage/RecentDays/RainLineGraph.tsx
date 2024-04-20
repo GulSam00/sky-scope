@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
 import { ResponsiveLine } from "@nivo/line";
+
 import { styled } from "styled-components";
 import { IDateData } from "@src/API/getWeatherShort";
 
 interface IProps {
   recentData: IDateData;
+  callbackLoadedData: () => void;
 }
 
 interface rainDataTypes {
@@ -12,7 +14,7 @@ interface rainDataTypes {
   y: number;
 }
 
-const RainLineGraph = ({ recentData }: IProps) => {
+const RainLineGraph = ({ recentData, callbackLoadedData }: IProps) => {
   const [rainProb, setRainProb] = useState<rainDataTypes[]>([]);
   const [rainAmount, setRainAmount] = useState<rainDataTypes[]>([]);
   const data = [
@@ -60,6 +62,7 @@ const RainLineGraph = ({ recentData }: IProps) => {
   useEffect(() => {
     initRainProb();
     initRainAmount();
+    callbackLoadedData();
   }, [recentData]);
 
   return (
@@ -116,6 +119,7 @@ const RainLineGraph = ({ recentData }: IProps) => {
             symbolBorderColor: "rgba(0, 0, 0, .5)",
           },
         ]}
+        enableArea={true}
       />
     </GraphContainer>
   );

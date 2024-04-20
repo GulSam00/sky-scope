@@ -1,10 +1,6 @@
 import { useState, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
-
 import { ResponsiveLine } from "@nivo/line";
 
-import { RootState } from "@src/Store/store";
-import { loadingData, loadedData } from "@src/Store/shortDataSlice";
 import { IDateData } from "@src/API/getWeatherShort";
 
 import { styled } from "styled-components";
@@ -25,7 +21,6 @@ const TempertureLineGraph = ({ recentData, callbackLoadedData }: IProps) => {
     []
   );
 
-  const dispatch = useDispatch();
   const data = [
     {
       id: "temperture",
@@ -34,6 +29,7 @@ const TempertureLineGraph = ({ recentData, callbackLoadedData }: IProps) => {
   ];
 
   const initTempertureData = () => {
+    console.log("initTempertureData");
     const temp: tempertureDataTypes[] = [];
     for (let i = 0; i <= 2400; i += 100) {
       const time = String(i).padStart(4, "0");
@@ -46,7 +42,7 @@ const TempertureLineGraph = ({ recentData, callbackLoadedData }: IProps) => {
       }
     }
     setTempertureData(temp);
-    dispatch(loadedData());
+    callbackLoadedData();
   };
 
   useEffect(() => {

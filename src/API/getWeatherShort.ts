@@ -68,7 +68,6 @@ const getWeatherShort = async (
   params.ny = location.ny;
   try {
     const response = await instance.get(url, { params });
-    // console.log(response);
     const dataArr = response.data.response.body.items.item;
     const parseArr: IParseObj = {};
     let count = 0;
@@ -90,7 +89,6 @@ const getWeatherShort = async (
       if (isVaildCategory(category))
         parseArr[fcstDate][fcstTime][category] = fcstValue;
     });
-    console.log("parseArr", parseArr);
     return parseArr;
   } catch (e) {
     let message;

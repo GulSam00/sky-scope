@@ -63,7 +63,6 @@ const FurtureDayHeader = styled.div`
 
   text {
     margin-right: 1rem;
-    font-size: 1.5rem;
     font-weight: bold;
   }
   button {

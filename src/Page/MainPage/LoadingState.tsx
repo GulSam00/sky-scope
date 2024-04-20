@@ -1,8 +1,19 @@
+import { useState, useEffect } from "react";
 import { Spinner } from "react-bootstrap";
 
 import styled from "styled-components";
 
 const LoadingState = () => {
+  const [scrollY, setScrollY] = useState<number>(window.scrollY);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrollY(window.scrollY);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
     <EmptyGraphContainer>
       <Spinner animation="border" role="status">
@@ -17,9 +28,13 @@ export default LoadingState;
 
 const EmptyGraphContainer = styled.div`
   // 반투명하게 전체 화면을 덮는 스피너
-  position: absolute;
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+
   width: 100vw;
-  height: 100vh;
+  height: calc(var(--vh, 1vh) * 100);
   background-color: rgba(0, 0, 0, 0.4);
   z-index: 2000;
 
@@ -27,8 +42,6 @@ const EmptyGraphContainer = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-
-  border-radius: 1rem;
 
   * {
     margin: 1rem;

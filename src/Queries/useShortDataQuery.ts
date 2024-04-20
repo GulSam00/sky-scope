@@ -1,4 +1,4 @@
-// import { useEffect } from "react";
+import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 
 import { getWeatherShort } from "@src/API";
@@ -12,14 +12,14 @@ const useShortDataQuery = (today: Date, location: ICoord) => {
   >({
     queryKey: ["short"],
     queryFn: () => getWeatherShort(today, location),
-    // enabled: false, // Disable automatic data fetching
+    enabled: false, // Disable automatic data fetching
   });
 
   // 왜 refetch를 사용할 때 성능이 더 좋을까?
-
-  // useEffect(() => {
-  //   refetch();
-  // }, [today, location]);
+  // 왜 refetch를 사용하지 않으면 로직이 작동되지 않을까?
+  useEffect(() => {
+    refetch();
+  }, [today, location]);
 
   const dataArr = [];
   const dateArr = [];

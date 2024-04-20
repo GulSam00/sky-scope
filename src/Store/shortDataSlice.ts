@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 export const shortDataSlice = createSlice({
   name: "shortData",
   initialState: {
-    isLoading: false,
+    isLoading: true,
     coord: {
       nx: 60,
       ny: 127,
@@ -11,7 +11,6 @@ export const shortDataSlice = createSlice({
   },
   reducers: {
     loadingData: (state) => {
-      console.log("loadingData 호출");
       state.isLoading = true;
     },
     loadedData: (state) => {

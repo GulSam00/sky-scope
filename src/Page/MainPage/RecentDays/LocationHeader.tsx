@@ -96,4 +96,11 @@ const LocationHeaderSelector = styled.div`
     min-width: 100px;
     max-width: 200px;
   }
+
+  select {
+    padding: 5px;
+    min-width: 300px;
+    min-height: 40px;
+    font-size: 1.5rem;
+  }
 `;

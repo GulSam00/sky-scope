@@ -30,6 +30,7 @@ const RecentDays = () => {
   const isMapModal = useSelector(
     (state: RootState) => state.kakaoModalSliceReducer.isOpen
   );
+
   const isLoading = useSelector(
     (state: RootState) => state.shortDataSliceReducer.isLoading
   );
@@ -44,23 +45,14 @@ const RecentDays = () => {
     console.log("handleChangeCoord invalidateQueries");
 
     queryClient.invalidateQueries({ queryKey: ["short"] });
-
-    console.log("data : ", data);
-
-    setTimeout(() => {
-      if (!isLoading) {
-        console.log("자동 해제!");
-        dispatch(loadedData());
-      }
-    }, 3000);
   };
 
   useEffect(() => {
     if (localStorage.getItem("coord")) {
-      const coord = JSON.parse(localStorage.getItem("coord") as string);
-      console.log(coord);
-      setCoord(coord);
       console.log("UseEffect invalidateQueries");
+
+      const coord = JSON.parse(localStorage.getItem("coord") as string);
+      setCoord(coord);
       queryClient.invalidateQueries({ queryKey: ["short"] });
     }
   }, []);
