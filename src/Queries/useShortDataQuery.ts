@@ -5,7 +5,7 @@ import { getWeatherShort } from "@src/API";
 import { IParseObj, ICoord } from "@src/API/getWeatherShort";
 
 const useShortDataQuery = (today: Date, location: ICoord) => {
-  console.log("useShortDataQuery 호출");
+  // console.log("useShortDataQuery 호출");
 
   const { data, isLoading, error, status, refetch } = useQuery<
     IParseObj | undefined

@@ -2,9 +2,9 @@ import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 
 import { ICoord } from "@src/API/getWeatherShort";
-import { getKakaoLocal } from "@src/API";
 import { useGeolocation, locationType } from "@src/Hook/useGeolocation";
 import { open } from "@src/Store/kakaoModalSlice";
+import { transCoord, setLocalCoordInfo } from "@src/Util";
 
 import { Form, Button } from "react-bootstrap";
 import styled from "styled-components";
@@ -32,31 +32,50 @@ const LocationHeader = ({ handleChangeCoord }: IProps) => {
   const location: locationType = useGeolocation();
 
   const onChangeProvince = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const value = e.target.value;
-    setProvince(value);
+    const selectProvince = e.target.value;
+    setProvince(selectProvince);
     setCity("");
   };
 
   const onChangeCity = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const value = e.target.value;
+    const selectCity = e.target.value;
 
-    if (value === "") return;
+    if (selectCity === "") return;
 
-    setCity(value);
-    const { x, y } = short_local[province][value];
-    localStorage.setItem("coord", JSON.stringify({ nx: x, ny: y }));
-    localStorage.setItem("province", province);
-    localStorage.setItem("city", value);
-    handleChangeCoord({ nx: x, ny: y });
+    setCity(selectCity);
+    const { x: nx, y: ny } = short_local[province][selectCity];
+    if (setLocalCoordInfo({ nx, ny, province, city: selectCity })) {
+      localStorage.setItem("Geolng", "");
+      localStorage.setItem("Geolat", "");
+      handleChangeCoord({ nx, ny });
+    }
   };
 
   const currentLocation = async () => {
-    console.log("LOCATION", location);
     if (location.loaded && location.coordinates) {
-      const { lng, lat } = location.coordinates;
-      console.log("COORD", lat, lng);
-      const local = await getKakaoLocal.getKakaoSearchCoord(lng, lat);
-      console.log("LOCAL", local);
+      let { lng, lat } = location.coordinates;
+      const prevLng = Number(localStorage.getItem("Geolng"));
+      const prevLat = Number(localStorage.getItem("Geolat"));
+      lng = Number(lng.toFixed(7));
+      lat = Number(lat.toFixed(7));
+
+      if (prevLng === lng && prevLat === lat) {
+        alert("이미 현재 위치 정보입니다.");
+        return;
+      }
+      localStorage.setItem("Geolng", lng.toString());
+      localStorage.setItem("Geolat", lat.toString());
+
+      const result = await transCoord({ lng, lat });
+      console.log("RESULT", result);
+      if (result) {
+        const { nx, ny, province, city } = result;
+        setProvince(province);
+        setCity(city);
+        handleChangeCoord({ nx, ny });
+      }
+    } else {
+      alert("현재 위치 정보를 가져올 수 없습니다.");
     }
   };
 

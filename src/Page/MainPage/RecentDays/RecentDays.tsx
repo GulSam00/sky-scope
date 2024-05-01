@@ -10,7 +10,7 @@ import RecentDay from "./RecentDay";
 import { RootState } from "@src/Store/store";
 import { useShortDataQuery } from "@src/Queries";
 import { ICoord } from "@src/API/getWeatherShort";
-import { loadingData, loadedData } from "@src/Store/shortDataSlice";
+import { loadingData } from "@src/Store/shortDataSlice";
 
 import { styled } from "styled-components";
 

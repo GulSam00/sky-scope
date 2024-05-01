@@ -7,7 +7,7 @@ const serviceKey = import.meta.env.VITE_KAKAO_REST_KEY;
 // nx: 93,
 // ny: 89,
 
-interface ICoord {
+export interface IRegion {
   address_name: string;
   code: string;
   region_1depth_name: string;
@@ -32,7 +32,7 @@ const getKakaoLocal = {
   getKakaoSearchCoord: async (
     x: number,
     y: number
-  ): Promise<ICoord | undefined> => {
+  ): Promise<IRegion | undefined> => {
     const params = {
       x: x,
       y: y,

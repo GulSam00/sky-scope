@@ -1,26 +1,14 @@
 import { useState, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { Map, MapMarker } from "react-kakao-maps-sdk";
-import useKakaoLoader from "@src/useKakaoLoader";
 
+import useKakaoLoader from "@src/useKakaoLoader";
 import { close } from "@src/Store/kakaoModalSlice";
-import { getKakaoLocal } from "@src/API";
 import { ICoord } from "@src/API/getWeatherShort";
-import _short_local from "@src/JSON/short_api_locals.json";
+import { transCoord } from "@src/Util";
 
 import Form from "react-bootstrap/Form";
 import styled from "styled-components";
-
-const short_local = _short_local as ICoordJson;
-
-interface ICoordJson {
-  [depth1: string]: {
-    [depth2: string]: {
-      x: number;
-      y: number;
-    };
-  };
-}
 
 interface MarkerType {
   position: {
@@ -33,12 +21,6 @@ interface MarkerType {
 interface IProps {
   handleChangeCoord: (coord: ICoord) => void;
 }
-
-const transName = (name: string) => {
-  if (name === "강원특별자치도") return "강원도";
-
-  return name;
-};
 
 const KaKaoMap = ({ handleChangeCoord }: IProps) => {
   const dispatch = useDispatch();
@@ -90,19 +72,11 @@ const KaKaoMap = ({ handleChangeCoord }: IProps) => {
     if (!map) return;
     const position = marker.position;
 
-    const result = await getKakaoLocal.getKakaoSearchCoord(
-      position.lng,
-      position.lat
-    );
-
-    console.log("결과", result);
-
+    const result = await transCoord(position);
     if (result) {
-      setTempText(result.address_name);
-      const depth1 = transName(result.region_1depth_name);
-      const depth2 = result.region_2depth_name.replace(" ", "");
-      const coord = short_local[depth1][depth2];
-      handleChangeCoord({ nx: coord.x, ny: coord.y });
+      const { nx, ny, address } = result;
+      setTempText(address);
+      handleChangeCoord({ nx, ny });
       dispatch(close());
     }
   };
