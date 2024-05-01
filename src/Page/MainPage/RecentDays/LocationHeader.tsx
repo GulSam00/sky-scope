@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
-import { ICoord } from "@src/API/getWeatherShort";
-
 import { useDispatch } from "react-redux";
+
+import { ICoord } from "@src/API/getWeatherShort";
+import { getKakaoLocal } from "@src/API";
+import { useGeolocation, locationType } from "@src/Hook/useGeolocation";
 import { open } from "@src/Store/kakaoModalSlice";
 
 import { Form, Button } from "react-bootstrap";
@@ -27,6 +29,7 @@ const LocationHeader = ({ handleChangeCoord }: IProps) => {
   const [province, setProvince] = useState<string>("");
   const [city, setCity] = useState<string>("");
   const dispatch = useDispatch();
+  const location: locationType = useGeolocation();
 
   const onChangeProvince = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const value = e.target.value;
@@ -45,6 +48,16 @@ const LocationHeader = ({ handleChangeCoord }: IProps) => {
     localStorage.setItem("province", province);
     localStorage.setItem("city", value);
     handleChangeCoord({ nx: x, ny: y });
+  };
+
+  const currentLocation = async () => {
+    console.log("LOCATION", location);
+    if (location.loaded && location.coordinates) {
+      const { lng, lat } = location.coordinates;
+      console.log("COORD", lat, lng);
+      const local = await getKakaoLocal.getKakaoSearchCoord(lng, lat);
+      console.log("LOCAL", local);
+    }
   };
 
   useEffect(() => {
@@ -72,6 +85,7 @@ const LocationHeader = ({ handleChangeCoord }: IProps) => {
         <text>의 날씨는?</text>
       </LocationHeaderSelector>
 
+      <Button onClick={() => currentLocation()}>현재 위치로 설정</Button>
       <Button onClick={() => dispatch(open())}>지도에서 선택하기</Button>
     </LocationHeaderContainer>
   );
