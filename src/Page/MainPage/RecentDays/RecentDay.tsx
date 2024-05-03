@@ -3,7 +3,6 @@ import { useDispatch } from "react-redux";
 
 import TempertureLineGraph from "./TempertureLineGraph";
 import RainLineGraph from "./RainLineGraph";
-import WeatherLineGraph from "./WeatherLineGraph";
 
 import { loadedData } from "@src/Store/shortDataSlice";
 import { IDateData } from "@src/API/getWeatherShort";
@@ -42,7 +41,6 @@ const RecentDay = ({ recentData, keyDate }: IProps) => {
         {/* 버튼으로 말고 토글로 온도/강수 확률 두개만? */}
         <Button onClick={() => onClickTab("temperture")}>온도</Button>
         <Button onClick={() => onClickTab("rain")}>강수 확률</Button>
-        <Button onClick={() => onClickTab("weather")}>날씨</Button>
       </RecentDayHeader>
 
       {/* 이 컴포넌트에서 삼항 연산자로 Loading 중일 때 렌더링을 하지 않게 되면
@@ -56,12 +54,7 @@ const RecentDay = ({ recentData, keyDate }: IProps) => {
           callbackLoadedData={callbackLoadedData}
         />
       )}
-      {tab === "weather" && (
-        <WeatherLineGraph
-          recentData={recentData}
-          callbackLoadedData={callbackLoadedData}
-        />
-      )}
+
       {tab === "rain" && (
         <RainLineGraph
           recentData={recentData}

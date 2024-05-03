@@ -21,6 +21,7 @@ interface ICoord {
 
 const transName = (name: string) => {
   if (name === "강원특별자치도") return "강원도";
+  if (name === "전북특별자치도") return "전라북도";
 
   return name;
 };
@@ -34,7 +35,7 @@ const transCoord = async (position: ICoord) => {
   if (!result) return null;
 
   const province = transName(result.region_1depth_name);
-  const city = result.region_2depth_name;
+  const city = result.region_2depth_name.replace(" ", "");
   const address = result.address_name;
 
   const { x: nx, y: ny } = short_local[province][city];
