@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
 import { ICoord } from "@src/API/getWeatherShort";
@@ -85,8 +85,6 @@ const LocationHeader = ({ handleChangeCoord }: IProps) => {
   };
 
   useEffect(() => {
-    // dispatch(setProvince(localStorage.getItem("province") as string));
-    // dispatch(setCity(localStorage.getItem("city") as string));
     dispatch(initLocation());
   }, []);
 

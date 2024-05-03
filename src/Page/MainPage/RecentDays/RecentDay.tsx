@@ -71,9 +71,10 @@ const RecentDayContainer = styled.div`
   display: flex;
   flex-direction: column;
   flex-grow: 1;
-  margin: 10rem;
-  padding: 10rem;
-  border: 1rem solid black;
+
+  margin: 10px;
+  padding: 10px;
+  border: 1px solid black;
   border-radius: 1rem;
 `;
 

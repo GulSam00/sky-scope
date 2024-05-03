@@ -24,6 +24,11 @@ const EmptyGraphContainer = styled.div`
   height: 700px;
   min-width: 1000px;
 
+  margin: 10px;
+  padding: 10px;
+  border: 1px solid black;
+  border-radius: 1rem;
+
   * {
     margin: 1rem;
     width: 8rem;

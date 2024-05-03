@@ -2,13 +2,14 @@ import { useState, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { Map, MapMarker } from "react-kakao-maps-sdk";
 
-import { transLocaleToCoord } from "@src/Util";
 import useKakaoLoader from "@src/useKakaoLoader";
+import SearchResultPagination from "./SearchResultPagination";
+import { transLocaleToCoord } from "@src/Util";
+import { ICoord } from "@src/API/getWeatherShort";
 import { close } from "@src/Store/kakaoModalSlice";
 import { setCity, setProvince } from "@src/Store/locationDataSlice";
-import { ICoord } from "@src/API/getWeatherShort";
 
-import { Form, Button } from "react-bootstrap";
+import { Form, Button, ListGroup } from "react-bootstrap";
 import styled from "styled-components";
 
 interface MarkerType {
@@ -24,24 +25,30 @@ interface IProps {
 }
 
 const KaKaoMap = ({ handleChangeCoord }: IProps) => {
-  const dispatch = useDispatch();
   const [map, setMap] = useState<kakao.maps.Map | null>(null);
   const [markers, setMarkers] = useState<MarkerType[]>([]);
   const [selectedMarker, setSelectedMarker] = useState<MarkerType | null>(null);
   const [mapLevel, setMapLevel] = useState<number>(3);
   const mapRef = useRef<kakao.maps.Map>(null);
-  const [address, setAddress] = useState<string>("");
+  const [searchWord, setSearchWord] = useState<string>("");
+  const searchRef = useRef<string>("");
 
+  const [curPage, setCurPage] = useState<number>(1);
+  const [maxPage, setMaxPage] = useState<number>(1);
+
+  const dispatch = useDispatch();
   useKakaoLoader();
 
   const handleInput = (e: any) => {
     if (e.key === "Enter") e.preventDefault();
-    setAddress(e.target.value);
+    setSearchWord(e.target.value);
   };
 
   const insertAddress = () => {
-    searchPlaces(address);
-    setAddress("");
+    setCurPage(1);
+    searchPlaces(searchWord, 1);
+    searchRef.current = searchWord;
+    setSearchWord("");
   };
 
   const overMarkerPos = (marker: MarkerType) => {
@@ -64,6 +71,7 @@ const KaKaoMap = ({ handleChangeCoord }: IProps) => {
     console.log("마커의 정보 : ", marker);
     const result = await transLocaleToCoord(position);
     console.log("Result : ", result);
+
     if (result) {
       const { nx, ny, province, city } = result;
       dispatch(setProvince(province));
@@ -73,38 +81,51 @@ const KaKaoMap = ({ handleChangeCoord }: IProps) => {
     }
   };
 
-  const searchPlaces = (keyword: string) => {
+  const searchPlaces = (keyword: string, page: number) => {
     if (!map) return;
     const ps = new kakao.maps.services.Places();
 
-    ps.keywordSearch(keyword, (data, status, _pagination) => {
-      if (status === kakao.maps.services.Status.OK) {
-        // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
-        // LatLngBounds 객체에 좌표를 추가합니다
-        const bounds = new kakao.maps.LatLngBounds();
-        const markers: MarkerType[] = [];
-        console.log("data ", data);
-        for (let i = 0; i < data.length; i++) {
-          // @ts-ignore
-          markers.push({
-            position: {
-              lat: Number(data[i].y),
-              lng: Number(data[i].x),
-            },
-            content: data[i].place_name,
+    ps.keywordSearch(
+      keyword,
+      (data, status, pagination) => {
+        if (status === kakao.maps.services.Status.OK) {
+          data.map((place: any) => {
+            console.log(place.place_name);
           });
-          // @ts-ignore
-          bounds.extend(new kakao.maps.LatLng(data[i].y, data[i].x));
+          console.log("current pagination : ", pagination.current);
+          setMaxPage(pagination.last);
+          // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
+          // LatLngBounds 객체에 좌표를 추가합니다
+          const bounds = new kakao.maps.LatLngBounds();
+          const markers: MarkerType[] = [];
+          for (let i = 0; i < data.length; i++) {
+            // @ts-ignore
+            markers.push({
+              position: {
+                lat: Number(data[i].y),
+                lng: Number(data[i].x),
+              },
+              content: data[i].place_name,
+            });
+            // @ts-ignore
+            bounds.extend(new kakao.maps.LatLng(data[i].y, data[i].x));
+          }
+          setMarkers([...markers]);
+          // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
+          map.setBounds(bounds);
+        } else {
+          console.log("검색 결과가 없습니다.");
+          setMarkers([]);
         }
-        setMarkers([...markers]);
+      },
+      { size: 5, page: page }
+    );
+  };
 
-        // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
-        map.setBounds(bounds);
-        console.log("마커 : ", markers);
-      } else {
-        console.log("검색 결과가 없습니다.");
-      }
-    });
+  const handlePageMove = (page: number) => {
+    if (page < 1 || page > maxPage) return;
+    setCurPage(page);
+    searchPlaces(searchRef.current, page);
   };
 
   return (
@@ -115,7 +136,7 @@ const KaKaoMap = ({ handleChangeCoord }: IProps) => {
             size="lg"
             type="text"
             placeholder="주소 입력"
-            value={address}
+            value={searchWord}
             onChange={handleInput}
             onKeyDown={handleInput} // Handle key down event
           />
@@ -140,17 +161,31 @@ const KaKaoMap = ({ handleChangeCoord }: IProps) => {
 
       {markers.length > 0 && (
         <MarkersContainer>
-          {markers.map((marker: MarkerType, index: number) => (
-            <div
-              key={index}
-              onMouseOver={() => overMarkerPos(marker)}
-              onClick={() => setSelectedMarker(marker)}
-            >
-              {marker.content}
-            </div>
-          ))}
+          <ListGroup>
+            {markers.map((marker: MarkerType, index: number) => (
+              <ListGroup.Item
+                key={index}
+                onMouseOver={() => overMarkerPos(marker)}
+                onClick={() => setSelectedMarker(marker)}
+              >
+                {marker.content}
+              </ListGroup.Item>
+            ))}
+          </ListGroup>
+          <SearchResultPagination
+            curPage={curPage}
+            maxPage={maxPage}
+            setCurPage={setCurPage}
+            handlePageMove={handlePageMove}
+          />
         </MarkersContainer>
       )}
+
+      <Button id="close" onClick={() => dispatch(close())}>
+        {" "}
+        닫기
+      </Button>
+
       {selectedMarker && (
         <ConfirmModal>
           <ConfirmModalContent>
@@ -180,13 +215,14 @@ const MapModalContainer = styled.div`
   display: flex;
   flex-direction: column;
   white-space: pre-wrap;
-  
+
   #kakao-map {
     display: flex;
 
     min-height: 50vh;
     width: 100%;
     padding: 20px;
+  }
 `;
 
 const FormContainer = styled.div`
@@ -208,8 +244,6 @@ const MarkersContainer = styled.div`
 
   div {
     cursor: pointer;
-    padding: 5px;
-    border: 1px solid black;
   }
 `;
 

@@ -3,10 +3,6 @@ import axios, { AxiosInstance } from "axios";
 const url = import.meta.env.VITE_KAKAO_REST_URL;
 const serviceKey = import.meta.env.VITE_KAKAO_REST_KEY;
 
-// short API 요구 params
-// nx: 93,
-// ny: 89,
-
 export interface IRegion {
   address_name: string;
   code: string;
