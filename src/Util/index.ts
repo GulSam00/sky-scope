@@ -1,4 +1,4 @@
-import transCoord from "./transCoord";
+import transLocaleToCoord from "./transLocaleToCoord";
 import setLocalCoordInfo from "./setLocalCoordInfo";
 
-export { transCoord, setLocalCoordInfo };
+export { transLocaleToCoord, setLocalCoordInfo };

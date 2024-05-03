@@ -9,11 +9,11 @@ import { RootState } from "@src/Store/store";
 import { styled } from "styled-components";
 
 const MainPage = () => {
-  const isLoading = useSelector(
-    (state: RootState) => state.shortDataSliceReducer.isLoading
+  const { isLoading } = useSelector(
+    (state: RootState) => state.shortDataSliceReducer
   );
-  const isOpen = useSelector(
-    (state: RootState) => state.kakaoModalSliceReducer.isOpen
+  const { isOpen } = useSelector(
+    (state: RootState) => state.kakaoModalSliceReducer
   );
 
   useEffect(() => {

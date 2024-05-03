@@ -1,10 +1,16 @@
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 
 import { ICoord } from "@src/API/getWeatherShort";
 import { useGeolocation, locationType } from "@src/Hook/useGeolocation";
+import { RootState } from "@src/Store/store";
 import { open } from "@src/Store/kakaoModalSlice";
-import { transCoord, setLocalCoordInfo } from "@src/Util";
+import {
+  setCity,
+  setProvince,
+  initLocation,
+} from "@src/Store/locationDataSlice";
+import { transLocaleToCoord, setLocalCoordInfo } from "@src/Util";
 
 import { Form, Button } from "react-bootstrap";
 import styled from "styled-components";
@@ -26,28 +32,28 @@ interface IProps {
 }
 
 const LocationHeader = ({ handleChangeCoord }: IProps) => {
-  const [province, setProvince] = useState<string>("");
-  const [city, setCity] = useState<string>("");
   const dispatch = useDispatch();
   const location: locationType = useGeolocation();
+  const { province, city } = useSelector(
+    (state: RootState) => state.locationDataSlice
+  );
 
   const onChangeProvince = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectProvince = e.target.value;
-    setProvince(selectProvince);
-    setCity("");
+    dispatch(setProvince(selectProvince));
+    dispatch(setCity(""));
   };
 
   const onChangeCity = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectCity = e.target.value;
-
     if (selectCity === "") return;
 
-    setCity(selectCity);
     const { x: nx, y: ny } = short_local[province][selectCity];
     if (setLocalCoordInfo({ nx, ny, province, city: selectCity })) {
       localStorage.setItem("Geolng", "");
       localStorage.setItem("Geolat", "");
       handleChangeCoord({ nx, ny });
+      dispatch(setCity(selectCity));
     }
   };
 
@@ -66,12 +72,11 @@ const LocationHeader = ({ handleChangeCoord }: IProps) => {
       localStorage.setItem("Geolng", lng.toString());
       localStorage.setItem("Geolat", lat.toString());
 
-      const result = await transCoord({ lng, lat });
-      console.log("RESULT", result);
+      const result = await transLocaleToCoord({ lng, lat });
       if (result) {
         const { nx, ny, province, city } = result;
-        setProvince(province);
-        setCity(city);
+        dispatch(setProvince(province));
+        dispatch(setCity(city));
         handleChangeCoord({ nx, ny });
       }
     } else {
@@ -80,8 +85,9 @@ const LocationHeader = ({ handleChangeCoord }: IProps) => {
   };
 
   useEffect(() => {
-    setProvince(localStorage.getItem("province") as string);
-    setCity(localStorage.getItem("city") as string);
+    // dispatch(setProvince(localStorage.getItem("province") as string));
+    // dispatch(setCity(localStorage.getItem("city") as string));
+    dispatch(initLocation());
   }, []);
 
   return (

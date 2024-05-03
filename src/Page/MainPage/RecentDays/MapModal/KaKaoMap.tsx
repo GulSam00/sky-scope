@@ -1,15 +1,15 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { Map, MapMarker } from "react-kakao-maps-sdk";
 
+import { transLocaleToCoord } from "@src/Util";
 import useKakaoLoader from "@src/useKakaoLoader";
 import { close } from "@src/Store/kakaoModalSlice";
+import { setCity, setProvince } from "@src/Store/locationDataSlice";
 import { ICoord } from "@src/API/getWeatherShort";
-import { transCoord } from "@src/Util";
 
 import { Form, Button } from "react-bootstrap";
 import styled from "styled-components";
-import { set } from "date-fns";
 
 interface MarkerType {
   position: {
@@ -25,16 +25,14 @@ interface IProps {
 
 const KaKaoMap = ({ handleChangeCoord }: IProps) => {
   const dispatch = useDispatch();
-
-  useKakaoLoader();
-
   const [map, setMap] = useState<kakao.maps.Map | null>(null);
   const [markers, setMarkers] = useState<MarkerType[]>([]);
   const [selectedMarker, setSelectedMarker] = useState<MarkerType | null>(null);
-
   const [mapLevel, setMapLevel] = useState<number>(3);
   const mapRef = useRef<kakao.maps.Map>(null);
   const [address, setAddress] = useState<string>("");
+
+  useKakaoLoader();
 
   const handleInput = (e: any) => {
     if (e.key === "Enter") e.preventDefault();
@@ -64,10 +62,12 @@ const KaKaoMap = ({ handleChangeCoord }: IProps) => {
     if (!map) return;
     const position = marker.position;
     console.log("마커의 정보 : ", marker);
-    const result = await transCoord(position);
+    const result = await transLocaleToCoord(position);
     console.log("Result : ", result);
     if (result) {
-      const { nx, ny } = result;
+      const { nx, ny, province, city } = result;
+      dispatch(setProvince(province));
+      dispatch(setCity(city));
       handleChangeCoord({ nx, ny });
       dispatch(close());
     }

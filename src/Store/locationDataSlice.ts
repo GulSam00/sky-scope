@@ -9,9 +9,11 @@ export const locationDataSlice = createSlice({
   reducers: {
     setProvince: (state, action) => {
       state.province = action.payload;
+      localStorage.setItem("province", action.payload);
     },
     setCity: (state, action) => {
       state.city = action.payload;
+      localStorage.setItem("city", action.payload);
     },
     initLocation: (state) => {
       state.province = localStorage.getItem("province") as string;

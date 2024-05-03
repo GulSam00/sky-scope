@@ -26,7 +26,7 @@ const transName = (name: string) => {
   return name;
 };
 
-const transCoord = async (position: ICoord) => {
+const transLocaleToCoord = async (position: ICoord) => {
   const result = await getKakaoLocal.getKakaoSearchCoord(
     position.lng,
     position.lat
@@ -45,4 +45,4 @@ const transCoord = async (position: ICoord) => {
   } else return null;
 };
 
-export default transCoord;
+export default transLocaleToCoord;
