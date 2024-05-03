@@ -12,12 +12,9 @@ export const kakaoModalSlice = createSlice({
     close: (state) => {
       state.isOpen = false;
     },
-    toggle: (state) => {
-      state.isOpen = !state.isOpen;
-    },
   },
 });
 
-export const { open, close, toggle } = kakaoModalSlice.actions;
+export const { open, close } = kakaoModalSlice.actions;
 
 export default kakaoModalSlice.reducer;

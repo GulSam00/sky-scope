@@ -16,16 +16,13 @@ export const shortDataSlice = createSlice({
     loadedData: (state) => {
       state.isLoading = false;
     },
-    toggleLoadingState: (state) => {
-      state.isLoading = !state.isLoading;
-    },
+
     setCoord: (state, action) => {
       state.coord = action.payload;
     },
   },
 });
 
-export const { loadingData, loadedData, toggleLoadingState, setCoord } =
-  shortDataSlice.actions;
+export const { loadingData, loadedData, setCoord } = shortDataSlice.actions;
 
 export default shortDataSlice.reducer;

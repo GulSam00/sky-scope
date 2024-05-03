@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useSelector } from "react-redux";
 
 import RecentDays from "./RecentDays";
@@ -11,6 +12,17 @@ const MainPage = () => {
   const isLoading = useSelector(
     (state: RootState) => state.shortDataSliceReducer.isLoading
   );
+  const isOpen = useSelector(
+    (state: RootState) => state.kakaoModalSliceReducer.isOpen
+  );
+
+  useEffect(() => {
+    if (isLoading || isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+  }, [isLoading, isOpen]);
 
   return (
     <DayContainer>

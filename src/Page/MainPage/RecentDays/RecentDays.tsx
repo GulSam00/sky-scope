@@ -31,10 +31,6 @@ const RecentDays = () => {
     (state: RootState) => state.kakaoModalSliceReducer.isOpen
   );
 
-  const isLoading = useSelector(
-    (state: RootState) => state.shortDataSliceReducer.isLoading
-  );
-
   const [coord, setCoord] = useState<ICoord>(getInitCoord());
   const { data, date } = useShortDataQuery(today, coord);
 

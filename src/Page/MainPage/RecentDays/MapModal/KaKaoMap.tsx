@@ -153,15 +153,21 @@ const KaKaoMap = ({ handleChangeCoord }: IProps) => {
       )}
       {selectedMarker && (
         <ConfirmModal>
-          <div>
-            <div>
+          <ConfirmModalContent>
+            <div className="content">
               [{selectedMarker.content}] 가 위치한 지역의
               <br />
               날씨 정보를 검색합니다.
             </div>
-            <Button onClick={() => onClickMarker(selectedMarker)}>확인</Button>
-            <Button onClick={() => setSelectedMarker(null)}>취소</Button>
-          </div>
+            <div className="button">
+              <Button onClick={() => onClickMarker(selectedMarker)}>
+                확인
+              </Button>
+              <Button variant="light" onClick={() => setSelectedMarker(null)}>
+                취소
+              </Button>
+            </div>
+          </ConfirmModalContent>
         </ConfirmModal>
       )}
     </MapModalContainer>
@@ -209,16 +215,45 @@ const MarkersContainer = styled.div`
 
 const ConfirmModal = styled.div`
   position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+
+  z-index: 1100;
+`;
+
+const ConfirmModalContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
 
-  z-index: 1100;
+  min-width: 40vw;
+  min-height: 40vh;
+  padding: 20px;
 
-  > div {
-    background-color: white;
-    border: 1px solid black;
-    border-radius: 10px;
-    padding: 10px;
+  border: 1px solid black;
+  border-radius: 10px;
+  background-color: white;
+
+  .button {
+    position: absolute;
+    bottom: 10px;
+
+    display: flex;
+    width: 100%;
+
+    justify-content: space-between;
+    * {
+      flex-grow: 1;
+      margin: 10px;
+    }
   }
 `;
