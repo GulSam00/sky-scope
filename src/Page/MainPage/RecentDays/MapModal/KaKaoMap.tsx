@@ -27,6 +27,8 @@ interface IProps {
 const KaKaoMap = ({ handleChangeCoord }: IProps) => {
   const [map, setMap] = useState<kakao.maps.Map | null>(null);
   const [markers, setMarkers] = useState<MarkerType[]>([]);
+  const [tempSelectedIndex, setTempSelectedIndex] = useState<number>(-1);
+
   const [selectedMarker, setSelectedMarker] = useState<MarkerType | null>(null);
   const [mapLevel, setMapLevel] = useState<number>(3);
   const mapRef = useRef<kakao.maps.Map>(null);
@@ -54,15 +56,12 @@ const KaKaoMap = ({ handleChangeCoord }: IProps) => {
   const overMarkerPos = (marker: MarkerType) => {
     if (!map) return;
 
-    // 맵 레벨 제어
+    // 마우스로 hover된 마커의 위치를 기준으로 지도 범위를 재설정
     const position = marker.position;
     map.setLevel(2);
     setMapLevel(map.getLevel());
 
     map.panTo(new kakao.maps.LatLng(position.lat, position.lng));
-
-    // region_2depth_name 를 기준으로 검색
-    // 스페이스 바 사이의 공백 제거 필요
   };
 
   const onClickMarker = async (marker: MarkerType) => {
@@ -122,10 +121,29 @@ const KaKaoMap = ({ handleChangeCoord }: IProps) => {
     );
   };
 
+  const handleHoverOut = () => {
+    if (!map) return;
+    overMarkerPos(markers[tempSelectedIndex]);
+  };
+
+  const handleClickMarker = (index: number) => {
+    if (tempSelectedIndex === index) {
+      setSelectedMarker(markers[index]);
+    } else {
+      setTempSelectedIndex(index);
+    }
+  };
+
   const handlePageMove = (page: number) => {
     if (page < 1 || page > maxPage) return;
     setCurPage(page);
     searchPlaces(searchRef.current, page);
+    setTempSelectedIndex(-1);
+  };
+
+  const handleClickModalCancel = () => {
+    setSelectedMarker(null);
+    setTempSelectedIndex(-1);
   };
 
   return (
@@ -164,9 +182,11 @@ const KaKaoMap = ({ handleChangeCoord }: IProps) => {
           <ListGroup>
             {markers.map((marker: MarkerType, index: number) => (
               <ListGroup.Item
+                className={tempSelectedIndex === index ? "selected" : ""}
                 key={index}
                 onMouseOver={() => overMarkerPos(marker)}
-                onClick={() => setSelectedMarker(marker)}
+                onMouseOut={handleHoverOut}
+                onClick={() => handleClickMarker(index)}
               >
                 {marker.content}
               </ListGroup.Item>
@@ -175,14 +195,12 @@ const KaKaoMap = ({ handleChangeCoord }: IProps) => {
           <SearchResultPagination
             curPage={curPage}
             maxPage={maxPage}
-            setCurPage={setCurPage}
             handlePageMove={handlePageMove}
           />
         </MarkersContainer>
       )}
 
       <Button id="close" onClick={() => dispatch(close())}>
-        {" "}
         닫기
       </Button>
 
@@ -198,7 +216,7 @@ const KaKaoMap = ({ handleChangeCoord }: IProps) => {
               <Button onClick={() => onClickMarker(selectedMarker)}>
                 확인
               </Button>
-              <Button variant="light" onClick={() => setSelectedMarker(null)}>
+              <Button variant="light" onClick={handleClickModalCancel}>
                 취소
               </Button>
             </div>
@@ -241,9 +259,15 @@ const FormContainer = styled.div`
 const MarkersContainer = styled.div`
   display: flex;
   flex-direction: column;
-
-  div {
+  * {
     cursor: pointer;
+    border-radius: 0;
+  }
+  .selected {
+    // blue selected highlight
+    background-color: #0d6efd;
+    color: white;
+    border: 1px solid white;
   }
 `;
 

@@ -1,16 +1,13 @@
-import { useEffect } from "react";
 import { Pagination } from "react-bootstrap";
 import styled from "styled-components";
 interface IProps {
   curPage: number;
   maxPage: number;
-  setCurPage: (page: number) => void;
   handlePageMove: (page: number) => void;
 }
 const SearchResultPagination = ({
   curPage,
   maxPage,
-  setCurPage,
   handlePageMove,
 }: IProps) => {
   return (

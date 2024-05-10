@@ -107,9 +107,10 @@ const LocationHeader = ({ handleChangeCoord }: IProps) => {
         </Form.Select>
         <text>의 날씨는?</text>
       </LocationHeaderSelector>
-
-      <Button onClick={() => currentLocation()}>현재 위치로 설정</Button>
-      <Button onClick={() => dispatch(open())}>지도에서 선택하기</Button>
+      <LocationHeaderButtons>
+        <Button onClick={() => currentLocation()}>현재 위치로 설정</Button>
+        <Button onClick={() => dispatch(open())}>지도에서 선택하기</Button>
+      </LocationHeaderButtons>
     </LocationHeaderContainer>
   );
 };
@@ -139,5 +140,15 @@ const LocationHeaderSelector = styled.div`
     min-width: 300px;
     min-height: 40px;
     font-size: 1.5rem;
+  }
+`;
+
+const LocationHeaderButtons = styled.div`
+  display: flex;
+  align-items: center;
+
+  button {
+    margin: 5px;
+    min-width: 100px;
   }
 `;
