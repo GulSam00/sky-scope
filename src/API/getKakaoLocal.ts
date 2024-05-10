@@ -37,7 +37,7 @@ const getKakaoLocal = {
     try {
       const result = await instance.get(url, { params });
       // 행정동 법정동 2개의 데이터 존재
-      const documents = result.data.documents as ICoord[];
+      const documents = result.data.documents as IRegion[];
       return documents[0];
     } catch (e) {
       let message;
