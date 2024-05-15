@@ -23,10 +23,25 @@ const TempertureLineGraph = ({ recentData, callbackLoadedData }: IProps) => {
 
   const data = [
     {
-      id: "temperture",
+      id: "온도",
       data: tempertureData,
     },
   ];
+
+  const theme = {
+    axis: {
+      legend: {
+        text: {
+          fontSize: 20,
+        },
+      },
+      ticks: {
+        text: {
+          fontSize: 18,
+        },
+      },
+    },
+  };
 
   const initTempertureData = () => {
     console.log("initTempertureData");
@@ -35,10 +50,9 @@ const TempertureLineGraph = ({ recentData, callbackLoadedData }: IProps) => {
       const time = String(i).padStart(4, "0");
       const value = recentData[time]?.TMP;
       const hour = time.slice(0, 2);
-      const min = time.slice(2, 4);
 
       if (value) {
-        temp.push({ x: hour + ":" + min, y: Number(value) });
+        temp.push({ x: hour, y: Number(value) });
       }
     }
     setTempertureData(temp);
@@ -53,7 +67,8 @@ const TempertureLineGraph = ({ recentData, callbackLoadedData }: IProps) => {
     <GraphContainer>
       <ResponsiveLine
         data={data}
-        margin={{ top: 50, right: 110, bottom: 50, left: 60 }}
+        theme={theme}
+        margin={{ top: 50, right: 110, bottom: 60, left: 60 }}
         xScale={{ type: "point" }}
         yScale={{
           type: "linear",
@@ -71,8 +86,8 @@ const TempertureLineGraph = ({ recentData, callbackLoadedData }: IProps) => {
           tickSize: 5,
           tickPadding: 5,
           tickRotation: 0,
-          legend: "시간",
-          legendOffset: 36,
+          legend: "시간(시)",
+          legendOffset: 46,
           legendPosition: "middle",
           truncateTickAt: 0,
         }}
@@ -81,10 +96,13 @@ const TempertureLineGraph = ({ recentData, callbackLoadedData }: IProps) => {
           tickPadding: 5,
           tickRotation: 0,
           legend: "온도(°C)",
-          legendOffset: -40,
+          legendOffset: -50,
           legendPosition: "middle",
           truncateTickAt: 0,
         }}
+        isInteractive={true}
+        useMesh={true}
+        enableSlices="x"
       />
     </GraphContainer>
   );
@@ -95,4 +113,8 @@ export default TempertureLineGraph;
 const GraphContainer = styled.div`
   min-width: 1000px;
   height: 600px;
+
+  text {
+    font-size: 11.5rem;
+  }
 `;

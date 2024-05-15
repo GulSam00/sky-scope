@@ -25,6 +25,26 @@ const RainLineGraph = ({ recentData, callbackLoadedData }: IProps) => {
     { id: "강수량(mm)", data: rainAmount },
   ];
 
+  const theme = {
+    axis: {
+      legend: {
+        text: {
+          fontSize: 20,
+        },
+      },
+      ticks: {
+        text: {
+          fontSize: 18,
+        },
+      },
+    },
+    legends: {
+      text: {
+        fontSize: 20,
+      },
+    },
+  };
+
   const initRainProb = () => {
     const temp: rainDataTypes[] = [];
 
@@ -32,10 +52,9 @@ const RainLineGraph = ({ recentData, callbackLoadedData }: IProps) => {
       const time = String(i).padStart(4, "0");
       const value = recentData[time]?.POP;
       const hour = time.slice(0, 2);
-      const min = time.slice(2, 4);
 
       if (value) {
-        temp.push({ x: hour + ":" + min, y: Number(value) });
+        temp.push({ x: hour, y: Number(value) });
       }
     }
     setRainProb(temp);
@@ -48,12 +67,11 @@ const RainLineGraph = ({ recentData, callbackLoadedData }: IProps) => {
       const time = String(i).padStart(4, "0");
       let value = recentData[time]?.PCP;
       const hour = time.slice(0, 2);
-      const min = time.slice(2, 4);
 
       if (value) {
         if (value === "강수없음") value = "0";
         else value = value.slice(0, value.indexOf("m"));
-        temp.push({ x: hour + ":" + min, y: Number(value) });
+        temp.push({ x: hour, y: Number(value) });
       }
     }
     setRainAmount(temp);
@@ -69,7 +87,8 @@ const RainLineGraph = ({ recentData, callbackLoadedData }: IProps) => {
     <GraphContainer>
       <ResponsiveLine
         data={data}
-        margin={{ top: 50, right: 110, bottom: 50, left: 60 }}
+        theme={theme}
+        margin={{ top: 50, right: 180, bottom: 60, left: 60 }}
         xScale={{ type: "point" }}
         yScale={{
           type: "linear",
@@ -86,8 +105,8 @@ const RainLineGraph = ({ recentData, callbackLoadedData }: IProps) => {
           tickSize: 5,
           tickPadding: 5,
           tickRotation: 0,
-          legend: "시간",
-          legendOffset: 36,
+          legend: "시간(시)",
+          legendOffset: 46,
           legendPosition: "middle",
           truncateTickAt: 0,
         }}
@@ -96,7 +115,7 @@ const RainLineGraph = ({ recentData, callbackLoadedData }: IProps) => {
           tickPadding: 5,
           tickRotation: 0,
           legend: "강수확률(%)",
-          legendOffset: -40,
+          legendOffset: -50,
           legendPosition: "middle",
           truncateTickAt: 0,
         }}
@@ -108,13 +127,13 @@ const RainLineGraph = ({ recentData, callbackLoadedData }: IProps) => {
             anchor: "bottom-right",
             direction: "column",
             justify: true,
-            translateX: 90,
+            translateX: 160,
             translateY: 0,
-            itemsSpacing: 0,
-            itemWidth: 80,
-            itemHeight: 20,
-            itemOpacity: 0.75,
-            symbolSize: 12,
+            itemsSpacing: 10,
+            itemWidth: 130,
+            itemHeight: 40,
+            itemOpacity: 0.9,
+            symbolSize: 16,
             symbolShape: "circle",
             symbolBorderColor: "rgba(0, 0, 0, .5)",
           },
