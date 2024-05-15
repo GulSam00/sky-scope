@@ -304,13 +304,17 @@ const ConfirmModalContent = styled.div`
   left: 50%;
   transform: translate(-50%, -50%);
 
-  min-width: 40vw;
-  min-height: 40vh;
+  width: 80%;
+  height: 60%;
   padding: 20px;
 
   border: 1px solid black;
   border-radius: 10px;
   background-color: white;
+
+  .content {
+    font-size: 1.5rem;
+  }
 
   .button {
     position: absolute;
