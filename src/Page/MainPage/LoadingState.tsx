@@ -36,8 +36,8 @@ const EmptyGraphContainer = styled.div`
     height: 8rem;
   }
   h1 {
-    width: 35rem;
-    font-size: 3rem;
+    width: 10rem;
+    font-size: 2rem;
     text-align: center;
   }
 `;

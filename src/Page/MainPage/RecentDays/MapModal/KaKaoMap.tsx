@@ -107,7 +107,9 @@ const KaKaoMap = ({ handleChangeCoord }: IProps) => {
               },
               content: data[i].place_name,
             });
-            bounds.extend(new kakao.maps.LatLng(data[i].y, data[i].x));
+            bounds.extend(
+              new kakao.maps.LatLng(Number(data[i].y), Number(data[i].x))
+            );
           }
           setMarkers([...markers]);
           map.setBounds(bounds);
