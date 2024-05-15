@@ -137,7 +137,7 @@ const LocationHeaderSelector = styled.div`
 
   select {
     padding: 5px;
-    min-width: 300px;
+    min-width: 250px;
     min-height: 40px;
     font-size: 1.5rem;
   }

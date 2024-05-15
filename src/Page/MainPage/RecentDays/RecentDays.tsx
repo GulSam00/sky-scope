@@ -12,6 +12,7 @@ import { useShortDataQuery } from "@src/Queries";
 import { ICoord } from "@src/API/getWeatherShort";
 import { loadingData } from "@src/Store/shortDataSlice";
 
+import { addDays } from "date-fns";
 import { styled } from "styled-components";
 
 const getInitCoord = () => {
@@ -61,7 +62,13 @@ const RecentDays = () => {
 
       {data.length ? (
         data.map((arrItem, index) => {
-          return <RecentDay recentData={arrItem} keyDate={date[index]} />;
+          return (
+            <RecentDay
+              recentData={arrItem}
+              keyDate={date[index]}
+              baseDate={addDays(today, index)}
+            />
+          );
         })
       ) : (
         <>

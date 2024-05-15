@@ -160,6 +160,10 @@ const KaKaoMap = ({ handleChangeCoord }: IProps) => {
           />
         </Form>
         <Button onClick={insertAddress}>확인</Button>
+        <img src="/x-circle.svg" alt="" onClick={() => dispatch(close())} />
+        {/* <Button id="close" onClick={() => dispatch(close())}>
+          닫기
+        </Button> */}
       </FormContainer>
 
       <Map
@@ -200,10 +204,6 @@ const KaKaoMap = ({ handleChangeCoord }: IProps) => {
         </MarkersContainer>
       )}
 
-      <Button id="close" onClick={() => dispatch(close())}>
-        닫기
-      </Button>
-
       {selectedMarker && (
         <ConfirmModal>
           <ConfirmModalContent>
@@ -234,12 +234,12 @@ const MapModalContainer = styled.div`
   flex-direction: column;
   white-space: pre-wrap;
 
+  padding: 30px;
   #kakao-map {
     display: flex;
 
-    min-height: 50vh;
+    min-height: 85vh;
     width: 100%;
-    padding: 20px;
   }
 `;
 
@@ -248,11 +248,20 @@ const FormContainer = styled.div`
   justify-content: space-between;
   align-items: center;
 
-  padding: 10px;
+  padding-bottom: 30px;
 
   form {
     flex-grow: 1;
     margin-right: 10px;
+  }
+
+  img {
+    cursor: pointer;
+    width: 50px;
+    height: 50px;
+    margin-left: 10px;
+    filter: invert(35%) sepia(87%) saturate(5172%) hue-rotate(212deg)
+      brightness(105%) contrast(98%);
   }
 `;
 

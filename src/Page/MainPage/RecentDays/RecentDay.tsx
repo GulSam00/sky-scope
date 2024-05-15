@@ -4,6 +4,7 @@ import { useDispatch } from "react-redux";
 import TempertureLineGraph from "./TempertureLineGraph";
 import RainLineGraph from "./RainLineGraph";
 
+import { getDayOfWeek } from "@src/Util";
 import { loadedData } from "@src/Store/shortDataSlice";
 import { IDateData } from "@src/API/getWeatherShort";
 
@@ -13,8 +14,9 @@ import { styled } from "styled-components";
 interface IProps {
   recentData: IDateData;
   keyDate: string;
+  baseDate: Date;
 }
-const RecentDay = ({ recentData, keyDate }: IProps) => {
+const RecentDay = ({ recentData, keyDate, baseDate }: IProps) => {
   const dispatch = useDispatch();
   const [tab, setTab] = useState<string>("temperture");
 
@@ -26,7 +28,8 @@ const RecentDay = ({ recentData, keyDate }: IProps) => {
     const year = date.slice(0, 4);
     const month = date.slice(4, 6);
     const day = date.slice(6, 8);
-    return `${year}/${month}/${day}`;
+    const dayOfWeek = getDayOfWeek(baseDate);
+    return `${year}/${month}/${day} (${dayOfWeek})`;
   };
 
   const callbackLoadedData = () => {
