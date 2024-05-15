@@ -238,7 +238,7 @@ const MapModalContainer = styled.div`
   #kakao-map {
     display: flex;
 
-    min-height: 85vh;
+    min-height: 40vh;
     width: 100%;
   }
 `;

@@ -119,7 +119,11 @@ export default LocationHeader;
 
 const LocationHeaderContainer = styled.div`
   display: flex;
+
   justify-content: space-between;
+  flex-wrap: wrap;
+
+  width: 100%;
   padding: 10px;
   border-bottom: 1px solid #e9ecef;
   border-radius: 1rem;
@@ -128,27 +132,28 @@ const LocationHeaderContainer = styled.div`
 const LocationHeaderSelector = styled.div`
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
 
-  * {
+  > * {
     margin: 5px;
-    min-width: 100px;
+    min-width: 150px;
     max-width: 200px;
+    min-height: 40px;
   }
 
   select {
     padding: 5px;
-    min-width: 250px;
-    min-height: 40px;
+    min-width: 200px;
     font-size: 1.5rem;
   }
 `;
 
 const LocationHeaderButtons = styled.div`
   display: flex;
-  align-items: center;
+  flex-wrap: wrap;
 
   button {
     margin: 5px;
-    min-width: 100px;
+    flex-grow: 1;
   }
 `;

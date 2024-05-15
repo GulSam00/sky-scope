@@ -147,6 +147,5 @@ const RainLineGraph = ({ recentData, callbackLoadedData }: IProps) => {
 export default RainLineGraph;
 
 const GraphContainer = styled.div`
-  min-width: 1000px;
   height: 600px;
 `;

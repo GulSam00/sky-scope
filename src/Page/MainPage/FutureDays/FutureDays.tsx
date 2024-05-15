@@ -49,7 +49,6 @@ const FutureDayContainer = styled.div`
   display: flex;
   flex-direction: column;
 
-  min-width: 1200px;
   margin: 10px;
   padding: 10px;
   border: 1px solid black;

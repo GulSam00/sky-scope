@@ -89,6 +89,5 @@ const TempertureLineGraph = ({ futureData }: IProps) => {
 export default TempertureLineGraph;
 
 const GraphContainer = styled.div`
-  min-width: 1000px;
   height: 500px;
 `;

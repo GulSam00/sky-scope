@@ -38,8 +38,8 @@ const MapModalBody = styled.div`
   display: flex;
   flex-direction: column;
 
-  width: 90%;
-  height: 90%;
+  width: 95%;
+  height: 95%;
   background-color: white;
   overflow: auto;
 `;

@@ -22,7 +22,6 @@ const EmptyGraphContainer = styled.div`
   align-items: center;
 
   height: 700px;
-  min-width: 1000px;
 
   margin: 10px;
   padding: 10px;

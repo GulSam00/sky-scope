@@ -111,7 +111,6 @@ const TempertureLineGraph = ({ recentData, callbackLoadedData }: IProps) => {
 export default TempertureLineGraph;
 
 const GraphContainer = styled.div`
-  min-width: 1000px;
   height: 600px;
 
   text {

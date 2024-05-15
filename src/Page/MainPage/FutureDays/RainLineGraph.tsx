@@ -83,6 +83,5 @@ const RainLineGraph = ({ futureData }: IProps) => {
 export default RainLineGraph;
 
 const GraphContainer = styled.div`
-  min-width: 1000px;
   height: 500px;
 `;
