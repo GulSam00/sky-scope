@@ -67,9 +67,9 @@ const KaKaoMap = ({ handleChangeCoord }: IProps) => {
   const onClickMarker = async (marker: MarkerType) => {
     if (!map) return;
     const position = marker.position;
-    console.log("마커의 정보 : ", marker);
+    // console.log("마커의 정보 : ", marker);
     const result = await transLocaleToCoord(position);
-    console.log("Result : ", result);
+    // console.log("Result : ", result);
 
     if (result) {
       const { nx, ny, province, city } = result;
@@ -88,10 +88,11 @@ const KaKaoMap = ({ handleChangeCoord }: IProps) => {
       keyword,
       (data, status, pagination) => {
         if (status === kakao.maps.services.Status.OK) {
-          data.map((place: any) => {
-            console.log(place.place_name);
-          });
-          console.log("current pagination : ", pagination.current);
+          // data.map((place: any) => {
+          //   console.log(place.place_name);
+          // });
+          // console.log("current pagination : ", pagination.current);
+
           setMaxPage(pagination.last);
           // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
           // LatLngBounds 객체에 좌표를 추가합니다
@@ -106,11 +107,9 @@ const KaKaoMap = ({ handleChangeCoord }: IProps) => {
               },
               content: data[i].place_name,
             });
-            // @ts-ignore
             bounds.extend(new kakao.maps.LatLng(data[i].y, data[i].x));
           }
           setMarkers([...markers]);
-          // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
           map.setBounds(bounds);
         } else {
           console.log("검색 결과가 없습니다.");
@@ -160,10 +159,7 @@ const KaKaoMap = ({ handleChangeCoord }: IProps) => {
           />
         </Form>
         <Button onClick={insertAddress}>확인</Button>
-        <img src="/x-circle.svg" alt="" onClick={() => dispatch(close())} />
-        {/* <Button id="close" onClick={() => dispatch(close())}>
-          닫기
-        </Button> */}
+        <CloseButton src="/x-circle.svg" onClick={() => dispatch(close())} />
       </FormContainer>
 
       <Map
@@ -243,11 +239,19 @@ const MapModalContainer = styled.div`
   }
 `;
 
+const CloseButton = styled.img`
+  cursor: pointer;
+  width: 50px;
+  height: 50px;
+  margin-left: 10px;
+  filter: invert(35%) sepia(87%) saturate(5172%) hue-rotate(212deg)
+    brightness(105%) contrast(98%);
+`;
+
 const FormContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-
   padding-bottom: 30px;
 
   form {
@@ -255,13 +259,9 @@ const FormContainer = styled.div`
     margin-right: 10px;
   }
 
-  img {
-    cursor: pointer;
-    width: 50px;
-    height: 50px;
-    margin-left: 10px;
-    filter: invert(35%) sepia(87%) saturate(5172%) hue-rotate(212deg)
-      brightness(105%) contrast(98%);
+  button {
+    min-width: 80px;
+    min-height: 40px;
   }
 `;
 

@@ -112,8 +112,5 @@ export default TempertureLineGraph;
 
 const GraphContainer = styled.div`
   height: 600px;
-
-  text {
-    font-size: 11.5rem;
-  }
+  min-width: 1000px;
 `;

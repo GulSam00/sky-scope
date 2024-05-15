@@ -43,7 +43,7 @@ const RecentDay = ({ recentData, keyDate, baseDate }: IProps) => {
 
         {/* 버튼으로 말고 토글로 온도/강수 확률 두개만? */}
         <Button onClick={() => onClickTab("temperture")}>온도</Button>
-        <Button onClick={() => onClickTab("rain")}>강수 확률</Button>
+        <Button onClick={() => onClickTab("rain")}>비</Button>
       </RecentDayHeader>
 
       {/* 이 컴포넌트에서 삼항 연산자로 Loading 중일 때 렌더링을 하지 않게 되면
@@ -51,19 +51,23 @@ const RecentDay = ({ recentData, keyDate, baseDate }: IProps) => {
  isLoading이 영원히 걸리게 된다.*/}
       {/* 삼항 연산자가 아닌 메인 페이지 단에서 로딩창을 덧씌어주는 것으로
  렌더링 자체는 되면서 차트가 바뀌기 전 상호작용이 불가능한 것을 막아주는 것을 구현 */}
-      {tab === "temperture" && (
-        <TempertureLineGraph
-          recentData={recentData}
-          callbackLoadedData={callbackLoadedData}
-        />
-      )}
 
-      {tab === "rain" && (
-        <RainLineGraph
-          recentData={recentData}
-          callbackLoadedData={callbackLoadedData}
-        />
-      )}
+      {/*  */}
+      <GraphContainer>
+        {tab === "temperture" && (
+          <TempertureLineGraph
+            recentData={recentData}
+            callbackLoadedData={callbackLoadedData}
+          />
+        )}
+
+        {tab === "rain" && (
+          <RainLineGraph
+            recentData={recentData}
+            callbackLoadedData={callbackLoadedData}
+          />
+        )}
+      </GraphContainer>
     </RecentDayContainer>
   );
 };
@@ -71,9 +75,9 @@ const RecentDay = ({ recentData, keyDate, baseDate }: IProps) => {
 export default RecentDay;
 
 const RecentDayContainer = styled.div`
+  position: relative;
   display: flex;
   flex-direction: column;
-  flex-grow: 1;
 
   margin: 10px;
   padding: 10px;
@@ -85,16 +89,25 @@ const RecentDayHeader = styled.div`
   display: flex;
   align-items: center;
   margin: 1rem;
+
+  flex-wrap: wrap;
+
   text {
     margin-right: 1rem;
-    font-size: 3rem;
+    font-size: 2.5rem;
     font-weight: bold;
   }
   button {
-    min-width: 8.5rem;
+    min-width: 6rem;
     min-height: 4rem;
     margin: 1rem;
 
     text-align: center;
   }
+`;
+
+const GraphContainer = styled.div`
+  overflow-x: auto; /* Enable horizontal scrolling */
+  overflow-y: hidden; /* Hide vertical scrollbar */
+  white-space: nowrap; /* Prevent line breaks */
 `;

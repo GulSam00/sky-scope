@@ -148,4 +148,5 @@ export default RainLineGraph;
 
 const GraphContainer = styled.div`
   height: 600px;
+  min-width: 1000px;
 `;
