@@ -67,9 +67,7 @@ const KaKaoMap = ({ handleChangeCoord }: IProps) => {
   const onClickMarker = async (marker: MarkerType) => {
     if (!map) return;
     const position = marker.position;
-    // console.log("마커의 정보 : ", marker);
     const result = await transLocaleToCoord(position);
-    // console.log("Result : ", result);
 
     if (result) {
       const { nx, ny, province, city } = result;
@@ -88,11 +86,6 @@ const KaKaoMap = ({ handleChangeCoord }: IProps) => {
       keyword,
       (data, status, pagination) => {
         if (status === kakao.maps.services.Status.OK) {
-          // data.map((place: any) => {
-          //   console.log(place.place_name);
-          // });
-          // console.log("current pagination : ", pagination.current);
-
           setMaxPage(pagination.last);
           // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
           // LatLngBounds 객체에 좌표를 추가합니다

@@ -35,7 +35,7 @@ const LocationHeader = ({ handleChangeCoord }: IProps) => {
   const dispatch = useDispatch();
   const location: locationType = useGeolocation();
   const { province, city } = useSelector(
-    (state: RootState) => state.locationDataSlice
+    (state: RootState) => state.locationDataSliceReducer
   );
 
   const onChangeProvince = (e: React.ChangeEvent<HTMLSelectElement>) => {

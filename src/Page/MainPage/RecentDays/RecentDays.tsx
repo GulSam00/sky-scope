@@ -10,18 +10,10 @@ import RecentDay from "./RecentDay";
 import { RootState } from "@src/Store/store";
 import { useShortDataQuery } from "@src/Queries";
 import { ICoord } from "@src/API/getWeatherShort";
-import { loadingData } from "@src/Store/shortDataSlice";
+import { loadingData, setCoord } from "@src/Store/shortDataSlice";
 
 import { addDays } from "date-fns";
 import { styled } from "styled-components";
-
-const getInitCoord = () => {
-  if (localStorage.getItem("coord")) {
-    const coord = JSON.parse(localStorage.getItem("coord") as string);
-    return coord;
-  }
-  return { nx: 60, ny: 127 };
-};
 
 const RecentDays = () => {
   const today = new Date();
@@ -31,13 +23,15 @@ const RecentDays = () => {
   const isMapModal = useSelector(
     (state: RootState) => state.kakaoModalSliceReducer.isOpen
   );
+  const coord = useSelector(
+    (state: RootState) => state.shortDataSliceReducer.coord
+  );
 
-  const [coord, setCoord] = useState<ICoord>(getInitCoord());
   const { data, date } = useShortDataQuery(today, coord);
 
   const handleChangeCoord = (coord: ICoord) => {
     dispatch(loadingData());
-    setCoord(coord);
+    dispatch(setCoord(coord));
 
     console.log("handleChangeCoord invalidateQueries");
 
@@ -47,10 +41,8 @@ const RecentDays = () => {
   useEffect(() => {
     if (localStorage.getItem("coord")) {
       console.log("UseEffect invalidateQueries");
-
       const coord = JSON.parse(localStorage.getItem("coord") as string);
-      setCoord(coord);
-      queryClient.invalidateQueries({ queryKey: ["short"] });
+      handleChangeCoord(coord);
     }
   }, []);
 

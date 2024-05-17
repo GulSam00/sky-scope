@@ -17,12 +17,12 @@ const MainPage = () => {
   );
 
   useEffect(() => {
-    if (isLoading || isOpen) {
+    if (isOpen) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "auto";
     }
-  }, [isLoading, isOpen]);
+  }, [isOpen]);
 
   return (
     <DayContainer>

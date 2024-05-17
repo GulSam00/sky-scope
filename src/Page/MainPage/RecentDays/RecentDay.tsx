@@ -40,8 +40,6 @@ const RecentDay = ({ recentData, keyDate, baseDate }: IProps) => {
     <RecentDayContainer>
       <RecentDayHeader>
         <text>{transDate(keyDate)}</text>
-
-        {/* 버튼으로 말고 토글로 온도/강수 확률 두개만? */}
         <Button onClick={() => onClickTab("temperture")}>온도</Button>
         <Button onClick={() => onClickTab("rain")}>비</Button>
       </RecentDayHeader>
@@ -52,7 +50,6 @@ const RecentDay = ({ recentData, keyDate, baseDate }: IProps) => {
       {/* 삼항 연산자가 아닌 메인 페이지 단에서 로딩창을 덧씌어주는 것으로
  렌더링 자체는 되면서 차트가 바뀌기 전 상호작용이 불가능한 것을 막아주는 것을 구현 */}
 
-      {/*  */}
       <GraphContainer>
         {tab === "temperture" && (
           <TempertureLineGraph
