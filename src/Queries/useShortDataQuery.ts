@@ -13,6 +13,8 @@ const useShortDataQuery = (today: Date, location: ICoord) => {
     queryKey: ["short"],
     queryFn: () => getWeatherShort(today, location),
     enabled: false, // Disable automatic data fetching
+    retry: 3,
+    retryDelay: 30000,
   });
 
   // 왜 refetch를 사용할 때 성능이 더 좋을까?

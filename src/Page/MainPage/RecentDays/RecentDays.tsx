@@ -34,15 +34,18 @@ const RecentDays = () => {
     dispatch(setCoord(coord));
 
     console.log("handleChangeCoord invalidateQueries");
-
     queryClient.invalidateQueries({ queryKey: ["short"] });
+  };
+
+  const initCoord = () => {
+    console.log("UseEffect invalidateQueries");
+    const coord = JSON.parse(localStorage.getItem("coord") as string);
+    handleChangeCoord(coord);
   };
 
   useEffect(() => {
     if (localStorage.getItem("coord")) {
-      console.log("UseEffect invalidateQueries");
-      const coord = JSON.parse(localStorage.getItem("coord") as string);
-      handleChangeCoord(coord);
+      initCoord();
     }
   }, []);
 

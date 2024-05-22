@@ -54,6 +54,8 @@ const LocationHeader = ({ handleChangeCoord }: IProps) => {
       localStorage.setItem("Geolat", "");
       handleChangeCoord({ nx, ny });
       dispatch(setCity(selectCity));
+      localStorage.setItem("province", province);
+      localStorage.setItem("city", selectCity);
     }
   };
 
