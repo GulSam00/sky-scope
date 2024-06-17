@@ -1,12 +1,12 @@
-import { Spinner } from "react-bootstrap";
+import { Spinner } from 'react-bootstrap';
 
-import styled from "styled-components";
+import styled from 'styled-components';
 
 const LoadingState = () => {
   return (
     <EmptyGraphContainer>
-      <Spinner animation="border" role="status">
-        <span className="visually-hidden">Loading</span>
+      <Spinner animation='border' role='status'>
+        <span className='visually-hidden'>Loading</span>
       </Spinner>
       <h1>로딩중입니다...</h1>
     </EmptyGraphContainer>

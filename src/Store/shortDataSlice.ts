@@ -1,7 +1,7 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice } from '@reduxjs/toolkit';
 
 export const shortDataSlice = createSlice({
-  name: "shortData",
+  name: 'shortData',
   initialState: {
     isLoading: true,
     coord: {
@@ -10,10 +10,10 @@ export const shortDataSlice = createSlice({
     },
   },
   reducers: {
-    loadingData: (state) => {
+    loadingData: state => {
       state.isLoading = true;
     },
-    loadedData: (state) => {
+    loadedData: state => {
       state.isLoading = false;
     },
 

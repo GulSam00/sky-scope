@@ -1,15 +1,15 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice } from '@reduxjs/toolkit';
 
 export const kakaoModalSlice = createSlice({
-  name: "kakaoModal",
+  name: 'kakaoModal',
   initialState: {
     isOpen: false,
   },
   reducers: {
-    open: (state) => {
+    open: state => {
       state.isOpen = true;
     },
-    close: (state) => {
+    close: state => {
       state.isOpen = false;
     },
   },

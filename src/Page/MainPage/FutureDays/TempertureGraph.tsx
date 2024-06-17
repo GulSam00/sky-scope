@@ -1,8 +1,8 @@
-import { useState, useEffect } from "react";
-import { ResponsiveLine } from "@nivo/line";
+import { useState, useEffect } from 'react';
+import { ResponsiveLine } from '@nivo/line';
 
-import { styled } from "styled-components";
-import { IDateData } from "@src/API/getWeatherLong";
+import { styled } from 'styled-components';
+import { IDateData } from '@src/API/getWeatherLong';
 
 interface IProps {
   futureData: IDateData[];
@@ -14,19 +14,15 @@ interface tempertureDataTypes {
 }
 
 const TempertureLineGraph = ({ futureData }: IProps) => {
-  const [minTempertureData, setMinTempertureData] = useState<
-    tempertureDataTypes[]
-  >([]);
-  const [maxTempertureData, setMaxTempertureData] = useState<
-    tempertureDataTypes[]
-  >([]);
+  const [minTempertureData, setMinTempertureData] = useState<tempertureDataTypes[]>([]);
+  const [maxTempertureData, setMaxTempertureData] = useState<tempertureDataTypes[]>([]);
 
   const data = [
     {
-      id: "최저 온도",
+      id: '최저 온도',
       data: minTempertureData,
     },
-    { id: "최고 온도", data: maxTempertureData },
+    { id: '최고 온도', data: maxTempertureData },
   ];
 
   const initRainProb = () => {
@@ -51,34 +47,34 @@ const TempertureLineGraph = ({ futureData }: IProps) => {
       <ResponsiveLine
         data={data}
         margin={{ top: 50, right: 110, bottom: 50, left: 60 }}
-        xScale={{ type: "point" }}
+        xScale={{ type: 'point' }}
         yScale={{
-          type: "linear",
-          min: "auto",
-          max: "auto",
+          type: 'linear',
+          min: 'auto',
+          max: 'auto',
           reverse: false,
         }}
-        yFormat=">-.2f"
+        yFormat='>-.2f'
         pointSize={10}
-        pointColor={{ theme: "background" }}
+        pointColor={{ theme: 'background' }}
         pointBorderWidth={2}
-        pointBorderColor={{ from: "serieColor" }}
+        pointBorderColor={{ from: 'serieColor' }}
         axisBottom={{
           tickSize: 5,
           tickPadding: 5,
           tickRotation: 0,
-          legend: "시간",
+          legend: '시간',
           legendOffset: 36,
-          legendPosition: "middle",
+          legendPosition: 'middle',
           truncateTickAt: 0,
         }}
         axisLeft={{
           tickSize: 5,
           tickPadding: 5,
           tickRotation: 0,
-          legend: "온도(°C)",
+          legend: '온도(°C)',
           legendOffset: -40,
-          legendPosition: "middle",
+          legendPosition: 'middle',
           truncateTickAt: 0,
         }}
       />

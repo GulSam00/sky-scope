@@ -1,14 +1,12 @@
-import { useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
 
-import { getWeatherShort } from "@src/API";
-import { IParseObj, ICoord } from "@src/API/getWeatherShort";
+import { getWeatherShort } from '@src/API';
+import { IParseObj, ICoord } from '@src/API/getWeatherShort';
 
 const useShortDataQuery = (today: Date, location: ICoord) => {
-  const { data, isLoading, error, status, refetch } = useQuery<
-    IParseObj | undefined
-  >({
-    queryKey: ["short"],
+  const { data, isLoading, error, status, refetch } = useQuery<IParseObj | undefined>({
+    queryKey: ['short'],
     queryFn: () => getWeatherShort(today, location),
     enabled: false, // Disable automatic data fetching
     retry: 3,

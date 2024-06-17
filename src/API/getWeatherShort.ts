@@ -1,5 +1,5 @@
-import axios, { AxiosInstance } from "axios";
-import { format } from "date-fns";
+import axios, { AxiosInstance } from 'axios';
+import { format } from 'date-fns';
 
 const url: string = import.meta.env.VITE_API_SHORT_URL;
 const serviceKey: string = import.meta.env.VITE_API_SERVICE_KEY;
@@ -8,7 +8,7 @@ const instance: AxiosInstance = axios.create({
   baseURL: url,
   timeout: 3000,
   headers: {
-    "Content-Type": "application/json",
+    'Content-Type': 'application/json',
   },
 });
 
@@ -43,26 +43,23 @@ interface IItem {
 
 const params = {
   serviceKey: serviceKey,
-  dataType: "JSON",
-  base_date: "",
-  base_time: "0500",
-  numOfRows: "1000",
+  dataType: 'JSON',
+  base_date: '',
+  base_time: '0500',
+  numOfRows: '1000',
   nx: 0,
   ny: 0,
 };
 // nx와 ny를 조절해서 지역을 변경할 수 있어야 함
 
 const isVaildCategory = (category: string) => {
-  const vaildCategory = ["SKY", "POP", "PCP", "TMP", "TMN", "TMX"];
+  const vaildCategory = ['SKY', 'POP', 'PCP', 'TMP', 'TMN', 'TMX'];
   return vaildCategory.includes(category);
 };
 
-const getWeatherShort = async (
-  base_date: Date,
-  location: ICoord
-): Promise<IParseObj | undefined> => {
-  const url = "/getVilageFcst";
-  const date = format(base_date, "yyyyMMdd");
+const getWeatherShort = async (base_date: Date, location: ICoord): Promise<IParseObj | undefined> => {
+  const url = '/getVilageFcst';
+  const date = format(base_date, 'yyyyMMdd');
   params.base_date = date;
   params.nx = location.nx;
   params.ny = location.ny;
@@ -86,8 +83,7 @@ const getWeatherShort = async (
       }
 
       const { category, fcstValue } = item;
-      if (isVaildCategory(category))
-        parseArr[fcstDate][fcstTime][category] = fcstValue;
+      if (isVaildCategory(category)) parseArr[fcstDate][fcstTime][category] = fcstValue;
     });
     return parseArr;
   } catch (e) {

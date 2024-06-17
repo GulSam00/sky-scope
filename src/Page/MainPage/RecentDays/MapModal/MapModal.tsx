@@ -1,8 +1,8 @@
-import KaKaoMap from "./KaKaoMap";
+import KaKaoMap from './KaKaoMap';
 
-import { ICoord } from "@src/API/getWeatherShort";
+import { ICoord } from '@src/API/getWeatherShort';
 
-import styled from "styled-components";
+import styled from 'styled-components';
 
 interface IProps {
   handleChangeCoord: (coord: ICoord) => void;

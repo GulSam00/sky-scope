@@ -1,5 +1,5 @@
-import axios, { AxiosInstance } from "axios";
-import { format } from "date-fns";
+import axios, { AxiosInstance } from 'axios';
+import { format } from 'date-fns';
 
 const url: string = import.meta.env.VITE_API_SHORT_URL;
 const serviceKey: string = import.meta.env.VITE_API_SERVICE_KEY;
@@ -8,7 +8,7 @@ const instance: AxiosInstance = axios.create({
   baseURL: url,
   timeout: 3000,
   headers: {
-    "Content-Type": "application/json",
+    'Content-Type': 'application/json',
   },
 });
 
@@ -30,51 +30,45 @@ interface IItem {
   ny: number;
 }
 
-
-
 const params = {
   serviceKey: serviceKey,
-  dataType: "JSON",
-  base_date: "",
-  base_time: "",
-  numOfRows: "1000",
+  dataType: 'JSON',
+  base_date: '',
+  base_time: '',
+  numOfRows: '1000',
   nx: 0,
   ny: 0,
 };
 // nx와 ny를 조절해서 지역을 변경할 수 있어야 함
 
 const isVaildCategory = (category: string) => {
-  const vaildCategory = ["T1H", "REH","RN1", "PTY"];
+  const vaildCategory = ['T1H', 'REH', 'RN1', 'PTY'];
+  // T1H : 기온, REH : 습도, RN1 : 1시간 강수량, PTY : 강수형태
   return vaildCategory.includes(category);
 };
 
-const getWeatherLive = async (
-  base_date: Date,
-  location: ICoord
-): Promise<IParseObj | undefined> => {
-  const url = "/getUltraSrtNcst";
-  const date = format(base_date, "yyyyMMdd");
-  const time = format(base_date, "HH");
+const getWeatherLive = async (base_date: Date, location: ICoord): Promise<IParseObj | undefined> => {
+  const url = '/getUltraSrtNcst';
+  const date = format(base_date, 'yyyyMMdd');
+  const time = format(base_date, 'HH');
 
   params.base_date = date;
-  params.base_time = time + "00";
+  params.base_time = time + '00';
   params.nx = location.nx;
   params.ny = location.ny;
 
-  const items : IParseObj = {};
+  const items: IParseObj = {};
   try {
     const response = await instance.get(url, { params });
-     const dataArr = response.data.response.body.items.item;
-      console.log(dataArr);
-     dataArr.forEach((item: IItem) => {
-        const { category, obsrValue } = item;
-        if (isVaildCategory(category)) 
-          items[category] = obsrValue;
-     });
-     console.log("parsed : ",items);
-  
-     return items;
+    const dataArr = response.data.response.body.items.item;
+    console.log(dataArr);
+    dataArr.forEach((item: IItem) => {
+      const { category, obsrValue } = item;
+      if (isVaildCategory(category)) items[category] = obsrValue;
+    });
+    console.log('parsed : ', items);
 
+    return items;
   } catch (e) {
     let message;
     if (e instanceof Error) message = e.message;

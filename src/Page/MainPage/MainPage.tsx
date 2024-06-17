@@ -1,26 +1,22 @@
-import { useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useEffect } from 'react';
+import { useSelector } from 'react-redux';
 
-import RecentDays from "./RecentDays";
+import RecentDays from './RecentDays';
 // import FutureDays from "./FutureDays";
-import LoadingState from "./LoadingState";
-import { RootState } from "@src/Store/store";
+import LoadingState from './LoadingState';
+import { RootState } from '@src/Store/store';
 
-import { styled } from "styled-components";
+import { styled } from 'styled-components';
 
 const MainPage = () => {
-  const { isLoading } = useSelector(
-    (state: RootState) => state.shortDataSliceReducer
-  );
-  const { isOpen } = useSelector(
-    (state: RootState) => state.kakaoModalSliceReducer
-  );
+  const { isLoading } = useSelector((state: RootState) => state.shortDataSliceReducer);
+  const { isOpen } = useSelector((state: RootState) => state.kakaoModalSliceReducer);
 
   useEffect(() => {
     if (isOpen) {
-      document.body.style.overflow = "hidden";
+      document.body.style.overflow = 'hidden';
     } else {
-      document.body.style.overflow = "auto";
+      document.body.style.overflow = 'auto';
     }
   }, [isOpen]);
 

@@ -1,10 +1,10 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice } from '@reduxjs/toolkit';
 
 export const locationDataSlice = createSlice({
-  name: "locationData",
+  name: 'locationData',
   initialState: {
-    province: "",
-    city: "",
+    province: '',
+    city: '',
   },
   reducers: {
     setProvince: (state, action) => {
@@ -13,9 +13,9 @@ export const locationDataSlice = createSlice({
     setCity: (state, action) => {
       state.city = action.payload;
     },
-    initLocation: (state) => {
-      state.province = localStorage.getItem("province") as string;
-      state.city = localStorage.getItem("city") as string;
+    initLocation: state => {
+      state.province = localStorage.getItem('province') as string;
+      state.city = localStorage.getItem('city') as string;
     },
   },
 });

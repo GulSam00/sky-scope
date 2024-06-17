@@ -1,16 +1,16 @@
-import { useState, useRef } from "react";
-import { useDispatch } from "react-redux";
-import { Map, MapMarker } from "react-kakao-maps-sdk";
+import { useState, useRef } from 'react';
+import { useDispatch } from 'react-redux';
+import { Map, MapMarker } from 'react-kakao-maps-sdk';
 
-import useKakaoLoader from "@src/useKakaoLoader";
-import SearchResultPagination from "./SearchResultPagination";
-import { transLocaleToCoord } from "@src/Util";
-import { ICoord } from "@src/API/getWeatherShort";
-import { close } from "@src/Store/kakaoModalSlice";
-import { setCity, setProvince } from "@src/Store/locationDataSlice";
+import useKakaoLoader from '@src/useKakaoLoader';
+import SearchResultPagination from './SearchResultPagination';
+import { transLocaleToCoord } from '@src/Util';
+import { ICoord } from '@src/API/getWeatherShort';
+import { close } from '@src/Store/kakaoModalSlice';
+import { setCity, setProvince } from '@src/Store/locationDataSlice';
 
-import { Form, Button, ListGroup } from "react-bootstrap";
-import styled from "styled-components";
+import { Form, Button, ListGroup } from 'react-bootstrap';
+import styled from 'styled-components';
 
 interface MarkerType {
   position: {
@@ -32,8 +32,8 @@ const KaKaoMap = ({ handleChangeCoord }: IProps) => {
   const [selectedMarker, setSelectedMarker] = useState<MarkerType | null>(null);
   const [mapLevel, setMapLevel] = useState<number>(3);
   const mapRef = useRef<kakao.maps.Map>(null);
-  const [searchWord, setSearchWord] = useState<string>("");
-  const searchRef = useRef<string>("");
+  const [searchWord, setSearchWord] = useState<string>('');
+  const searchRef = useRef<string>('');
 
   const [curPage, setCurPage] = useState<number>(1);
   const [maxPage, setMaxPage] = useState<number>(1);
@@ -42,7 +42,7 @@ const KaKaoMap = ({ handleChangeCoord }: IProps) => {
   useKakaoLoader();
 
   const handleInput = (e: any) => {
-    if (e.key === "Enter") e.preventDefault();
+    if (e.key === 'Enter') e.preventDefault();
     setSearchWord(e.target.value);
   };
 
@@ -50,7 +50,7 @@ const KaKaoMap = ({ handleChangeCoord }: IProps) => {
     setCurPage(1);
     searchPlaces(searchWord, 1);
     searchRef.current = searchWord;
-    setSearchWord("");
+    setSearchWord('');
   };
 
   const overMarkerPos = (marker: MarkerType) => {
@@ -100,18 +100,16 @@ const KaKaoMap = ({ handleChangeCoord }: IProps) => {
               },
               content: data[i].place_name,
             });
-            bounds.extend(
-              new kakao.maps.LatLng(Number(data[i].y), Number(data[i].x))
-            );
+            bounds.extend(new kakao.maps.LatLng(Number(data[i].y), Number(data[i].x)));
           }
           setMarkers([...markers]);
           map.setBounds(bounds);
         } else {
-          console.log("검색 결과가 없습니다.");
+          console.log('검색 결과가 없습니다.');
           setMarkers([]);
         }
       },
-      { size: 5, page: page }
+      { size: 5, page: page },
     );
   };
 
@@ -145,16 +143,16 @@ const KaKaoMap = ({ handleChangeCoord }: IProps) => {
       <FormContainer>
         <Form>
           <Form.Control
-            size="lg"
-            type="text"
-            placeholder="주소 입력"
+            size='lg'
+            type='text'
+            placeholder='주소 입력'
             value={searchWord}
             onChange={handleInput}
             onKeyDown={handleInput} // Handle key down event
           />
         </Form>
         <Button onClick={insertAddress}>확인</Button>
-        <CloseButton src="/x-circle.svg" onClick={() => dispatch(close())} />
+        <CloseButton src='/x-circle.svg' onClick={() => dispatch(close())} />
       </FormContainer>
 
       <Map
@@ -165,7 +163,7 @@ const KaKaoMap = ({ handleChangeCoord }: IProps) => {
         level={mapLevel}
         ref={mapRef}
         onCreate={setMap}
-        id="kakao-map"
+        id='kakao-map'
       >
         {markers.map((marker: MarkerType) => (
           <MapMarker position={marker.position} />
@@ -177,7 +175,7 @@ const KaKaoMap = ({ handleChangeCoord }: IProps) => {
           <ListGroup>
             {markers.map((marker: MarkerType, index: number) => (
               <ListGroup.Item
-                className={tempSelectedIndex === index ? "selected" : ""}
+                className={tempSelectedIndex === index ? 'selected' : ''}
                 key={index}
                 onMouseOver={() => overMarkerPos(marker)}
                 onMouseOut={handleHoverOut}
@@ -187,27 +185,21 @@ const KaKaoMap = ({ handleChangeCoord }: IProps) => {
               </ListGroup.Item>
             ))}
           </ListGroup>
-          <SearchResultPagination
-            curPage={curPage}
-            maxPage={maxPage}
-            handlePageMove={handlePageMove}
-          />
+          <SearchResultPagination curPage={curPage} maxPage={maxPage} handlePageMove={handlePageMove} />
         </MarkersContainer>
       )}
 
       {selectedMarker && (
         <ConfirmModal>
           <ConfirmModalContent>
-            <div className="content">
+            <div className='content'>
               [{selectedMarker.content}] 가 위치한 지역의
               <br />
               날씨 정보를 검색합니다.
             </div>
-            <div className="button">
-              <Button onClick={() => onClickMarker(selectedMarker)}>
-                확인
-              </Button>
-              <Button variant="light" onClick={handleClickModalCancel}>
+            <div className='button'>
+              <Button onClick={() => onClickMarker(selectedMarker)}>확인</Button>
+              <Button variant='light' onClick={handleClickModalCancel}>
                 취소
               </Button>
             </div>
@@ -239,8 +231,7 @@ const CloseButton = styled.img`
   width: 50px;
   height: 50px;
   margin-left: 10px;
-  filter: invert(35%) sepia(87%) saturate(5172%) hue-rotate(212deg)
-    brightness(105%) contrast(98%);
+  filter: invert(35%) sepia(87%) saturate(5172%) hue-rotate(212deg) brightness(105%) contrast(98%);
 `;
 
 const FormContainer = styled.div`

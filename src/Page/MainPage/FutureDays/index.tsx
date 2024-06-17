@@ -1,3 +1,3 @@
-import FutureDays from "./FutureDays";
+import FutureDays from './FutureDays';
 
 export default FutureDays;

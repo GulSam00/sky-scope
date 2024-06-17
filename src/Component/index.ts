@@ -1,4 +1,4 @@
-import TempLoading from "./TempLoading";
-import Layout from "./Layout";
+import TempLoading from './TempLoading';
+import Layout from './Layout';
 
 export { TempLoading, Layout };

@@ -1,3 +1,3 @@
-import RecentDays from "./RecentDays";
+import RecentDays from './RecentDays';
 
 export default RecentDays;

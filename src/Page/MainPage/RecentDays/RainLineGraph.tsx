@@ -1,8 +1,8 @@
-import { useState, useEffect } from "react";
-import { ResponsiveLine } from "@nivo/line";
+import { useState, useEffect } from 'react';
+import { ResponsiveLine } from '@nivo/line';
 
-import { styled } from "styled-components";
-import { IDateData } from "@src/API/getWeatherShort";
+import { styled } from 'styled-components';
+import { IDateData } from '@src/API/getWeatherShort';
 
 interface IProps {
   recentData: IDateData;
@@ -19,10 +19,10 @@ const RainLineGraph = ({ recentData, callbackLoadedData }: IProps) => {
   const [rainAmount, setRainAmount] = useState<rainDataTypes[]>([]);
   const data = [
     {
-      id: "강수확률(%)",
+      id: '강수확률(%)',
       data: rainProb,
     },
-    { id: "강수량(mm)", data: rainAmount },
+    { id: '강수량(mm)', data: rainAmount },
   ];
 
   const theme = {
@@ -49,7 +49,7 @@ const RainLineGraph = ({ recentData, callbackLoadedData }: IProps) => {
     const temp: rainDataTypes[] = [];
 
     for (let i = 0; i <= 2400; i += 100) {
-      const time = String(i).padStart(4, "0");
+      const time = String(i).padStart(4, '0');
       const value = recentData[time]?.POP;
       const hour = time.slice(0, 2);
 
@@ -64,13 +64,13 @@ const RainLineGraph = ({ recentData, callbackLoadedData }: IProps) => {
     const temp: rainDataTypes[] = [];
 
     for (let i = 0; i <= 2400; i += 100) {
-      const time = String(i).padStart(4, "0");
+      const time = String(i).padStart(4, '0');
       let value = recentData[time]?.PCP;
       const hour = time.slice(0, 2);
 
       if (value) {
-        if (value === "강수없음") value = "0";
-        else value = value.slice(0, value.indexOf("m"));
+        if (value === '강수없음') value = '0';
+        else value = value.slice(0, value.indexOf('m'));
         temp.push({ x: hour, y: Number(value) });
       }
     }
@@ -89,43 +89,43 @@ const RainLineGraph = ({ recentData, callbackLoadedData }: IProps) => {
         data={data}
         theme={theme}
         margin={{ top: 50, right: 180, bottom: 60, left: 60 }}
-        xScale={{ type: "point" }}
+        xScale={{ type: 'point' }}
         yScale={{
-          type: "linear",
+          type: 'linear',
           min: 0,
           max: 100,
           reverse: false,
         }}
-        yFormat=">-.2f"
+        yFormat='>-.2f'
         pointSize={10}
-        pointColor={{ theme: "background" }}
+        pointColor={{ theme: 'background' }}
         pointBorderWidth={2}
-        pointBorderColor={{ from: "serieColor" }}
+        pointBorderColor={{ from: 'serieColor' }}
         axisBottom={{
           tickSize: 5,
           tickPadding: 5,
           tickRotation: 0,
-          legend: "시간(시)",
+          legend: '시간(시)',
           legendOffset: 46,
-          legendPosition: "middle",
+          legendPosition: 'middle',
           truncateTickAt: 0,
         }}
         axisLeft={{
           tickSize: 5,
           tickPadding: 5,
           tickRotation: 0,
-          legend: "강수확률(%)",
+          legend: '강수확률(%)',
           legendOffset: -50,
-          legendPosition: "middle",
+          legendPosition: 'middle',
           truncateTickAt: 0,
         }}
         isInteractive={true}
         useMesh={true}
-        enableSlices="x"
+        enableSlices='x'
         legends={[
           {
-            anchor: "bottom-right",
-            direction: "column",
+            anchor: 'bottom-right',
+            direction: 'column',
             justify: true,
             translateX: 160,
             translateY: 0,
@@ -134,8 +134,8 @@ const RainLineGraph = ({ recentData, callbackLoadedData }: IProps) => {
             itemHeight: 40,
             itemOpacity: 0.9,
             symbolSize: 16,
-            symbolShape: "circle",
-            symbolBorderColor: "rgba(0, 0, 0, .5)",
+            symbolShape: 'circle',
+            symbolBorderColor: 'rgba(0, 0, 0, .5)',
           },
         ]}
         enableArea={true}

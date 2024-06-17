@@ -1,14 +1,14 @@
-import { useQuery } from "@tanstack/react-query";
-import { getWeatherLong } from "@src/API";
-import { IParseObj } from "@src/API/getWeatherLong";
+import { useQuery } from '@tanstack/react-query';
+import { getWeatherLong } from '@src/API';
+import { IParseObj } from '@src/API/getWeatherLong';
 
 const useLongDataQuery = (today: Date) => {
   const { data, isLoading, error } = useQuery<IParseObj | undefined>({
-    queryKey: ["long"],
+    queryKey: ['long'],
     queryFn: () => getWeatherLong(today),
     retry: 3,
     retryDelay: 3000,
-    });
+  });
 
   const dataArr = [];
 

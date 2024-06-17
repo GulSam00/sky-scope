@@ -1,3 +1,3 @@
-import MapModal from "./MapModal";
+import MapModal from './MapModal';
 
 export default MapModal;

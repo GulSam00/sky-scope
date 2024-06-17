@@ -1,4 +1,4 @@
-import MainPage from "./MainPage";
-import MapPage from "./MapPage";
+import MainPage from './MainPage';
+import MapPage from './MapPage';
 
 export { MainPage, MapPage };

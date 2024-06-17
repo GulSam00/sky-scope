@@ -1,21 +1,17 @@
-import { useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 
-import { ICoord } from "@src/API/getWeatherShort";
-import { useGeolocation, locationType } from "@src/Hook/useGeolocation";
-import { RootState } from "@src/Store/store";
-import { open } from "@src/Store/kakaoModalSlice";
-import {
-  setCity,
-  setProvince,
-  initLocation,
-} from "@src/Store/locationDataSlice";
-import { transLocaleToCoord, setLocalCoordInfo } from "@src/Util";
+import { ICoord } from '@src/API/getWeatherShort';
+import { useGeolocation, locationType } from '@src/Hook/useGeolocation';
+import { RootState } from '@src/Store/store';
+import { open } from '@src/Store/kakaoModalSlice';
+import { setCity, setProvince, initLocation } from '@src/Store/locationDataSlice';
+import { transLocaleToCoord, setLocalCoordInfo } from '@src/Util';
 
-import { Form, Button } from "react-bootstrap";
-import styled from "styled-components";
+import { Form, Button } from 'react-bootstrap';
+import styled from 'styled-components';
 
-import _short_local from "@src/JSON/short_api_locals.json";
+import _short_local from '@src/JSON/short_api_locals.json';
 const short_local = _short_local as ICoordJson;
 
 interface ICoordJson {
@@ -34,45 +30,43 @@ interface IProps {
 const LocationHeader = ({ handleChangeCoord }: IProps) => {
   const dispatch = useDispatch();
   const location: locationType = useGeolocation();
-  const { province, city } = useSelector(
-    (state: RootState) => state.locationDataSliceReducer
-  );
+  const { province, city } = useSelector((state: RootState) => state.locationDataSliceReducer);
 
   const onChangeProvince = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectProvince = e.target.value;
     dispatch(setProvince(selectProvince));
-    dispatch(setCity(""));
+    dispatch(setCity(''));
   };
 
   const onChangeCity = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectCity = e.target.value;
-    if (selectCity === "") return;
+    if (selectCity === '') return;
 
     const { x: nx, y: ny } = short_local[province][selectCity];
     if (setLocalCoordInfo({ nx, ny, province, city: selectCity })) {
-      localStorage.setItem("Geolng", "");
-      localStorage.setItem("Geolat", "");
+      localStorage.setItem('Geolng', '');
+      localStorage.setItem('Geolat', '');
       handleChangeCoord({ nx, ny });
       dispatch(setCity(selectCity));
-      localStorage.setItem("province", province);
-      localStorage.setItem("city", selectCity);
+      localStorage.setItem('province', province);
+      localStorage.setItem('city', selectCity);
     }
   };
 
   const currentLocation = async () => {
     if (location.loaded && location.coordinates) {
       let { lng, lat } = location.coordinates;
-      const prevLng = Number(localStorage.getItem("Geolng"));
-      const prevLat = Number(localStorage.getItem("Geolat"));
+      const prevLng = Number(localStorage.getItem('Geolng'));
+      const prevLat = Number(localStorage.getItem('Geolat'));
       lng = Number(lng.toFixed(7));
       lat = Number(lat.toFixed(7));
 
       if (prevLng === lng && prevLat === lat) {
-        alert("이미 현재 위치 정보입니다.");
+        alert('이미 현재 위치 정보입니다.');
         return;
       }
-      localStorage.setItem("Geolng", lng.toString());
-      localStorage.setItem("Geolat", lat.toString());
+      localStorage.setItem('Geolng', lng.toString());
+      localStorage.setItem('Geolat', lat.toString());
 
       const result = await transLocaleToCoord({ lng, lat });
       if (result) {
@@ -82,7 +76,7 @@ const LocationHeader = ({ handleChangeCoord }: IProps) => {
         handleChangeCoord({ nx, ny });
       }
     } else {
-      alert("현재 위치 정보를 가져올 수 없습니다.");
+      alert('현재 위치 정보를 가져올 수 없습니다.');
     }
   };
 
@@ -94,23 +88,22 @@ const LocationHeader = ({ handleChangeCoord }: IProps) => {
     <LocationHeaderContainer>
       <LocationHeaderSelector>
         <Form.Select onChange={onChangeProvince} value={province}>
-          <option value="">선택</option>
+          <option value=''>선택</option>
 
-          {Object.keys(short_local).map((key) => {
+          {Object.keys(short_local).map(key => {
             return <option value={key}>{key}</option>;
           })}
         </Form.Select>
         <Form.Select onChange={onChangeCity} value={city}>
-          <option value="">선택</option>
+          <option value=''>선택</option>
           {province &&
-            Object.keys(short_local[province]).map((key) => {
+            Object.keys(short_local[province]).map(key => {
               return <option value={key}>{key}</option>;
             })}
         </Form.Select>
         <text>의 날씨는?</text>
       </LocationHeaderSelector>
       <LocationHeaderButtons>
-
         <Button onClick={() => currentLocation()}>현재 위치로 설정</Button>
         <Button onClick={() => dispatch(open())}>지도에서 선택하기</Button>
       </LocationHeaderButtons>

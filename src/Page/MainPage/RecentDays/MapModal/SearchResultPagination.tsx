@@ -1,18 +1,14 @@
-import { Pagination } from "react-bootstrap";
-import styled from "styled-components";
+import { Pagination } from 'react-bootstrap';
+import styled from 'styled-components';
 interface IProps {
   curPage: number;
   maxPage: number;
   handlePageMove: (page: number) => void;
 }
-const SearchResultPagination = ({
-  curPage,
-  maxPage,
-  handlePageMove,
-}: IProps) => {
+const SearchResultPagination = ({ curPage, maxPage, handlePageMove }: IProps) => {
   return (
     <PaginationContainer>
-      <Pagination size="lg">
+      <Pagination size='lg'>
         <Pagination.Prev onClick={() => handlePageMove(curPage - 1)} />
         {/* 5개 단위로 보여줌 */}
         {Array.from({ length: 5 }, (_, index) => {
