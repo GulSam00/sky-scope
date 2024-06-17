@@ -1,5 +1,6 @@
+import getWeatherLive from "./getWeatherLive";
 import getWeatherShort from "./getWeatherShort";
 import getWeatherLong from "./getWeatherLong";
 import getKakaoLocal from "./getKakaoLocal";
 
-export { getWeatherShort, getWeatherLong, getKakaoLocal };
+export { getWeatherLive, getWeatherShort, getWeatherLong, getKakaoLocal };

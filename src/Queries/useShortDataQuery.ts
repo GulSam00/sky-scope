@@ -5,8 +5,6 @@ import { getWeatherShort } from "@src/API";
 import { IParseObj, ICoord } from "@src/API/getWeatherShort";
 
 const useShortDataQuery = (today: Date, location: ICoord) => {
-  // console.log("useShortDataQuery 호출");
-
   const { data, isLoading, error, status, refetch } = useQuery<
     IParseObj | undefined
   >({
@@ -14,7 +12,7 @@ const useShortDataQuery = (today: Date, location: ICoord) => {
     queryFn: () => getWeatherShort(today, location),
     enabled: false, // Disable automatic data fetching
     retry: 3,
-    retryDelay: 30000,
+    retryDelay: 3000,
   });
 
   // 왜 refetch를 사용할 때 성능이 더 좋을까?

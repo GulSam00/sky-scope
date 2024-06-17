@@ -2,7 +2,7 @@ import {
     createBrowserRouter,
 } from "react-router-dom";
 
-import { MainPage } from "@src/Page";
+import { MainPage, MapPage } from "@src/Page";
 import { Layout } from "@src/Component";
 
 const BrowserRouter = createBrowserRouter([
@@ -16,7 +16,7 @@ const BrowserRouter = createBrowserRouter([
             },
             {
                 path: "/map",
-                element: <MainPage />,
+                element: <MapPage />,
             }
         ],
     },

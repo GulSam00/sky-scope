@@ -110,6 +110,7 @@ const LocationHeader = ({ handleChangeCoord }: IProps) => {
         <text>의 날씨는?</text>
       </LocationHeaderSelector>
       <LocationHeaderButtons>
+
         <Button onClick={() => currentLocation()}>현재 위치로 설정</Button>
         <Button onClick={() => dispatch(open())}>지도에서 선택하기</Button>
       </LocationHeaderButtons>

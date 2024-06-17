@@ -12,17 +12,8 @@ const instance: AxiosInstance = axios.create({
   },
 });
 
-// type ITimeData = Record<VaildCategory, string >; // Modify the value to allow array or single value
-export interface ITimeData {
-  [category: string]: string;
-}
-
-export interface IDateData {
-  [fcstTime: string]: ITimeData;
-}
-
 export interface IParseObj {
-  [fcstDate: string]: IDateData;
+  [category: string]: string;
 }
 
 export interface ICoord {
@@ -34,18 +25,18 @@ interface IItem {
   baseDate: string;
   baseTime: string;
   category: string;
-  fcstDate: string;
-  fcstTime: string;
-  fcstValue: string;
+  obsrValue: string;
   nx: number;
   ny: number;
 }
+
+
 
 const params = {
   serviceKey: serviceKey,
   dataType: "JSON",
   base_date: "",
-  base_time: "0500",
+  base_time: "",
   numOfRows: "1000",
   nx: 0,
   ny: 0,
@@ -53,43 +44,37 @@ const params = {
 // nx와 ny를 조절해서 지역을 변경할 수 있어야 함
 
 const isVaildCategory = (category: string) => {
-  const vaildCategory = ["SKY", "POP", "PCP", "TMP", "TMN", "TMX"];
+  const vaildCategory = ["T1H", "REH","RN1", "PTY"];
   return vaildCategory.includes(category);
 };
 
-const getWeatherShort = async (
+const getWeatherLive = async (
   base_date: Date,
   location: ICoord
 ): Promise<IParseObj | undefined> => {
-  const url = "/getVilageFcst";
+  const url = "/getUltraSrtNcst";
   const date = format(base_date, "yyyyMMdd");
+  const time = format(base_date, "HH");
+
   params.base_date = date;
+  params.base_time = time + "00";
   params.nx = location.nx;
   params.ny = location.ny;
+
+  const items : IParseObj = {};
   try {
     const response = await instance.get(url, { params });
-    const dataArr = response.data.response.body.items.item;
-    const parseArr: IParseObj = {};
-    let count = 0;
+     const dataArr = response.data.response.body.items.item;
+      console.log(dataArr);
+     dataArr.forEach((item: IItem) => {
+        const { category, obsrValue } = item;
+        if (isVaildCategory(category)) 
+          items[category] = obsrValue;
+     });
+     console.log("parsed : ",items);
+  
+     return items;
 
-    dataArr.forEach((item: IItem) => {
-      const { fcstDate, fcstTime } = item;
-      if (!parseArr[fcstDate]) {
-        // 오늘부터 최대 3일치만 가져옴
-        if (count > 2) return;
-        parseArr[fcstDate] = {};
-        count++;
-      }
-
-      if (!parseArr[fcstDate][fcstTime]) {
-        parseArr[fcstDate][fcstTime] = {};
-      }
-
-      const { category, fcstValue } = item;
-      if (isVaildCategory(category))
-        parseArr[fcstDate][fcstTime][category] = fcstValue;
-    });
-    return parseArr;
   } catch (e) {
     let message;
     if (e instanceof Error) message = e.message;
@@ -98,4 +83,4 @@ const getWeatherShort = async (
   }
 };
 
-export default getWeatherShort;
+export default getWeatherLive;

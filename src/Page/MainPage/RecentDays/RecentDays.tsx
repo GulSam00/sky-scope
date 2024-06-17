@@ -8,7 +8,10 @@ import EmptyGraph from "./EmptyGraph";
 import RecentDay from "./RecentDay";
 
 import { RootState } from "@src/Store/store";
-import { useShortDataQuery } from "@src/Queries";
+import { useShortDataQuery, useLiveDataQuery } from "@src/Queries";
+
+import { getWeatherLive } from "@src/API";
+
 import { ICoord } from "@src/API/getWeatherShort";
 import { loadingData, setCoord } from "@src/Store/shortDataSlice";
 
@@ -28,6 +31,8 @@ const RecentDays = () => {
   );
 
   const { data, date } = useShortDataQuery(today, coord);
+  const { data: dd } = useLiveDataQuery(today, coord, "temp");
+  console.log("dd", dd);
 
   const handleChangeCoord = (coord: ICoord) => {
     dispatch(loadingData());

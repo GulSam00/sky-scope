@@ -6,7 +6,10 @@ const useLongDataQuery = (today: Date) => {
   const { data, isLoading, error } = useQuery<IParseObj | undefined>({
     queryKey: ["long"],
     queryFn: () => getWeatherLong(today),
-  });
+    retry: 3,
+    retryDelay: 3000,
+    });
+
   const dataArr = [];
 
   // data가 있으면 파싱해서 넘겨주기
