@@ -8,7 +8,10 @@ const Layout = () => {
     <NavContainer>
       <Nav variant='tabs'>
         <Nav.Item>
-          <Nav.Link href='/'>차트</Nav.Link>
+          <Nav.Link href='/'>temp</Nav.Link>
+        </Nav.Item>
+        <Nav.Item>
+          <Nav.Link href='/chart'>차트</Nav.Link>
         </Nav.Item>
         <Nav.Item>
           <Nav.Link href='/map'>지도</Nav.Link>
