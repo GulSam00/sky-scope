@@ -1,0 +1,23 @@
+{
+    "root": true,
+    "plugins": [
+      "@typescript-eslint",
+      "prettier"
+    ],
+    "extends": [
+      "eslint:recommended",
+      "plugin:@typescript-eslint/recommended",
+      "plugin:prettier/recommended"
+    ],
+    "parser": "@typescript-eslint/parser",
+    "rules": {
+      "@typescript-eslint/strict-boolean-expressions": [
+        "error",
+        {
+          "allowString": false,
+          "allowNumber": false
+        }
+      ],
+      "prettier/prettier": "error"
+    }
+  }

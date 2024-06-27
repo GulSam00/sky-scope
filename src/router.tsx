@@ -9,7 +9,7 @@ const TempPage = () => {
       <h1>Temp Page</h1>
     </div>
   );
-}
+};
 
 const BrowserRouter = createBrowserRouter([
   {
