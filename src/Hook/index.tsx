@@ -1,3 +1,4 @@
-import { useGeolocation } from './useGeolocation';
+import useGeolocation from './useGeolocation';
+import useKakaoLoader from './useKakaoLoader';
 
-export { useGeolocation };
+export { useGeolocation, useKakaoLoader };

@@ -1,7 +1,7 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { Map, MapMarker } from 'react-kakao-maps-sdk';
-import useKakaoLoader from '@src/useKakaoLoader';
+import { useKakaoLoader } from '@src/Hook';
 
 import { transLocaleToCoord } from '@src/Util';
 import { useLiveDataQuery } from '@src/Queries';
@@ -31,7 +31,8 @@ const MapPage = () => {
   const [curPage, setCurPage] = useState<number>(1);
   const [maxPage, setMaxPage] = useState<number>(1);
 
-  useKakaoLoader();
+  const { kakaoLoading, kakaoError } = useKakaoLoader();
+  const dispatch = useDispatch();
 
   const handleInput = (e: any) => {
     if (e.key === 'Enter') e.preventDefault();
@@ -121,6 +122,7 @@ const MapPage = () => {
     setTempSelectedIndex(-1);
   };
 
+  useEffect(() => {}, []);
   return (
     <MapContainer>
       <FormContainer>

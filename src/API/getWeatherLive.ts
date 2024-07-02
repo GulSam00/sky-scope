@@ -61,7 +61,7 @@ const getWeatherLive = async (base_date: Date, location: ICoord): Promise<IParse
   try {
     const response = await instance.get(url, { params });
     const dataArr = response.data.response.body.items.item;
-    console.log(dataArr);
+    console.log('getWeatherLive : ', dataArr);
     dataArr.forEach((item: IItem) => {
       const { category, obsrValue } = item;
       if (isVaildCategory(category)) items[category] = obsrValue;

@@ -2,7 +2,8 @@ import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { ICoord } from '@src/API/getWeatherShort';
-import { useGeolocation, locationType } from '@src/Hook/useGeolocation';
+import { useGeolocation } from '@src/Hook';
+import { locationType } from '@src/Hook/useGeolocation';
 import { RootState } from '@src/Store/store';
 import { open } from '@src/Store/kakaoModalSlice';
 import { setCity, setProvince, initLocation } from '@src/Store/locationDataSlice';

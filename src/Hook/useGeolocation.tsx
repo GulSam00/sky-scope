@@ -6,7 +6,7 @@ export interface locationType {
   error?: { code: number; message: string };
 }
 
-export const useGeolocation = () => {
+const useGeolocation = () => {
   const [location, setLocation] = useState<locationType>({
     loaded: false,
     coordinates: { lat: 0, lng: 0 },
@@ -45,3 +45,5 @@ export const useGeolocation = () => {
 
   return location;
 };
+
+export default useGeolocation;

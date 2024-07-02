@@ -2,7 +2,7 @@ import { useState, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import { Map, MapMarker } from 'react-kakao-maps-sdk';
 
-import useKakaoLoader from '@src/useKakaoLoader';
+import { useKakaoLoader } from '@src/Hook';
 import SearchResultPagination from './SearchResultPagination';
 import { transLocaleToCoord } from '@src/Util';
 import { ICoord } from '@src/API/getWeatherShort';

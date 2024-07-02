@@ -42,7 +42,6 @@ const TempertureLineGraph = ({ recentData, callbackLoadedData }: IProps) => {
   };
 
   const initTempertureData = () => {
-    console.log('initTempertureData');
     const temp: tempertureDataTypes[] = [];
     for (let i = 0; i <= 2400; i += 100) {
       const time = String(i).padStart(4, '0');
@@ -91,7 +90,7 @@ const TempertureLineGraph = ({ recentData, callbackLoadedData }: IProps) => {
         }}
         axisLeft={{
           tickSize: 5,
-          tickPadding: 5,
+          tickPadding: 0,
           tickRotation: 0,
           legend: '온도(°C)',
           legendOffset: -50,
