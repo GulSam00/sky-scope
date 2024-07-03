@@ -30,15 +30,15 @@ const transLocaleToCoord = async (position: ICoord) => {
   const result = await getKakaoLocal.getKakaoSearchCoord(position.lng, position.lat);
 
   if (!result) return null;
-
   const province = transName(result.region_1depth_name);
   const city = result.region_2depth_name.replace(' ', '');
   const address = result.address_name;
+  const code = result.code;
 
   const { x: nx, y: ny } = short_local[province][city];
 
   if (setLocalCoordInfo({ nx, ny, province, city })) {
-    return { nx, ny, province, city, address };
+    return { nx, ny, province, city, address, code };
   } else return null;
 };
 

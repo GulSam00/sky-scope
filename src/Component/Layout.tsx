@@ -5,32 +5,41 @@ import { styled } from 'styled-components';
 
 const Layout = () => {
   return (
-    <NavContainer>
-      <Nav variant='tabs'>
-        <Nav.Item>
-          <Nav.Link href='/'>temp</Nav.Link>
-        </Nav.Item>
-        <Nav.Item>
-          <Nav.Link href='/chart'>차트</Nav.Link>
-        </Nav.Item>
-        <Nav.Item>
-          <Nav.Link href='/map'>지도</Nav.Link>
-        </Nav.Item>
-      </Nav>
+    <LayoutContainer>
+      <NavContainer>
+        <Nav variant='tabs'>
+          <Nav.Item>
+            <Nav.Link href='/'>temp</Nav.Link>
+          </Nav.Item>
+          <Nav.Item>
+            <Nav.Link href='/chart'>차트</Nav.Link>
+          </Nav.Item>
+          <Nav.Item>
+            <Nav.Link href='/map'>지도</Nav.Link>
+          </Nav.Item>
+        </Nav>
+      </NavContainer>
+
       <ContentContainer>
         <Outlet />
       </ContentContainer>
-    </NavContainer>
+    </LayoutContainer>
   );
 };
 
 export default Layout;
 
-const NavContainer = styled.div`
+const LayoutContainer = styled.div`
   position: relative;
-  top: 0;
+  width: 100%;
+  margin-top: 64px;
+`;
+const NavContainer = styled.div`
+  position: fixed;
   z-index: 1000;
   width: 100%;
+  top: 0;
+  background-color: white;
 `;
 
 const ContentContainer = styled.div``;

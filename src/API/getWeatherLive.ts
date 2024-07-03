@@ -66,6 +66,7 @@ const getWeatherLive = async (base_date: Date, location: ICoord): Promise<IParse
       const { category, obsrValue } = item;
       if (isVaildCategory(category)) items[category] = obsrValue;
     });
+
     console.log('parsed : ', items);
 
     return items;

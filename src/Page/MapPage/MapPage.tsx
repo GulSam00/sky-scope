@@ -1,15 +1,16 @@
 import { useState, useRef, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
 import { Map, MapMarker } from 'react-kakao-maps-sdk';
-import { useKakaoLoader } from '@src/Hook';
 
 import { transLocaleToCoord } from '@src/Util';
 import { useLiveDataQuery } from '@src/Queries';
+import { useKakaoLoader } from '@src/Hook';
+import { LoadingState } from '@src/Component';
 
-import { Form, Button, ListGroup } from 'react-bootstrap';
+import { Form, Button } from 'react-bootstrap';
 import styled from 'styled-components';
+import MarkersFooter from './MarkersFooter';
 
-interface MarkerType {
+export interface MarkerType {
   position: {
     lat: number;
     lng: number;
@@ -20,22 +21,24 @@ interface MarkerType {
 const MapPage = () => {
   const [map, setMap] = useState<kakao.maps.Map | null>(null);
   const [markers, setMarkers] = useState<MarkerType[]>([]);
-  const [tempSelectedIndex, setTempSelectedIndex] = useState<number>(-1);
-
   const [selectedMarker, setSelectedMarker] = useState<MarkerType | null>(null);
-  const [mapLevel, setMapLevel] = useState<number>(3);
+
   const mapRef = useRef<kakao.maps.Map>(null);
   const [searchWord, setSearchWord] = useState<string>('');
   const searchRef = useRef<string>('');
 
   const [curPage, setCurPage] = useState<number>(1);
   const [maxPage, setMaxPage] = useState<number>(1);
-
   const { kakaoLoading, kakaoError } = useKakaoLoader();
-  const dispatch = useDispatch();
+  const result = useLiveDataQuery(new Date(), selectedMarker);
 
   const handleInput = (e: any) => {
-    if (e.key === 'Enter') e.preventDefault();
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      if (!e.target.value) return;
+      insertAddress();
+      return;
+    }
     setSearchWord(e.target.value);
   };
 
@@ -46,25 +49,19 @@ const MapPage = () => {
     setSearchWord('');
   };
 
-  const overMarkerPos = (marker: MarkerType) => {
-    if (!map) return;
-
-    // 마우스로 hover된 마커의 위치를 기준으로 지도 범위를 재설정
-    const position = marker.position;
-    map.setLevel(2);
-    setMapLevel(map.getLevel());
-
-    map.panTo(new kakao.maps.LatLng(position.lat, position.lng));
-  };
-
   const onClickMarker = async (marker: MarkerType) => {
     if (!map) return;
     const position = marker.position;
     const result = await transLocaleToCoord(position);
 
-    if (result) {
-      const { nx, ny, province, city } = result;
+    if (!result) {
+      return;
     }
+    const { nx, ny, province, city, code } = result;
+    const prasedPosition = { lat: ny, lng: nx };
+    const content = code;
+    console.log('result : ', result);
+    setSelectedMarker({ position: prasedPosition, content });
   };
 
   const searchPlaces = (keyword: string, page: number) => {
@@ -94,37 +91,24 @@ const MapPage = () => {
           setMarkers([...markers]);
           map.setBounds(bounds);
         } else {
-          console.log('검색 결과가 없습니다.');
-          setMarkers([]);
+          alert('검색 결과가 없습니다.');
+          // setMarkers([]);
         }
       },
-      { size: 15, page: page },
+      { size: 5, page: page },
     );
   };
 
-  const handleHoverOut = () => {
-    if (!map) return;
-    overMarkerPos(markers[tempSelectedIndex]);
-  };
-
-  const handleClickMarker = (index: number) => {
-    if (tempSelectedIndex === index) {
-      setSelectedMarker(markers[index]);
-    } else {
-      setTempSelectedIndex(index);
-    }
-  };
-
-  const handlePageMove = (page: number) => {
+  const handlePageMove = (weight: number) => {
+    const page = curPage + weight;
     if (page < 1 || page > maxPage) return;
     setCurPage(page);
     searchPlaces(searchRef.current, page);
-    setTempSelectedIndex(-1);
   };
 
-  useEffect(() => {}, []);
   return (
     <MapContainer>
+      {kakaoLoading && <LoadingState />}
       <FormContainer>
         <Form>
           <Form.Control
@@ -139,38 +123,28 @@ const MapPage = () => {
         <Button onClick={insertAddress}>확인</Button>
       </FormContainer>
 
-      {markers.length > 0 && (
-        <MarkersContainer>
-          <ListGroup>
-            {markers.map((marker: MarkerType, index: number) => (
-              <ListGroup.Item
-                className={tempSelectedIndex === index ? 'selected' : ''}
-                key={index}
-                onMouseOver={() => overMarkerPos(marker)}
-                onMouseOut={handleHoverOut}
-                onClick={() => handleClickMarker(index)}
-              >
-                {marker.content}
-              </ListGroup.Item>
-            ))}
-          </ListGroup>
-        </MarkersContainer>
-      )}
+      <KakaoMapContainer>
+        <Map
+          center={{
+            lat: 37.566826,
+            lng: 126.9786567,
+          }}
+          // level={mapLevel}
+          ref={mapRef}
+          onCreate={setMap}
+          id='kakao-map'
+        >
+          {markers.map((marker: MarkerType, index: number) => (
+            <MapMarker
+              key={'marker' + index}
+              position={marker.position}
+              onClick={() => console.log('marker : ', marker)}
+            />
+          ))}
+        </Map>
+      </KakaoMapContainer>
 
-      <Map
-        center={{
-          lat: 37.566826,
-          lng: 126.9786567,
-        }}
-        level={mapLevel}
-        ref={mapRef}
-        onCreate={setMap}
-        id='kakao-map'
-      >
-        {markers.map((marker: MarkerType) => (
-          <MapMarker position={marker.position} onClick={() => console.log('marker : ', marker)} />
-        ))}
-      </Map>
+      <MarkersFooter map={map} markers={markers} handlePageMove={handlePageMove} onClickMarker={onClickMarker} />
     </MapContainer>
   );
 };
@@ -178,18 +152,23 @@ const MapPage = () => {
 export default MapPage;
 
 const MapContainer = styled.div`
-  #kakao-map {
-    display: flex;
+  overflow: auto;
+  border-radius: 16px;
+`;
 
-    min-height: 100vh;
+const KakaoMapContainer = styled.div`
+  margin: 16px;
+  #kakao-map {
+    height: 70vh;
     width: 100%;
   }
 `;
+
 const FormContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-bottom: 30px;
+  margin: 0 16px;
 
   form {
     flex-grow: 1;
@@ -199,20 +178,5 @@ const FormContainer = styled.div`
   button {
     min-width: 80px;
     min-height: 40px;
-  }
-`;
-
-const MarkersContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  * {
-    cursor: pointer;
-    border-radius: 0;
-  }
-  .selected {
-    // blue selected highlight
-    background-color: #0d6efd;
-    color: white;
-    border: 1px solid white;
   }
 `;

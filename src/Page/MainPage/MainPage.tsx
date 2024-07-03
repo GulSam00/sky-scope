@@ -2,8 +2,7 @@ import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
 import RecentDays from './RecentDays';
-// import FutureDays from "./FutureDays";
-import LoadingState from './LoadingState';
+import { LoadingState } from '@src/Component';
 import { RootState } from '@src/Store/store';
 
 import { styled } from 'styled-components';
@@ -25,7 +24,6 @@ const MainPage = () => {
       {isLoading && <LoadingState />}
 
       <RecentDays />
-      {/* <FutureDays /> */}
     </DayContainer>
   );
 };
