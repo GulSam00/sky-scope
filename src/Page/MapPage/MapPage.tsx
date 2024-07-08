@@ -2,26 +2,20 @@ import { useState, useRef, useEffect } from 'react';
 import { Map, MapMarker } from 'react-kakao-maps-sdk';
 
 import { transLocaleToCoord } from '@src/Util';
-import { useLiveDataQuery } from '@src/Queries';
 import { useKakaoLoader } from '@src/Hook';
 import { LoadingState } from '@src/Component';
+import { MarkerType } from '@src/Queries/useLiveDataQuery';
 
 import { Form, Button } from 'react-bootstrap';
 import styled from 'styled-components';
 import MarkersFooter from './MarkersFooter';
-
-export interface MarkerType {
-  position: {
-    lat: number;
-    lng: number;
-  };
-  content: string;
-}
+import MarkerWeather from './MarkerWeather';
 
 const MapPage = () => {
   const [map, setMap] = useState<kakao.maps.Map | null>(null);
   const [markers, setMarkers] = useState<MarkerType[]>([]);
   const [selectedMarker, setSelectedMarker] = useState<MarkerType | null>(null);
+  const [bookmarkedMarker, setBookmarkedMarker] = useState<MarkerType[]>([]);
 
   const mapRef = useRef<kakao.maps.Map>(null);
   const [searchWord, setSearchWord] = useState<string>('');
@@ -29,8 +23,8 @@ const MapPage = () => {
 
   const [curPage, setCurPage] = useState<number>(1);
   const [maxPage, setMaxPage] = useState<number>(1);
+
   const { kakaoLoading, kakaoError } = useKakaoLoader();
-  const result = useLiveDataQuery(new Date(), selectedMarker);
 
   const handleInput = (e: any) => {
     if (e.key === 'Enter') {
@@ -59,9 +53,8 @@ const MapPage = () => {
     }
     const { nx, ny, province, city, code } = result;
     const prasedPosition = { lat: ny, lng: nx };
-    const content = code;
-    console.log('result : ', result);
-    setSelectedMarker({ position: prasedPosition, content });
+    const content = marker.content;
+    setSelectedMarker({ position: prasedPosition, code, province, city, content });
   };
 
   const searchPlaces = (keyword: string, page: number) => {
@@ -109,6 +102,7 @@ const MapPage = () => {
   return (
     <MapContainer>
       {kakaoLoading && <LoadingState />}
+      {selectedMarker && <MarkerWeather marker={selectedMarker} />}
       <FormContainer>
         <Form>
           <Form.Control

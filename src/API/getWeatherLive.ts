@@ -42,8 +42,9 @@ const params = {
 // nx와 ny를 조절해서 지역을 변경할 수 있어야 함
 
 const isVaildCategory = (category: string) => {
-  const vaildCategory = ['T1H', 'REH', 'RN1', 'PTY'];
-  // T1H : 기온, REH : 습도, RN1 : 1시간 강수량, PTY : 강수형태
+  const vaildCategory = ['T1H', 'PTY', 'RN1'];
+  // T1H : 기온, REH : 습도,  PTY : 강수형태, RN1 : 1시간 강수량
+  // PTY 종류 : 없음(0), 비(1), 비/눈(2), 눈(3), 빗방울(5), 빗방울눈날림(6), 눈날림(7)
   return vaildCategory.includes(category);
 };
 
@@ -58,10 +59,10 @@ const getWeatherLive = async (base_date: Date, location: ICoord): Promise<IParse
   params.ny = location.ny;
 
   const items: IParseObj = {};
+
   try {
     const response = await instance.get(url, { params });
     const dataArr = response.data.response.body.items.item;
-    console.log('getWeatherLive : ', dataArr);
     dataArr.forEach((item: IItem) => {
       const { category, obsrValue } = item;
       if (isVaildCategory(category)) items[category] = obsrValue;
