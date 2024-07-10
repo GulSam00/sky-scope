@@ -21,11 +21,11 @@ const BrowserRouter = createBrowserRouter([
         element: <TempPage />,
       },
       {
-        path: '/chart',
+        path: '/short',
         element: <MainPage />,
       },
       {
-        path: '/map',
+        path: '/live',
         element: <MapPage />,
       },
     ],

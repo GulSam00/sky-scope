@@ -1,5 +1,5 @@
 import axios, { AxiosInstance } from 'axios';
-import { format } from 'date-fns';
+import { format, getMinutes, subHours } from 'date-fns';
 
 const url: string = import.meta.env.VITE_API_SHORT_URL;
 const serviceKey: string = import.meta.env.VITE_API_SERVICE_KEY;
@@ -51,10 +51,12 @@ const isVaildCategory = (category: string) => {
 const getWeatherLive = async (base_date: Date, location: ICoord): Promise<IParseObj | undefined> => {
   const url = '/getUltraSrtNcst';
   const date = format(base_date, 'yyyyMMdd');
-  const time = format(base_date, 'HH');
+  // 10분 이전이면 1시간 전 데이터를 가져옴
+  if (getMinutes(base_date) <= 10) base_date = subHours(base_date, 1);
+  const hour = format(base_date, 'HH');
 
   params.base_date = date;
-  params.base_time = time + '00';
+  params.base_time = hour + '00';
   params.nx = location.nx;
   params.ny = location.ny;
 
@@ -67,8 +69,6 @@ const getWeatherLive = async (base_date: Date, location: ICoord): Promise<IParse
       const { category, obsrValue } = item;
       if (isVaildCategory(category)) items[category] = obsrValue;
     });
-
-    console.log('parsed : ', items);
 
     return items;
   } catch (e) {

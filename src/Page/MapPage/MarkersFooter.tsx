@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { MarkerType } from './MapPage';
+import { MarkerType } from '@src/Queries/useLiveDataQuery';
 
 import styled from 'styled-components';
 import { CaretLeft, CaretRight } from 'react-bootstrap-icons';
@@ -72,15 +72,15 @@ const MarkersContainer = styled.div`
   position: fixed;
   bottom: 16px;
   z-index: 1;
-
-  background-color: blue;
 `;
 
 const MarkerGroup = styled.div`
   display: flex;
-  background-color: white;
   justify-content: center;
 
+  div {
+    background-color: white;
+  }
   .selected {
     background-color: #0d6efd;
     color: white;

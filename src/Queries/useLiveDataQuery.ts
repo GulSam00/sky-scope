@@ -12,6 +12,7 @@ export interface MarkerType {
   province: string;
   city: string;
   content: string;
+  isBookmarked: boolean;
 }
 
 const useLiveDataQuery = (today: Date, marker: MarkerType | null) => {

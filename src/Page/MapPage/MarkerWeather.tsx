@@ -1,27 +1,121 @@
 import { useLiveDataQuery } from '@src/Queries';
 import { MarkerType } from '@src/Queries/useLiveDataQuery';
 
-const MarkerWeather = ({ marker }: { marker: MarkerType }) => {
-  const result = useLiveDataQuery(new Date(), marker);
-  const data = result.data;
-  console.log('test : ', data);
-  return (
-    <div>
-      {result.isLoading && <p>Loading...</p>}
-      {result.error && <p>Error: {result.error.message}</p>}
-      {result.data && (
-        <div>
-          <p>지역: {result.data.province}</p>
-          <p>도시: {result.data.city}</p>
-          <p>장소 : {result.data.content}</p>
+import { LoadingState } from '@src/Component';
+import { styled } from 'styled-components';
 
-          <p>기온: {result.data.T1H}°C</p>
-          <p>강수량: {result.data.RN1}mm</p>
-          <p>강수형태: {result.data.PTY}</p>
+import {
+  Star,
+  StarFill,
+  ThermometerHigh,
+  BrightnessHigh,
+  CloudRain,
+  CloudRainFill,
+  CloudSleet,
+  CloudSleetFill,
+  CloudSnow,
+  CloudSnowFill,
+} from 'react-bootstrap-icons';
+
+interface Props {
+  marker: MarkerType;
+  isBookmarked: boolean;
+}
+const MarkerWeather = ({ marker, isBookmarked }: Props) => {
+  const result = useLiveDataQuery(new Date(), marker);
+
+  const transformSkyCode = (code: string) => {
+    switch (Number(code)) {
+      case 1:
+        return <CloudRainFill />;
+      case 2:
+        return <CloudSleetFill />;
+      case 3:
+        return <CloudSnowFill />;
+      case 5:
+        return <CloudRain />;
+      case 6:
+        return <CloudSleet />;
+      case 7:
+        return <CloudSnow />;
+      default:
+        return <BrightnessHigh />;
+    }
+  };
+
+  const handleClickBookmark = () => {
+    // 북마크
+  };
+
+  return (
+    <MarkerWeatherContainer>
+      {!result.isLoading && result.data ? (
+        <div>
+          <div className='bookmark' onClick={handleClickBookmark}>
+            {isBookmarked ? <StarFill /> : <Star />}
+          </div>
+          <div className='location'>
+            {result.data.province} {result.data.city}
+          </div>
+          <div className='place'>{result.data.content}</div>
+          <div className='content'>
+            <div>
+              <ThermometerHigh />
+              <div>{result.data.T1H}°C</div>
+            </div>
+          </div>
+
+          <div className='content'>
+            <div>
+              <div>{transformSkyCode(result.data.SKY1)}</div>
+              <div>{result.data.RN1}mm</div>
+            </div>
+          </div>
         </div>
+      ) : (
+        <LoadingState />
       )}
-    </div>
+    </MarkerWeatherContainer>
   );
 };
 
 export default MarkerWeather;
+
+const MarkerWeatherContainer = styled.div`
+  position: relative;
+  width: 200px;
+  height: 120px;
+  padding: 10px;
+  border: 1px solid #0d6efd;
+  border-radius: 5px;
+  font-size: 18px;
+  white-space: nowrap;
+
+  .bookmark {
+    position: absolute;
+    right: 10px;
+    display: flex;
+    align-items: start;
+    cursor: pointer;
+  }
+
+  .location {
+    font-size: 14px;
+    font-weight: 400;
+  }
+  .place {
+    font-size: 18px;
+    font-weight: 600;
+  }
+
+  .content {
+    display: flex;
+    flex-direction: column;
+
+    > div {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+    }
+  }
+`;

@@ -15,7 +15,7 @@ const MapPage = () => {
   const [map, setMap] = useState<kakao.maps.Map | null>(null);
   const [markers, setMarkers] = useState<MarkerType[]>([]);
   const [selectedMarker, setSelectedMarker] = useState<MarkerType | null>(null);
-  const [bookmarkedMarker, setBookmarkedMarker] = useState<MarkerType[]>([]);
+  const [currentMarkers, setCurrentMarkers] = useState<MarkerType[]>([]);
 
   const mapRef = useRef<kakao.maps.Map>(null);
   const [searchWord, setSearchWord] = useState<string>('');
@@ -45,16 +45,21 @@ const MapPage = () => {
 
   const onClickMarker = async (marker: MarkerType) => {
     if (!map) return;
-    const position = marker.position;
-    const result = await transLocaleToCoord(position);
+    const newMarker = {} as MarkerType;
+    newMarker.position = marker.position;
+    newMarker.content = marker.content;
+    const result = await transLocaleToCoord(marker.position);
 
     if (!result) {
       return;
     }
     const { nx, ny, province, city, code } = result;
+
     const prasedPosition = { lat: ny, lng: nx };
-    const content = marker.content;
-    setSelectedMarker({ position: prasedPosition, code, province, city, content });
+    Object.assign(newMarker, { province, city, code, position: prasedPosition, isBookmarked: false });
+    console.log('newMarker : ', newMarker);
+    setSelectedMarker(newMarker);
+    // setCurrentMarkers([...currentMarkers, newMarker]);
   };
 
   const searchPlaces = (keyword: string, page: number) => {

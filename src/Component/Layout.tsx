@@ -12,10 +12,10 @@ const Layout = () => {
             <Nav.Link href='/'>temp</Nav.Link>
           </Nav.Item>
           <Nav.Item>
-            <Nav.Link href='/chart'>차트</Nav.Link>
+            <Nav.Link href='/short'>단기 예보</Nav.Link>
           </Nav.Item>
           <Nav.Item>
-            <Nav.Link href='/map'>지도</Nav.Link>
+            <Nav.Link href='/live'>실시간 날씨</Nav.Link>
           </Nav.Item>
         </Nav>
       </NavContainer>
