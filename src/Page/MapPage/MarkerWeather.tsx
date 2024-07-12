@@ -19,13 +19,13 @@ import {
 
 interface Props {
   marker: MarkerType;
-  isBookmarked: boolean;
+  onClickBookmark: (code: string, isBookmarked: boolean) => void;
 }
-const MarkerWeather = ({ marker, isBookmarked }: Props) => {
+const MarkerWeather = ({ marker, onClickBookmark }: Props) => {
   const result = useLiveDataQuery(new Date(), marker);
 
-  const transformSkyCode = (code: string) => {
-    switch (Number(code)) {
+  const transformSkyCode = (skyCode: string) => {
+    switch (Number(skyCode)) {
       case 1:
         return <CloudRainFill />;
       case 2:
@@ -44,7 +44,7 @@ const MarkerWeather = ({ marker, isBookmarked }: Props) => {
   };
 
   const handleClickBookmark = () => {
-    // 북마크
+    onClickBookmark(marker.code, marker.isBookmarked);
   };
 
   return (
@@ -52,7 +52,7 @@ const MarkerWeather = ({ marker, isBookmarked }: Props) => {
       {!result.isLoading && result.data ? (
         <div>
           <div className='bookmark' onClick={handleClickBookmark}>
-            {isBookmarked ? <StarFill /> : <Star />}
+            {marker.isBookmarked ? <StarFill /> : <Star />}
           </div>
           <div className='location'>
             {result.data.province} {result.data.city}
@@ -83,7 +83,7 @@ export default MarkerWeather;
 
 const MarkerWeatherContainer = styled.div`
   position: relative;
-  width: 200px;
+  min-width: 200px;
   height: 120px;
   padding: 10px;
   border: 1px solid #0d6efd;
