@@ -56,11 +56,18 @@ const MapPage = () => {
     }
     const { nx, ny, province, city, code } = result;
     if (currentMarkers) {
-      const index = currentMarkers.findIndex(item => item.code === code);
-      if (index !== -1) {
-        const firstMarker = currentMarkers[index];
-        currentMarkers.splice(index, 1);
+      const currentIndex = currentMarkers.findIndex(item => item.code === code);
+      const bookmarkIndex = bookmarkMakers.findIndex(item => item.code === code);
+      if (currentIndex !== -1) {
+        const firstMarker = currentMarkers[currentIndex];
+        currentMarkers.splice(currentIndex, 1);
         setCurrentMarkers([firstMarker, ...currentMarkers]);
+        return;
+      }
+      if (bookmarkIndex !== -1) {
+        const firstMarker = bookmarkMakers[bookmarkIndex];
+        bookmarkMakers.splice(bookmarkIndex, 1);
+        setBookmarkMakers([firstMarker, ...bookmarkMakers]);
         return;
       }
     }
@@ -79,6 +86,7 @@ const MapPage = () => {
       currentMarkers.splice(index, 1);
       setCurrentMarkers([...currentMarkers]);
       setBookmarkMakers([firstMarker, ...bookmarkMakers]);
+      localStorage.setItem('bookmarks', JSON.stringify([firstMarker, ...bookmarkMakers]));
     } else {
       // 북마크 해제
       const index = bookmarkMakers.findIndex(item => item.code === code);
@@ -87,6 +95,7 @@ const MapPage = () => {
       bookmarkMakers.splice(index, 1);
       setBookmarkMakers([...bookmarkMakers]);
       setCurrentMarkers([firstMarker, ...currentMarkers]);
+      localStorage.setItem('bookmarks', JSON.stringify([...bookmarkMakers]));
     }
   };
 
@@ -132,12 +141,12 @@ const MapPage = () => {
     searchPlaces(searchRef.current, page);
   };
 
-  // useEffect(() => {
-  //   const localBookmarks = localStorage.getItem('bookmarks');
-  //   if (localBookmarks) {
-  //     setBookmarkMakers(JSON.parse(localBookmarks));
-  //   }
-  // }, []);
+  useEffect(() => {
+    const localBookmarks = localStorage.getItem('bookmarks');
+    if (localBookmarks) {
+      setBookmarkMakers(JSON.parse(localBookmarks));
+    }
+  }, []);
 
   return (
     <MapContainer>
