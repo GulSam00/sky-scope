@@ -100,7 +100,7 @@ export default MarkerWeather;
 
 const MarkerWeatherContainer = styled.div`
   position: relative;
-  min-width: 200px;
+  min-width: 220px;
   height: 120px;
   padding: 10px;
   border: 1px solid #0d6efd;

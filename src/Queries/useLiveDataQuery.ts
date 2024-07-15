@@ -38,10 +38,10 @@ const useLiveDataQuery = (today: Date, marker: MarkerType | null) => {
       }
       return data;
     },
-    retry: 1,
+    retry: 2,
     retryDelay: 3000,
     enabled: marker !== null,
-    staleTime: 1000 * 60,
+    staleTime: 1000 * 60, // 1분
   });
 
   return { data, isLoading, status, error };

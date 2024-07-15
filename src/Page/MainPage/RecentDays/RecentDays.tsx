@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { useSelector, useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 import LocationHeader from './LocationHeader';
 import MapModal from './MapModal';
@@ -19,13 +20,14 @@ import { styled } from 'styled-components';
 
 const RecentDays = () => {
   const today = new Date();
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const dispatch = useDispatch();
 
   const isMapModal = useSelector((state: RootState) => state.kakaoModalSliceReducer.isOpen);
   const coord = useSelector((state: RootState) => state.shortDataSliceReducer.coord);
 
-  const { data, date } = useShortDataQuery(today, coord);
+  const { data, date, error } = useShortDataQuery(today, coord);
 
   const handleChangeCoord = (coord: ICoord) => {
     dispatch(loadingData());
@@ -45,7 +47,11 @@ const RecentDays = () => {
     if (localStorage.getItem('coord')) {
       initCoord();
     }
-  }, []);
+    if (error) {
+      console.log(error);
+      navigate('/error');
+    }
+  }, [error]);
 
   return (
     <RecentDayContainer>

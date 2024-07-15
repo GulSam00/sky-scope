@@ -6,10 +6,18 @@ import { IParseObj, ICoord } from '@src/API/getWeatherShort';
 const useShortDataQuery = (today: Date, location: ICoord) => {
   const { data, isLoading, error, status } = useQuery<IParseObj | undefined>({
     queryKey: ['short'],
-    queryFn: () => getWeatherShort(today, location),
-    retry: 3,
+    queryFn: async () => {
+      // endpoint : getVilageFcst
+      const result = await getWeatherShort(today, location);
+      if (!result) {
+        throw new Error('getWeatherShort error');
+      }
+      return result;
+    },
+    retry: 2,
     retryDelay: 3000,
     enabled: location !== null,
+    staleTime: 1000 * 60, // 1분
   });
 
   const dataArr = [];
