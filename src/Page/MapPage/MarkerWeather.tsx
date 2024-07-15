@@ -6,7 +6,7 @@ import { useLiveDataQuery } from '@src/Queries';
 import { MarkerType } from '@src/Queries/useLiveDataQuery';
 import { loadingData, loadedData } from '@src/Store/loadingStateSlice';
 
-import { LoadingState } from '@src/Component';
+import { Spinner } from 'react-bootstrap';
 import { styled } from 'styled-components';
 
 import {
@@ -68,7 +68,7 @@ const MarkerWeather = ({ marker, onClickBookmark }: Props) => {
 
   return (
     <MarkerWeatherContainer>
-      {data && (
+      {data ? (
         <div>
           <div className='bookmark' onClick={handleClickBookmark}>
             {marker.isBookmarked ? <StarFill /> : <Star />}
@@ -91,6 +91,12 @@ const MarkerWeather = ({ marker, onClickBookmark }: Props) => {
             </div>
           </div>
         </div>
+      ) : (
+        <SpinnerContainer>
+          <Spinner animation='border' role='status'>
+            <span className='visually-hidden'>Loading</span>
+          </Spinner>
+        </SpinnerContainer>
       )}
     </MarkerWeatherContainer>
   );
@@ -138,4 +144,13 @@ const MarkerWeatherContainer = styled.div`
       justify-content: flex-start;
     }
   }
+`;
+
+const SpinnerContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  font-size: 18px;
 `;
