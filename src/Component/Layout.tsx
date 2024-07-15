@@ -1,21 +1,24 @@
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 
 import Nav from 'react-bootstrap/Nav';
 import { styled } from 'styled-components';
 
 const Layout = () => {
+  const location = useLocation();
+
   return (
     <LayoutContainer>
       <NavContainer>
         <Nav variant='tabs'>
           <Nav.Item>
-            <Nav.Link href='/'>temp</Nav.Link>
+            <Nav.Link href='/' disabled={location.pathname === '/'}>
+              예보 차트
+            </Nav.Link>
           </Nav.Item>
           <Nav.Item>
-            <Nav.Link href='/short'>단기 예보</Nav.Link>
-          </Nav.Item>
-          <Nav.Item>
-            <Nav.Link href='/live'>실시간 날씨</Nav.Link>
+            <Nav.Link href='/live' disabled={location.pathname === '/live'}>
+              실시간 날씨
+            </Nav.Link>
           </Nav.Item>
         </Nav>
       </NavContainer>

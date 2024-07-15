@@ -18,10 +18,6 @@ const BrowserRouter = createBrowserRouter([
     children: [
       {
         path: '/',
-        element: <TempPage />,
-      },
-      {
-        path: '/short',
         element: <MainPage />,
       },
       {
