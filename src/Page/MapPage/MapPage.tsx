@@ -135,6 +135,7 @@ const MapPage = () => {
           const bounds = new kakao.maps.LatLngBounds();
           const markers: MarkerType[] = [];
           for (let i = 0; i < data.length; i++) {
+            // @ts-ignore
             markers.push({
               position: {
                 lat: Number(data[i].y),
@@ -143,11 +144,6 @@ const MapPage = () => {
               content: data[i].place_name,
             });
             const kakaoPosition = new kakao.maps.LatLng(Number(data[i].y), Number(data[i].x));
-            new kakao.maps.Marker({
-              position: kakaoPosition,
-              map: map,
-              image: new kakao.maps.MarkerImage('/icons/compass.svg', new kakao.maps.Size(24, 24)),
-            });
             bounds.extend(kakaoPosition);
           }
           setMarkers([...markers]);
@@ -253,7 +249,8 @@ const MapPage = () => {
             <MapMarker
               key={'marker' + index}
               position={marker.position}
-              //
+              // 이미지가 겹쳐서 보이지 않는 이슈
+              // 기본 마커 이미지는 사용하지 않을 것이기에 map에 마커가 존재하는 지를 확인해야 함
               image={{ src: '/icons/compass.svg', size: { width: 24, height: 24 } }}
             />
           ))}
