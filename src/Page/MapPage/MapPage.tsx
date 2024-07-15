@@ -151,23 +151,28 @@ const MapPage = () => {
   return (
     <MapContainer>
       {kakaoLoading && <LoadingState />}
-      <div>북마크</div>
-      {bookmarkMakers.length !== 0 && (
-        <MarkerContiner>
-          {bookmarkMakers.map((marker: MarkerType, index: number) => (
-            <MarkerWeather key={'marker' + index} marker={marker} onClickBookmark={onClickBookmark} />
-          ))}
-        </MarkerContiner>
-      )}
-      <div>조회</div>
+      <MarkerContiner>
+        북마크
+        {bookmarkMakers.length !== 0 && (
+          <Markers>
+            {bookmarkMakers.map((marker: MarkerType, index: number) => (
+              <MarkerWeather key={'marker' + index} marker={marker} onClickBookmark={onClickBookmark} />
+            ))}
+          </Markers>
+        )}
+      </MarkerContiner>
 
-      {currentMarkers.length !== 0 && (
-        <MarkerContiner>
-          {currentMarkers.map((marker: MarkerType, index: number) => (
-            <MarkerWeather key={'marker' + index} marker={marker} onClickBookmark={onClickBookmark} />
-          ))}
-        </MarkerContiner>
-      )}
+      <MarkerContiner>
+        조회
+        {currentMarkers.length !== 0 && (
+          <Markers>
+            {currentMarkers.map((marker: MarkerType, index: number) => (
+              <MarkerWeather key={'marker' + index} marker={marker} onClickBookmark={onClickBookmark} />
+            ))}
+          </Markers>
+        )}
+      </MarkerContiner>
+
       <FormContainer>
         <Form>
           <Form.Control
@@ -215,7 +220,16 @@ const MapContainer = styled.div`
 
 const MarkerContiner = styled.div`
   display: flex;
+  flex-direction: column;
+  height: 220px;
   margin: 16px;
+  padding: 16px;
+  border: 1px solid #0d6efd;
+  border-radius: 16px;
+`;
+
+const Markers = styled.div`
+  display: flex;
   gap: 16px;
   overflow-x: auto;
 `;

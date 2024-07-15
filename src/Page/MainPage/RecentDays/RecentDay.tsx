@@ -39,7 +39,7 @@ const RecentDay = ({ recentData, keyDate, baseDate }: IProps) => {
   return (
     <RecentDayContainer>
       <RecentDayHeader>
-        <text>{transDate(keyDate)}</text>
+        <div>{transDate(keyDate)}</div>
         <Button onClick={() => onClickTab('temperture')}>온도</Button>
         <Button onClick={() => onClickTab('rain')}>비</Button>
       </RecentDayHeader>
@@ -81,7 +81,7 @@ const RecentDayHeader = styled.div`
 
   flex-wrap: wrap;
 
-  text {
+  div {
     margin-right: 1rem;
     font-size: 2.5rem;
     font-weight: bold;

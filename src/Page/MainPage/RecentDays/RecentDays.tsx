@@ -54,7 +54,14 @@ const RecentDays = () => {
 
       {data.length ? (
         data.map((arrItem, index) => {
-          return <RecentDay recentData={arrItem} keyDate={date[index]} baseDate={addDays(today, index)} />;
+          return (
+            <RecentDay
+              recentData={arrItem}
+              keyDate={date[index]}
+              baseDate={addDays(today, index)}
+              key={'RecentDay' + index}
+            />
+          );
         })
       ) : (
         <>

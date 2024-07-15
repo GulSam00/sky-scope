@@ -89,7 +89,10 @@ const MarkerWeatherContainer = styled.div`
   border: 1px solid #0d6efd;
   border-radius: 5px;
   font-size: 18px;
+
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 
   .bookmark {
     position: absolute;
