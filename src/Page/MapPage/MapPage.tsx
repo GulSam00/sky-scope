@@ -168,6 +168,8 @@ const MapPage = () => {
       const parsedBookmarks: MarkerType[] = JSON.parse(localBookmarks);
       setBookmarkMakers(parsedBookmarks);
       if (map) {
+        const bounds = new kakao.maps.LatLngBounds();
+
         parsedBookmarks.forEach((marker: MarkerType) => {
           const originalPosition = marker.originalPosition;
           const position = new kakao.maps.LatLng(originalPosition.lat, originalPosition.lng);
@@ -175,7 +177,9 @@ const MapPage = () => {
             position: position,
             map: map,
           });
+          bounds.extend(position);
         });
+        map.setBounds(bounds);
       }
     }
   }, [map]);

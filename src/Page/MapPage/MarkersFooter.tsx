@@ -27,11 +27,14 @@ const MarkersFooter = ({ map, markers, handlePageMove, onClickMarkerFooter }: Pr
   };
 
   const handleClickMarker = (index: number) => {
-    if (tempSelectedIndex === index) {
-      onClickMarkerFooter(markers[index]);
-    } else {
-      setTempSelectedIndex(index);
-    }
+    onClickMarkerFooter(markers[index]);
+    setTempSelectedIndex(index);
+
+    // if (tempSelectedIndex === index) {
+    //   onClickMarkerFooter(markers[index]);
+    // } else {
+    //   setTempSelectedIndex(index);
+    // }
   };
 
   const handleClickMovePage = (page: number) => {
