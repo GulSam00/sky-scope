@@ -83,16 +83,12 @@ export default MarkerWeather;
 
 const MarkerWeatherContainer = styled.div`
   position: relative;
-  min-width: 200px;
+  width: 200px;
   height: 120px;
   padding: 10px;
   border: 1px solid #0d6efd;
   border-radius: 5px;
   font-size: 18px;
-
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 
   .bookmark {
     position: absolute;
@@ -109,6 +105,10 @@ const MarkerWeatherContainer = styled.div`
   .place {
     font-size: 18px;
     font-weight: 600;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .content {

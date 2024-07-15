@@ -23,7 +23,9 @@ const useLiveDataQuery = (today: Date, marker: MarkerType | null) => {
         nx: marker ? marker.position.lng : 0,
         ny: marker ? marker.position.lat : 0,
       };
-      return getWeatherLive(today, location);
+      // endpoint : getUltraSrtNcst
+      const result = getWeatherLive(today, location);
+      return result;
     },
     select: data => {
       if (data && marker) {
