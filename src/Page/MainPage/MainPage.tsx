@@ -2,13 +2,10 @@ import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
 import RecentDays from './RecentDays';
-import { LoadingState } from '@src/Component';
 import { RootState } from '@src/Store/store';
-
 import { styled } from 'styled-components';
 
 const MainPage = () => {
-  const { isLoading } = useSelector((state: RootState) => state.shortDataSliceReducer);
   const { isOpen } = useSelector((state: RootState) => state.kakaoModalSliceReducer);
 
   useEffect(() => {
@@ -21,8 +18,6 @@ const MainPage = () => {
 
   return (
     <DayContainer>
-      {isLoading && <LoadingState />}
-
       <RecentDays />
     </DayContainer>
   );

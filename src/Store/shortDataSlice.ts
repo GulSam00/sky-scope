@@ -10,19 +10,12 @@ export const shortDataSlice = createSlice({
     },
   },
   reducers: {
-    loadingData: state => {
-      state.isLoading = true;
-    },
-    loadedData: state => {
-      state.isLoading = false;
-    },
-
     setCoord: (state, action) => {
       state.coord = action.payload;
     },
   },
 });
 
-export const { loadingData, loadedData, setCoord } = shortDataSlice.actions;
+export const { setCoord } = shortDataSlice.actions;
 
 export default shortDataSlice.reducer;

@@ -1,13 +1,21 @@
 import { Outlet, useLocation } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+
+import { RootState } from '@src/Store/store';
+import { LoadingState } from '@src/Component';
 
 import Nav from 'react-bootstrap/Nav';
 import { styled } from 'styled-components';
 
 const Layout = () => {
+  const { isLoading } = useSelector((state: RootState) => state.loadingStateSliceReducer);
+
   const location = useLocation();
 
   return (
     <LayoutContainer>
+      {isLoading && <LoadingState />}
+
       <NavContainer>
         <Nav variant='tabs'>
           <Nav.Item>

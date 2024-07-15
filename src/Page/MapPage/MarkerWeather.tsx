@@ -1,5 +1,10 @@
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+
 import { useLiveDataQuery } from '@src/Queries';
 import { MarkerType } from '@src/Queries/useLiveDataQuery';
+import { loadingData, loadedData } from '@src/Store/loadingStateSlice';
 
 import { LoadingState } from '@src/Component';
 import { styled } from 'styled-components';
@@ -22,7 +27,9 @@ interface Props {
   onClickBookmark: (code: string, isBookmarked: boolean) => void;
 }
 const MarkerWeather = ({ marker, onClickBookmark }: Props) => {
-  const result = useLiveDataQuery(new Date(), marker);
+  const { isLoading, data, error } = useLiveDataQuery(new Date(), marker);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const transformSkyCode = (skyCode: string) => {
     switch (Number(skyCode)) {
@@ -47,33 +54,43 @@ const MarkerWeather = ({ marker, onClickBookmark }: Props) => {
     onClickBookmark(marker.code, marker.isBookmarked);
   };
 
+  useEffect(() => {
+    if (isLoading) {
+      dispatch(loadingData());
+    } else {
+      dispatch(loadedData());
+    }
+    if (error) {
+      console.log(error);
+      navigate('/error');
+    }
+  }, [isLoading]);
+
   return (
     <MarkerWeatherContainer>
-      {!result.isLoading && result.data ? (
+      {data && (
         <div>
           <div className='bookmark' onClick={handleClickBookmark}>
             {marker.isBookmarked ? <StarFill /> : <Star />}
           </div>
           <div className='location'>
-            {result.data.province} {result.data.city}
+            {data.province} {data.city}
           </div>
-          <div className='place'>{result.data.content}</div>
+          <div className='place'>{data.content}</div>
           <div className='content'>
             <div>
               <ThermometerHigh />
-              <div>{result.data.T1H}°C</div>
+              <div>{data.T1H}°C</div>
             </div>
           </div>
 
           <div className='content'>
             <div>
-              <div>{transformSkyCode(result.data.SKY1)}</div>
-              <div>{result.data.RN1}mm</div>
+              <div>{transformSkyCode(data.SKY1)}</div>
+              <div>{data.RN1}mm</div>
             </div>
           </div>
         </div>
-      ) : (
-        <LoadingState />
       )}
     </MarkerWeatherContainer>
   );
@@ -83,7 +100,7 @@ export default MarkerWeather;
 
 const MarkerWeatherContainer = styled.div`
   position: relative;
-  width: 200px;
+  min-width: 200px;
   height: 120px;
   padding: 10px;
   border: 1px solid #0d6efd;

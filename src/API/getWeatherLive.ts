@@ -74,7 +74,7 @@ const getWeatherLive = async (base_date: Date, location: ICoord): Promise<IParse
   } catch (e) {
     let message;
     if (e instanceof Error) message = e.message;
-    else message = String(e);
+    else message = '/getUltraSrtNcst error';
     console.error(message);
   }
 };
