@@ -10,6 +10,7 @@ import { Form, Button } from 'react-bootstrap';
 import styled from 'styled-components';
 import MarkersFooter from './MarkersFooter';
 import MarkerWeather from './MarkerWeather';
+import { Book, Bookmark } from 'react-bootstrap-icons';
 
 const MapPage = () => {
   const [map, setMap] = useState<kakao.maps.Map | null>(null);
@@ -43,11 +44,43 @@ const MapPage = () => {
     setSearchWord('');
   };
 
-  const onClickMarker = async (marker: MarkerType) => {
+  const isSwapMarker = (code: string) => {
+    const currentIndex = currentMarkers.findIndex(item => item.code === code);
+    const bookmarkIndex = bookmarkMakers.findIndex(item => item.code === code);
+    if (currentIndex !== -1) {
+      const firstMarker = currentMarkers[currentIndex];
+      currentMarkers.splice(currentIndex, 1);
+      setCurrentMarkers([firstMarker, ...currentMarkers]);
+      return true;
+    }
+    if (bookmarkIndex !== -1) {
+      const firstMarker = bookmarkMakers[bookmarkIndex];
+      bookmarkMakers.splice(bookmarkIndex, 1);
+      setBookmarkMakers([firstMarker, ...bookmarkMakers]);
+      return true;
+    }
+    return false;
+  };
+
+  const onFocusMarker = (marker: MarkerType) => {
+    if (!map) return;
+
+    isSwapMarker(marker.code);
+    const originalPosition = marker.originalPosition;
+    const position = new kakao.maps.LatLng(originalPosition.lat, originalPosition.lng);
+    new kakao.maps.Marker({
+      position: position,
+      map: map,
+    });
+    map.setLevel(2);
+    map.panTo(position);
+  };
+
+  const onClickMarkerFooter = async (marker: MarkerType) => {
     if (!map) return;
 
     const newMarker = {} as MarkerType;
-    newMarker.position = marker.position;
+    newMarker.originalPosition = marker.position;
     newMarker.content = marker.content;
     const result = await transLocaleToCoord(marker.position);
 
@@ -56,20 +89,7 @@ const MapPage = () => {
     }
     const { nx, ny, province, city, code } = result;
     if (currentMarkers) {
-      const currentIndex = currentMarkers.findIndex(item => item.code === code);
-      const bookmarkIndex = bookmarkMakers.findIndex(item => item.code === code);
-      if (currentIndex !== -1) {
-        const firstMarker = currentMarkers[currentIndex];
-        currentMarkers.splice(currentIndex, 1);
-        setCurrentMarkers([firstMarker, ...currentMarkers]);
-        return;
-      }
-      if (bookmarkIndex !== -1) {
-        const firstMarker = bookmarkMakers[bookmarkIndex];
-        bookmarkMakers.splice(bookmarkIndex, 1);
-        setBookmarkMakers([firstMarker, ...bookmarkMakers]);
-        return;
-      }
+      if (isSwapMarker(code)) return;
     }
 
     const prasedPosition = { lat: ny, lng: nx };
@@ -109,7 +129,8 @@ const MapPage = () => {
         if (status === kakao.maps.services.Status.OK) {
           setMaxPage(pagination.last);
           // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
-          // LatLngBounds 객체에 좌표를 추가합니다
+          // LatLngBounds 객체에 좌표를 추가
+          // 좌표들이 모두 보이게 지도의 중심좌표와 레벨을 재설정 할 수 있다
           const bounds = new kakao.maps.LatLngBounds();
           const markers: MarkerType[] = [];
           for (let i = 0; i < data.length; i++) {
@@ -144,9 +165,20 @@ const MapPage = () => {
   useEffect(() => {
     const localBookmarks = localStorage.getItem('bookmarks');
     if (localBookmarks) {
-      setBookmarkMakers(JSON.parse(localBookmarks));
+      const parsedBookmarks: MarkerType[] = JSON.parse(localBookmarks);
+      setBookmarkMakers(parsedBookmarks);
+      if (map) {
+        parsedBookmarks.forEach((marker: MarkerType) => {
+          const originalPosition = marker.originalPosition;
+          const position = new kakao.maps.LatLng(originalPosition.lat, originalPosition.lng);
+          new kakao.maps.Marker({
+            position: position,
+            map: map,
+          });
+        });
+      }
     }
-  }, []);
+  }, [map]);
 
   return (
     <MapContainer>
@@ -156,7 +188,12 @@ const MapPage = () => {
         {bookmarkMakers.length !== 0 && (
           <Markers>
             {bookmarkMakers.map((marker: MarkerType, index: number) => (
-              <MarkerWeather key={'marker' + index} marker={marker} onClickBookmark={onClickBookmark} />
+              <MarkerWeather
+                key={'marker' + index}
+                marker={marker}
+                onClickBookmark={onClickBookmark}
+                onFocusMarker={onFocusMarker}
+              />
             ))}
           </Markers>
         )}
@@ -167,7 +204,12 @@ const MapPage = () => {
         {currentMarkers.length !== 0 && (
           <Markers>
             {currentMarkers.map((marker: MarkerType, index: number) => (
-              <MarkerWeather key={'marker' + index} marker={marker} onClickBookmark={onClickBookmark} />
+              <MarkerWeather
+                key={'marker' + index}
+                marker={marker}
+                onClickBookmark={onClickBookmark}
+                onFocusMarker={onFocusMarker}
+              />
             ))}
           </Markers>
         )}
@@ -192,7 +234,6 @@ const MapPage = () => {
             lat: 37.566826,
             lng: 126.9786567,
           }}
-          // level={mapLevel}
           ref={mapRef}
           onCreate={setMap}
           id='kakao-map'
@@ -206,7 +247,12 @@ const MapPage = () => {
           ))}
         </Map>
       </KakaoMapContainer>
-      <MarkersFooter map={map} markers={markers} handlePageMove={handlePageMove} onClickMarker={onClickMarker} />
+      <MarkersFooter
+        map={map}
+        markers={markers}
+        handlePageMove={handlePageMove}
+        onClickMarkerFooter={onClickMarkerFooter}
+      />
     </MapContainer>
   );
 };
@@ -221,7 +267,7 @@ const MapContainer = styled.div`
 const MarkerContiner = styled.div`
   display: flex;
   flex-direction: column;
-  height: 220px;
+  min-height: 200px;
   margin: 16px;
   padding: 16px;
   border: 1px solid #0d6efd;

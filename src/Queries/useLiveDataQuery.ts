@@ -8,6 +8,10 @@ export interface MarkerType {
     lat: number;
     lng: number;
   };
+  originalPosition: {
+    lat: number;
+    lng: number;
+  };
   code: string;
   province: string;
   city: string;

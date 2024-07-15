@@ -9,16 +9,15 @@ interface Props {
   map: kakao.maps.Map | null;
   markers: MarkerType[];
   handlePageMove: (page: number) => void;
-  onClickMarker: (marker: MarkerType) => void;
+  onClickMarkerFooter: (marker: MarkerType) => void;
 }
-const MarkersFooter = ({ map, markers, handlePageMove, onClickMarker }: Props) => {
+const MarkersFooter = ({ map, markers, handlePageMove, onClickMarkerFooter }: Props) => {
   const [tempSelectedIndex, setTempSelectedIndex] = useState<number>(-1);
 
   const overMarkerPos = (marker: MarkerType) => {
     if (!map) return;
     const position = marker?.position;
     map.setLevel(2);
-
     map.panTo(new kakao.maps.LatLng(position.lat, position.lng));
   };
 
@@ -29,7 +28,7 @@ const MarkersFooter = ({ map, markers, handlePageMove, onClickMarker }: Props) =
 
   const handleClickMarker = (index: number) => {
     if (tempSelectedIndex === index) {
-      onClickMarker(markers[index]);
+      onClickMarkerFooter(markers[index]);
     } else {
       setTempSelectedIndex(index);
     }

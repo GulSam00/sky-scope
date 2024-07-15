@@ -25,8 +25,9 @@ import {
 interface Props {
   marker: MarkerType;
   onClickBookmark: (code: string, isBookmarked: boolean) => void;
+  onFocusMarker: (marker: MarkerType) => void;
 }
-const MarkerWeather = ({ marker, onClickBookmark }: Props) => {
+const MarkerWeather = ({ marker, onClickBookmark, onFocusMarker }: Props) => {
   const { isLoading, data, error } = useLiveDataQuery(new Date(), marker);
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -50,7 +51,8 @@ const MarkerWeather = ({ marker, onClickBookmark }: Props) => {
     }
   };
 
-  const handleClickBookmark = () => {
+  const handleClickBookmark = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    e.stopPropagation();
     onClickBookmark(marker.code, marker.isBookmarked);
   };
 
@@ -69,8 +71,8 @@ const MarkerWeather = ({ marker, onClickBookmark }: Props) => {
   return (
     <MarkerWeatherContainer>
       {data ? (
-        <div>
-          <div className='bookmark' onClick={handleClickBookmark}>
+        <div onClick={() => onFocusMarker(marker)}>
+          <div className='bookmark' onClick={e => handleClickBookmark(e)}>
             {marker.isBookmarked ? <StarFill /> : <Star />}
           </div>
           <div className='location'>
@@ -106,19 +108,20 @@ export default MarkerWeather;
 
 const MarkerWeatherContainer = styled.div`
   position: relative;
-  min-width: 220px;
+  flex: 1 1 0;
+  max-width: 220px;
   height: 120px;
   padding: 10px;
   border: 1px solid #0d6efd;
   border-radius: 5px;
   font-size: 18px;
+  cursor: pointer;
 
   .bookmark {
     position: absolute;
     right: 10px;
     display: flex;
     align-items: start;
-    cursor: pointer;
   }
 
   .location {
