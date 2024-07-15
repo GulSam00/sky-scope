@@ -152,7 +152,7 @@ const KaKaoMap = ({ handleChangeCoord }: IProps) => {
           />
         </Form>
         <Button onClick={insertAddress}>확인</Button>
-        <CloseButton src='/x-circle.svg' onClick={() => dispatch(close())} />
+        <CloseButton src='/icons/x-circle.svg' onClick={() => dispatch(close())} />
       </FormContainer>
 
       <Map

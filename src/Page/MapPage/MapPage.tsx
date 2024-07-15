@@ -10,7 +10,6 @@ import { Form, Button } from 'react-bootstrap';
 import styled from 'styled-components';
 import MarkersFooter from './MarkersFooter';
 import MarkerWeather from './MarkerWeather';
-import { Book, Bookmark } from 'react-bootstrap-icons';
 
 const MapPage = () => {
   const [map, setMap] = useState<kakao.maps.Map | null>(null);
@@ -51,26 +50,28 @@ const MapPage = () => {
       const firstMarker = currentMarkers[currentIndex];
       currentMarkers.splice(currentIndex, 1);
       setCurrentMarkers([firstMarker, ...currentMarkers]);
-      return true;
+      return 1;
     }
     if (bookmarkIndex !== -1) {
       const firstMarker = bookmarkMakers[bookmarkIndex];
       bookmarkMakers.splice(bookmarkIndex, 1);
       setBookmarkMakers([firstMarker, ...bookmarkMakers]);
-      return true;
+      return 2;
     }
-    return false;
+    return 0;
   };
 
   const onFocusMarker = (marker: MarkerType) => {
     if (!map) return;
 
-    isSwapMarker(marker.code);
+    const swapedMarker = isSwapMarker(marker.code);
+    const image = swapedMarker === 1 ? '/icons/search.svg' : '/icons/star-fill.svg';
     const originalPosition = marker.originalPosition;
     const position = new kakao.maps.LatLng(originalPosition.lat, originalPosition.lng);
     new kakao.maps.Marker({
       position: position,
       map: map,
+      image: new kakao.maps.MarkerImage(image, new kakao.maps.Size(24, 24)),
     });
     map.setLevel(2);
     map.panTo(position);
@@ -89,7 +90,7 @@ const MapPage = () => {
     }
     const { nx, ny, province, city, code } = result;
     if (currentMarkers) {
-      if (isSwapMarker(code)) return;
+      if (isSwapMarker(code) !== 0) return;
     }
 
     const prasedPosition = { lat: ny, lng: nx };
@@ -134,7 +135,6 @@ const MapPage = () => {
           const bounds = new kakao.maps.LatLngBounds();
           const markers: MarkerType[] = [];
           for (let i = 0; i < data.length; i++) {
-            // @ts-ignore
             markers.push({
               position: {
                 lat: Number(data[i].y),
@@ -142,7 +142,13 @@ const MapPage = () => {
               },
               content: data[i].place_name,
             });
-            bounds.extend(new kakao.maps.LatLng(Number(data[i].y), Number(data[i].x)));
+            const kakaoPosition = new kakao.maps.LatLng(Number(data[i].y), Number(data[i].x));
+            new kakao.maps.Marker({
+              position: kakaoPosition,
+              map: map,
+              image: new kakao.maps.MarkerImage('/icons/compass.svg', new kakao.maps.Size(24, 24)),
+            });
+            bounds.extend(kakaoPosition);
           }
           setMarkers([...markers]);
           map.setBounds(bounds);
@@ -176,6 +182,7 @@ const MapPage = () => {
           new kakao.maps.Marker({
             position: position,
             map: map,
+            image: new kakao.maps.MarkerImage('/icons/star-fill.svg', new kakao.maps.Size(24, 24)),
           });
           bounds.extend(position);
         });
@@ -246,7 +253,8 @@ const MapPage = () => {
             <MapMarker
               key={'marker' + index}
               position={marker.position}
-              onClick={() => console.log('marker : ', marker)}
+              //
+              image={{ src: '/icons/compass.svg', size: { width: 24, height: 24 } }}
             />
           ))}
         </Map>
