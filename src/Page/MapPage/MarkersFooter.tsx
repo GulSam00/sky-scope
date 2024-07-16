@@ -1,20 +1,20 @@
 import { useState } from 'react';
 
-import { MarkerType } from '@src/Queries/useLiveDataQuery';
+import { KakaoMapMarkerType } from '@src/Queries/useLiveDataQuery';
 
 import styled from 'styled-components';
 import { CaretLeft, CaretRight } from 'react-bootstrap-icons';
 
 interface Props {
   map: kakao.maps.Map | null;
-  markers: MarkerType[];
+  markers: KakaoMapMarkerType[];
   handlePageMove: (page: number) => void;
-  onClickMarkerFooter: (marker: MarkerType) => void;
+  onClickMarkerFooter: (marker: KakaoMapMarkerType) => void;
 }
 const MarkersFooter = ({ map, markers, handlePageMove, onClickMarkerFooter }: Props) => {
   const [tempSelectedIndex, setTempSelectedIndex] = useState<number>(-1);
 
-  const overMarkerPos = (marker: MarkerType) => {
+  const overMarkerPos = (marker: KakaoMapMarkerType) => {
     if (!map) return;
     const position = marker?.position;
     map.setLevel(2);
@@ -47,7 +47,7 @@ const MarkersFooter = ({ map, markers, handlePageMove, onClickMarkerFooter }: Pr
       {markers.length > 0 && (
         <MarkerGroup>
           <CaretLeft key='leftBtn' onClick={() => handleClickMovePage(-1)} />
-          {markers.map((marker: MarkerType, index: number) => (
+          {markers.map((marker: KakaoMapMarkerType, index: number) => (
             <div
               className={tempSelectedIndex === index ? 'selected' : ''}
               key={'marker' + index}

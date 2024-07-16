@@ -4,7 +4,7 @@ import { Map, MapMarker } from 'react-kakao-maps-sdk';
 import { transLocaleToCoord } from '@src/Util';
 import { useKakaoLoader } from '@src/Hook';
 import { LoadingState } from '@src/Component';
-import { MarkerType } from '@src/Queries/useLiveDataQuery';
+import { KakaoMapMarkerType, MarkerType } from '@src/Queries/useLiveDataQuery';
 
 import { Form, Button } from 'react-bootstrap';
 import styled from 'styled-components';
@@ -13,9 +13,10 @@ import MarkerWeather from './MarkerWeather';
 
 const MapPage = () => {
   const [map, setMap] = useState<kakao.maps.Map | null>(null);
-  const [markers, setMarkers] = useState<MarkerType[]>([]);
+  const [searchMarkers, setSearchMarkers] = useState<KakaoMapMarkerType[]>([]);
   const [currentMarkers, setCurrentMarkers] = useState<MarkerType[]>([]);
   const [bookmarkMakers, setBookmarkMakers] = useState<MarkerType[]>([]);
+  const [onMapMarkers, setOnMapMarkers] = useState<MarkerType[]>([]);
 
   const mapRef = useRef<kakao.maps.Map>(null);
   const [searchWord, setSearchWord] = useState<string>('');
@@ -77,7 +78,7 @@ const MapPage = () => {
     map.panTo(position);
   };
 
-  const onClickMarkerFooter = async (marker: MarkerType) => {
+  const onClickMarkerFooter = async (marker: KakaoMapMarkerType) => {
     if (!map) return;
 
     const newMarker = {} as MarkerType;
@@ -96,6 +97,8 @@ const MapPage = () => {
     const prasedPosition = { lat: ny, lng: nx };
     Object.assign(newMarker, { province, city, code, position: prasedPosition, isBookmarked: false });
     setCurrentMarkers([newMarker, ...currentMarkers]);
+    console.log('currentMarkers : ', currentMarkers);
+    console.log('bookmarkMakers : ', bookmarkMakers);
   };
 
   const onClickBookmark = (code: string, isBookmarked: boolean) => {
@@ -133,7 +136,7 @@ const MapPage = () => {
           // LatLngBounds 객체에 좌표를 추가
           // 좌표들이 모두 보이게 지도의 중심좌표와 레벨을 재설정 할 수 있다
           const bounds = new kakao.maps.LatLngBounds();
-          const markers: MarkerType[] = [];
+          const markers: KakaoMapMarkerType[] = [];
           for (let i = 0; i < data.length; i++) {
             // @ts-ignore
             markers.push({
@@ -146,11 +149,11 @@ const MapPage = () => {
             const kakaoPosition = new kakao.maps.LatLng(Number(data[i].y), Number(data[i].x));
             bounds.extend(kakaoPosition);
           }
-          setMarkers([...markers]);
+          setSearchMarkers([...markers]);
           map.setBounds(bounds);
         } else {
           alert('검색 결과가 없습니다.');
-          // setMarkers([]);
+          // setSearchMarkers([]);
         }
       },
       { size: 5, page: page },
@@ -191,7 +194,10 @@ const MapPage = () => {
     <MapContainer>
       {kakaoLoading && <LoadingState />}
       <MarkerContiner>
-        북마크
+        <div>
+          <img src='/icons/star-fill.svg' alt='북마크' width={24} />
+          북마크
+        </div>
         {bookmarkMakers.length !== 0 && (
           <Markers>
             {bookmarkMakers.map((marker: MarkerType, index: number) => (
@@ -207,7 +213,10 @@ const MapPage = () => {
       </MarkerContiner>
 
       <MarkerContiner>
-        조회
+        <div>
+          <img src='/icons/search.svg' alt='검색' width={24} />
+          조회
+        </div>
         {currentMarkers.length !== 0 && (
           <Markers>
             {currentMarkers.map((marker: MarkerType, index: number) => (
@@ -245,7 +254,7 @@ const MapPage = () => {
           onCreate={setMap}
           id='kakao-map'
         >
-          {markers.map((marker: MarkerType, index: number) => (
+          {searchMarkers.map((marker: KakaoMapMarkerType, index: number) => (
             <MapMarker
               key={'marker' + index}
               position={marker.position}
@@ -258,7 +267,7 @@ const MapPage = () => {
       </KakaoMapContainer>
       <MarkersFooter
         map={map}
-        markers={markers}
+        markers={searchMarkers}
         handlePageMove={handlePageMove}
         onClickMarkerFooter={onClickMarkerFooter}
       />
@@ -281,6 +290,14 @@ const MarkerContiner = styled.div`
   padding: 16px;
   border: 1px solid #0d6efd;
   border-radius: 16px;
+
+  > div {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 24px;
+    font-weight: 600;
+  }
 `;
 
 const Markers = styled.div`

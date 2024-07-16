@@ -10,8 +10,6 @@ import { Spinner } from 'react-bootstrap';
 import { styled } from 'styled-components';
 
 import {
-  Star,
-  StarFill,
   ThermometerHigh,
   BrightnessHigh,
   CloudRain,
@@ -73,7 +71,11 @@ const MarkerWeather = ({ marker, onClickBookmark, onFocusMarker }: Props) => {
       {data ? (
         <div onClick={() => onFocusMarker(marker)}>
           <div className='bookmark' onClick={e => handleClickBookmark(e)}>
-            {marker.isBookmarked ? <StarFill /> : <Star />}
+            {marker.isBookmarked ? (
+              <img src='/icons/star-fill.svg' alt='star' />
+            ) : (
+              <img src='/icons/star.svg' alt='star' />
+            )}
           </div>
           <div className='location'>
             {data.province} {data.city}

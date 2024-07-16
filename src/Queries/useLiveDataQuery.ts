@@ -3,19 +3,22 @@ import { useQuery } from '@tanstack/react-query';
 import { getWeatherLive } from '@src/API';
 import { IParseObj, ICoord } from '@src/API/getWeatherLive';
 
-export interface MarkerType {
+export interface KakaoMapMarkerType {
   position: {
     lat: number;
     lng: number;
   };
+  content: string;
+}
+
+export interface MarkerType extends KakaoMapMarkerType {
   originalPosition: {
     lat: number;
     lng: number;
   };
-  code: string;
   province: string;
   city: string;
-  content: string;
+  code: string;
   isBookmarked: boolean;
 }
 
