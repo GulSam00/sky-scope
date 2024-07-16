@@ -70,6 +70,12 @@ https://github.com/user-attachments/assets/97311481-744a-4030-9820-4d743871534e
 
 https://github.com/user-attachments/assets/48d50db2-a170-409f-8cc4-1ebdc9b7aac0
 
+# 프로젝트 기록
+
+2024.3.13 : 프로젝트 시작
+2024.5.17 : 날씨 차트(예보차트 페이지) 추가
+2024.7.16 : 카카오 지도(실시간날씨 페이지) 추가
+
 # 회고
 
 ## 해결하고자 했던 문제
