@@ -32,13 +32,12 @@ const transName = (name: string) => {
 const transLocaleToCoord = async (position: ICoord) => {
   // 카카오 API를 통해 좌표를 카카오 지도의 주소로 변환
   const result = await getKakaoLocal.getKakaoSearchCoord(position.lng, position.lat);
-
   if (!result) return null;
+
   const province = transName(result.region_1depth_name);
-  const city = result.region_2depth_name.replace(' ', '');
+  const city = result.region_2depth_name.replace(' ', '') || province;
   const address = result.address_name;
   const code = result.code;
-
   const { x: nx, y: ny } = short_local[province][city];
 
   // 로컬 스토러지에 좌표 정보 저장

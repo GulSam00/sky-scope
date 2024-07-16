@@ -1,10 +1,9 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import { Map, MapMarker } from 'react-kakao-maps-sdk';
 
-import { transLocaleToCoord } from '@src/Util';
 import { useKakaoLoader, useMapMarker } from '@src/Hook';
 import { LoadingState } from '@src/Component';
-import { KakaoMapMarkerType, MarkerType, OnMapMarkerType } from '@src/Queries/useLiveDataQuery';
+import { MarkerType, OnMapMarkerType } from '@src/Queries/useLiveDataQuery';
 
 import { Form, Button } from 'react-bootstrap';
 import styled from 'styled-components';

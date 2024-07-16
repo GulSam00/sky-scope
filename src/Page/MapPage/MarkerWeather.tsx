@@ -72,9 +72,9 @@ const MarkerWeather = ({ marker, onClickBookmark, onFocusMarker }: Props) => {
         <div onClick={() => onFocusMarker(marker)}>
           <div className='bookmark' onClick={e => handleClickBookmark(e)}>
             {marker.isBookmarked ? (
-              <img src='/icons/star-fill.svg' alt='star' />
+              <img src='/icons/star-fill.svg' alt='star' width={24} />
             ) : (
-              <img src='/icons/star.svg' alt='star' />
+              <img src='/icons/star.svg' alt='star' width={24} />
             )}
           </div>
           <div className='location'>
@@ -110,8 +110,8 @@ export default MarkerWeather;
 
 const MarkerWeatherContainer = styled.div`
   position: relative;
-  min-width: 220px;
-  max-width: 220px;
+  min-width: 250px;
+  max-width: 250px;
   height: 120px;
   padding: 10px;
   border: 1px solid #0d6efd;

@@ -80,6 +80,7 @@ const useMapMarker = ({ map }: Props) => {
     newMarker.originalPosition = marker.position;
     newMarker.content = marker.content;
     const result = await transLocaleToCoord(marker.position);
+
     if (!result) {
       return;
     }
@@ -93,7 +94,7 @@ const useMapMarker = ({ map }: Props) => {
     Object.assign(newMarker, { province, city, code, position: prasedPosition, isBookmarked: false });
     setCurrentMarkers([newMarker, ...currentMarkers]);
 
-    const image = { src: '/icons/search.svg', size: { width: 24, height: 24 } };
+    const image = { src: '/icons/search.svg', size: { width: 36, height: 36 } };
     changeOnMapMarker({ image, position: marker.position, content: marker.content, status: 'search' });
   };
 
@@ -106,7 +107,7 @@ const useMapMarker = ({ map }: Props) => {
       currentMarkers.splice(index, 1);
       setCurrentMarkers([...currentMarkers]);
       setBookmarkMakers([firstMarker, ...bookmarkMakers]);
-      const image = { src: '/icons/star-fill.svg', size: { width: 24, height: 24 } };
+      const image = { src: '/icons/star-fill.svg', size: { width: 36, height: 36 } };
       const position = firstMarker.originalPosition;
       const content = firstMarker.content;
       const status = 'bookmark';
@@ -122,7 +123,7 @@ const useMapMarker = ({ map }: Props) => {
       setBookmarkMakers([...bookmarkMakers]);
       setCurrentMarkers([firstMarker, ...currentMarkers]);
 
-      const image = { src: '/icons/search.svg', size: { width: 24, height: 24 } };
+      const image = { src: '/icons/search.svg', size: { width: 36, height: 36 } };
       const position = firstMarker.originalPosition;
       const content = firstMarker.content;
       const status = 'search';
@@ -149,7 +150,7 @@ const useMapMarker = ({ map }: Props) => {
           const parsedOnMapMarkers: OnMapMarkerType[] = [];
           for (let i = 0; i < data.length; i++) {
             const position = { lat: Number(data[i].y), lng: Number(data[i].x) };
-            const image = { src: '/icons/geo-pin.svg', size: { width: 24, height: 24 } };
+            const image = { src: '/icons/geo-pin.svg', size: { width: 36, height: 36 } };
             const content = data[i].place_name;
             const status = 'pin';
             kakaoSearchMarkers.push({
@@ -178,7 +179,7 @@ const useMapMarker = ({ map }: Props) => {
       setBookmarkMakers(parsedBookmarks);
 
       const parsedOnMapMarkers: OnMapMarkerType[] = parsedBookmarks.map((bookmark: MarkerType) => {
-        const image = { src: '/icons/star-fill.svg', size: { width: 24, height: 24 } };
+        const image = { src: '/icons/star-fill.svg', size: { width: 36, height: 36 } };
         const position = bookmark.originalPosition;
         const content = bookmark.content;
         const status = 'bookmark';
