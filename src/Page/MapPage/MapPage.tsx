@@ -77,15 +77,14 @@ const MapPage = () => {
     if (index !== -1 && dstOnMapMarker.status !== 'pin') {
       onMapMarkers[index] = dstOnMapMarker;
       setOnMapMarkers([...onMapMarkers]);
-      console.log('changeOnMapMarker : ', dstOnMapMarker);
     } else {
       setOnMapMarkers([dstOnMapMarker, ...onMapMarkers]);
     }
   };
 
-  const isSwapMarker = (code: string) => {
-    const currentIndex = currentMarkers.findIndex(item => item.code === code);
-    const bookmarkIndex = bookmarkMakers.findIndex(item => item.code === code);
+  const isSwapMarker = (content: string) => {
+    const currentIndex = currentMarkers.findIndex(item => item.content === content);
+    const bookmarkIndex = bookmarkMakers.findIndex(item => item.content === content);
     if (currentIndex !== -1) {
       const firstMarker = currentMarkers[currentIndex];
       currentMarkers.splice(currentIndex, 1);
@@ -103,7 +102,7 @@ const MapPage = () => {
 
   const onFocusMarker = (marker: MarkerType) => {
     if (!map) return;
-    isSwapMarker(marker.code);
+    isSwapMarker(marker.content);
     focusMap(marker.originalPosition);
   };
 
@@ -120,7 +119,8 @@ const MapPage = () => {
 
     const { nx, ny, province, city, code } = result;
     if (currentMarkers) {
-      if (isSwapMarker(code) !== 0) return;
+      // if (isSwapMarker(code) === 2) return;
+      if (isSwapMarker(marker.content) !== 0) return;
     }
 
     const prasedPosition = { lat: ny, lng: nx };
