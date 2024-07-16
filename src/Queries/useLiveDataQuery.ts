@@ -11,6 +11,19 @@ export interface KakaoMapMarkerType {
   content: string;
 }
 
+export type markerStatus = 'bookmark' | 'search' | 'pin';
+
+export interface OnMapMarkerType extends KakaoMapMarkerType {
+  image: {
+    src: string;
+    size: {
+      width: number;
+      height: number;
+    };
+  };
+  status: markerStatus;
+}
+
 export interface MarkerType extends KakaoMapMarkerType {
   originalPosition: {
     lat: number;

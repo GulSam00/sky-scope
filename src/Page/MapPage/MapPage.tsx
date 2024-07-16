@@ -4,7 +4,7 @@ import { Map, MapMarker } from 'react-kakao-maps-sdk';
 import { transLocaleToCoord } from '@src/Util';
 import { useKakaoLoader } from '@src/Hook';
 import { LoadingState } from '@src/Component';
-import { KakaoMapMarkerType, MarkerType } from '@src/Queries/useLiveDataQuery';
+import { KakaoMapMarkerType, MarkerType, OnMapMarkerType } from '@src/Queries/useLiveDataQuery';
 
 import { Form, Button } from 'react-bootstrap';
 import styled from 'styled-components';
@@ -13,10 +13,10 @@ import MarkerWeather from './MarkerWeather';
 
 const MapPage = () => {
   const [map, setMap] = useState<kakao.maps.Map | null>(null);
-  const [searchMarkers, setSearchMarkers] = useState<KakaoMapMarkerType[]>([]);
+  const [pinMarkers, setPinMarkers] = useState<KakaoMapMarkerType[]>([]);
   const [currentMarkers, setCurrentMarkers] = useState<MarkerType[]>([]);
   const [bookmarkMakers, setBookmarkMakers] = useState<MarkerType[]>([]);
-  const [onMapMarkers, setOnMapMarkers] = useState<MarkerType[]>([]);
+  const [onMapMarkers, setOnMapMarkers] = useState<OnMapMarkerType[]>([]);
 
   const mapRef = useRef<kakao.maps.Map>(null);
   const [searchWord, setSearchWord] = useState<string>('');
@@ -44,6 +44,45 @@ const MapPage = () => {
     setSearchWord('');
   };
 
+  const focusMap = (position: { lat: number; lng: number }) => {
+    if (!map) return;
+    const kakaoPosition = new kakao.maps.LatLng(position.lat, position.lng);
+    map.setLevel(2);
+    map.panTo(kakaoPosition);
+  };
+
+  const changeOnMapMarkers = (dstOnMapMarkers: OnMapMarkerType[]) => {
+    // 이전의 pin 마커를 제거, onMapMarkers 대신 사용
+    const removePrevPinMarkers = onMapMarkers.filter((item: OnMapMarkerType) => item.status !== 'pin');
+
+    const filteredMarkers = dstOnMapMarkers.filter((item: OnMapMarkerType) => {
+      const findIndex = removePrevPinMarkers.findIndex(marker => marker.content === item.content);
+      // onMapMarkers에 없을 경우 추가
+      if (findIndex === -1) {
+        return item;
+      }
+      // onMapMarkers에 이미 존재하는 장소이지만 status가 pin일 경우 변경
+      // 리턴값이 없어야 하기에 따로 return을 하지 않음
+      else if (removePrevPinMarkers[findIndex].status === 'pin') {
+        removePrevPinMarkers[findIndex].status = item.status;
+      }
+    });
+    // onMapMarkers에 존재하지 않는 장소들을 추가
+    // else if 문에서 수정된 status를 반영
+    setOnMapMarkers([...filteredMarkers, ...removePrevPinMarkers]);
+  };
+
+  const changeOnMapMarker = (dstOnMapMarker: OnMapMarkerType) => {
+    const index = onMapMarkers.findIndex(item => item.content === dstOnMapMarker.content);
+    if (index !== -1 && dstOnMapMarker.status !== 'pin') {
+      onMapMarkers[index] = dstOnMapMarker;
+      setOnMapMarkers([...onMapMarkers]);
+      console.log('changeOnMapMarker : ', dstOnMapMarker);
+    } else {
+      setOnMapMarkers([dstOnMapMarker, ...onMapMarkers]);
+    }
+  };
+
   const isSwapMarker = (code: string) => {
     const currentIndex = currentMarkers.findIndex(item => item.code === code);
     const bookmarkIndex = bookmarkMakers.findIndex(item => item.code === code);
@@ -64,18 +103,8 @@ const MapPage = () => {
 
   const onFocusMarker = (marker: MarkerType) => {
     if (!map) return;
-
-    const swapedMarker = isSwapMarker(marker.code);
-    const image = swapedMarker === 1 ? '/icons/search.svg' : '/icons/star-fill.svg';
-    const originalPosition = marker.originalPosition;
-    const position = new kakao.maps.LatLng(originalPosition.lat, originalPosition.lng);
-    new kakao.maps.Marker({
-      position: position,
-      map: map,
-      image: new kakao.maps.MarkerImage(image, new kakao.maps.Size(24, 24)),
-    });
-    map.setLevel(2);
-    map.panTo(position);
+    isSwapMarker(marker.code);
+    focusMap(marker.originalPosition);
   };
 
   const onClickMarkerFooter = async (marker: KakaoMapMarkerType) => {
@@ -85,10 +114,10 @@ const MapPage = () => {
     newMarker.originalPosition = marker.position;
     newMarker.content = marker.content;
     const result = await transLocaleToCoord(marker.position);
-
     if (!result) {
       return;
     }
+
     const { nx, ny, province, city, code } = result;
     if (currentMarkers) {
       if (isSwapMarker(code) !== 0) return;
@@ -97,8 +126,9 @@ const MapPage = () => {
     const prasedPosition = { lat: ny, lng: nx };
     Object.assign(newMarker, { province, city, code, position: prasedPosition, isBookmarked: false });
     setCurrentMarkers([newMarker, ...currentMarkers]);
-    console.log('currentMarkers : ', currentMarkers);
-    console.log('bookmarkMakers : ', bookmarkMakers);
+
+    const image = { src: '/icons/search.svg', size: { width: 24, height: 24 } };
+    changeOnMapMarker({ image, position: marker.position, content: marker.content, status: 'search' });
   };
 
   const onClickBookmark = (code: string, isBookmarked: boolean) => {
@@ -110,6 +140,12 @@ const MapPage = () => {
       currentMarkers.splice(index, 1);
       setCurrentMarkers([...currentMarkers]);
       setBookmarkMakers([firstMarker, ...bookmarkMakers]);
+      const image = { src: '/icons/star-fill.svg', size: { width: 24, height: 24 } };
+      const position = firstMarker.originalPosition;
+      const content = firstMarker.content;
+      const status = 'bookmark';
+      changeOnMapMarker({ image, position, content, status });
+      focusMap(position);
       localStorage.setItem('bookmarks', JSON.stringify([firstMarker, ...bookmarkMakers]));
     } else {
       // 북마크 해제
@@ -119,6 +155,13 @@ const MapPage = () => {
       bookmarkMakers.splice(index, 1);
       setBookmarkMakers([...bookmarkMakers]);
       setCurrentMarkers([firstMarker, ...currentMarkers]);
+
+      const image = { src: '/icons/search.svg', size: { width: 24, height: 24 } };
+      const position = firstMarker.originalPosition;
+      const content = firstMarker.content;
+      const status = 'search';
+      changeOnMapMarker({ image, position, content, status });
+      focusMap(position);
       localStorage.setItem('bookmarks', JSON.stringify([...bookmarkMakers]));
     }
   };
@@ -136,24 +179,27 @@ const MapPage = () => {
           // LatLngBounds 객체에 좌표를 추가
           // 좌표들이 모두 보이게 지도의 중심좌표와 레벨을 재설정 할 수 있다
           const bounds = new kakao.maps.LatLngBounds();
-          const markers: KakaoMapMarkerType[] = [];
+          const kakaoSearchMarkers: KakaoMapMarkerType[] = [];
+          const parsedOnMapMarkers: OnMapMarkerType[] = [];
           for (let i = 0; i < data.length; i++) {
-            // @ts-ignore
-            markers.push({
-              position: {
-                lat: Number(data[i].y),
-                lng: Number(data[i].x),
-              },
-              content: data[i].place_name,
+            const position = { lat: Number(data[i].y), lng: Number(data[i].x) };
+            const image = { src: '/icons/geo-pin.svg', size: { width: 24, height: 24 } };
+            const content = data[i].place_name;
+            const status = 'pin';
+            kakaoSearchMarkers.push({
+              position,
+              content,
             });
-            const kakaoPosition = new kakao.maps.LatLng(Number(data[i].y), Number(data[i].x));
+            parsedOnMapMarkers.push({ image, position, content, status });
+            const kakaoPosition = new kakao.maps.LatLng(position.lat, position.lng);
             bounds.extend(kakaoPosition);
           }
-          setSearchMarkers([...markers]);
+          changeOnMapMarkers(parsedOnMapMarkers);
+          setPinMarkers([...kakaoSearchMarkers]);
           map.setBounds(bounds);
         } else {
           alert('검색 결과가 없습니다.');
-          // setSearchMarkers([]);
+          // setPinMarkers([]);
         }
       },
       { size: 5, page: page },
@@ -172,23 +218,26 @@ const MapPage = () => {
     if (localBookmarks) {
       const parsedBookmarks: MarkerType[] = JSON.parse(localBookmarks);
       setBookmarkMakers(parsedBookmarks);
+
+      const parsedOnMapMarkers: OnMapMarkerType[] = parsedBookmarks.map((bookmark: MarkerType) => {
+        const image = { src: '/icons/star-fill.svg', size: { width: 24, height: 24 } };
+        const position = bookmark.originalPosition;
+        const content = bookmark.content;
+        const status = 'bookmark';
+        return { image, position, content, status };
+      });
+      changeOnMapMarkers(parsedOnMapMarkers);
+
       if (map) {
         const bounds = new kakao.maps.LatLngBounds();
-
-        parsedBookmarks.forEach((marker: MarkerType) => {
-          const originalPosition = marker.originalPosition;
-          const position = new kakao.maps.LatLng(originalPosition.lat, originalPosition.lng);
-          new kakao.maps.Marker({
-            position: position,
-            map: map,
-            image: new kakao.maps.MarkerImage('/icons/star-fill.svg', new kakao.maps.Size(24, 24)),
-          });
+        onMapMarkers.forEach((marker: OnMapMarkerType) => {
+          const position = new kakao.maps.LatLng(marker.position.lat, marker.position.lng);
           bounds.extend(position);
         });
         map.setBounds(bounds);
       }
     }
-  }, [map]);
+  }, []);
 
   return (
     <MapContainer>
@@ -254,20 +303,20 @@ const MapPage = () => {
           onCreate={setMap}
           id='kakao-map'
         >
-          {searchMarkers.map((marker: KakaoMapMarkerType, index: number) => (
+          {onMapMarkers.map((marker: OnMapMarkerType, index: number) => (
             <MapMarker
-              key={'marker' + index}
+              key={'onMapMarker' + index}
               position={marker.position}
               // 이미지가 겹쳐서 보이지 않는 이슈
               // 기본 마커 이미지는 사용하지 않을 것이기에 map에 마커가 존재하는 지를 확인해야 함
-              image={{ src: '/icons/compass.svg', size: { width: 24, height: 24 } }}
+              image={marker.image}
             />
           ))}
         </Map>
       </KakaoMapContainer>
       <MarkersFooter
         map={map}
-        markers={searchMarkers}
+        markers={pinMarkers}
         handlePageMove={handlePageMove}
         onClickMarkerFooter={onClickMarkerFooter}
       />
