@@ -1,29 +1,28 @@
-import { useState, useRef, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useState, useRef } from 'react';
 import { Map, MapMarker } from 'react-kakao-maps-sdk';
-import { useKakaoLoader } from '@src/Hook';
 
-import { transLocaleToCoord } from '@src/Util';
-import { useLiveDataQuery } from '@src/Queries';
+import { useKakaoLoader, useMapMarker } from '@src/Hook';
+import { LoadingState } from '@src/Component';
+import { MarkerType, OnMapMarkerType } from '@src/Queries/useLiveDataQuery';
 
-import { Form, Button, ListGroup } from 'react-bootstrap';
+import { Form, Button } from 'react-bootstrap';
 import styled from 'styled-components';
-
-interface MarkerType {
-  position: {
-    lat: number;
-    lng: number;
-  };
-  content: string;
-}
+import MarkersFooter from './MarkersFooter';
+import MarkerWeather from './MarkerWeather';
 
 const MapPage = () => {
   const [map, setMap] = useState<kakao.maps.Map | null>(null);
-  const [markers, setMarkers] = useState<MarkerType[]>([]);
-  const [tempSelectedIndex, setTempSelectedIndex] = useState<number>(-1);
+  const {
+    pinMarkers,
+    currentMarkers,
+    bookmarkMakers,
+    onMapMarkers,
+    onFocusMarker,
+    onClickMarkerFooter,
+    onClickBookmark,
+    searchPlaces,
+  } = useMapMarker({ map });
 
-  const [selectedMarker, setSelectedMarker] = useState<MarkerType | null>(null);
-  const [mapLevel, setMapLevel] = useState<number>(3);
   const mapRef = useRef<kakao.maps.Map>(null);
   const [searchWord, setSearchWord] = useState<string>('');
   const searchRef = useRef<string>('');
@@ -32,99 +31,72 @@ const MapPage = () => {
   const [maxPage, setMaxPage] = useState<number>(1);
 
   const { kakaoLoading, kakaoError } = useKakaoLoader();
-  const dispatch = useDispatch();
 
   const handleInput = (e: any) => {
-    if (e.key === 'Enter') e.preventDefault();
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      if (!e.target.value) return;
+      insertAddress();
+      return;
+    }
     setSearchWord(e.target.value);
   };
 
   const insertAddress = () => {
     setCurPage(1);
-    searchPlaces(searchWord, 1);
+    searchPlaces(searchWord, 1, setMaxPage);
     searchRef.current = searchWord;
     setSearchWord('');
   };
 
-  const overMarkerPos = (marker: MarkerType) => {
-    if (!map) return;
-
-    // 마우스로 hover된 마커의 위치를 기준으로 지도 범위를 재설정
-    const position = marker.position;
-    map.setLevel(2);
-    setMapLevel(map.getLevel());
-
-    map.panTo(new kakao.maps.LatLng(position.lat, position.lng));
-  };
-
-  const onClickMarker = async (marker: MarkerType) => {
-    if (!map) return;
-    const position = marker.position;
-    const result = await transLocaleToCoord(position);
-
-    if (result) {
-      const { nx, ny, province, city } = result;
-    }
-  };
-
-  const searchPlaces = (keyword: string, page: number) => {
-    if (!map) return;
-    const ps = new kakao.maps.services.Places();
-
-    ps.keywordSearch(
-      keyword,
-      (data, status, pagination) => {
-        if (status === kakao.maps.services.Status.OK) {
-          setMaxPage(pagination.last);
-          // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
-          // LatLngBounds 객체에 좌표를 추가합니다
-          const bounds = new kakao.maps.LatLngBounds();
-          const markers: MarkerType[] = [];
-          for (let i = 0; i < data.length; i++) {
-            // @ts-ignore
-            markers.push({
-              position: {
-                lat: Number(data[i].y),
-                lng: Number(data[i].x),
-              },
-              content: data[i].place_name,
-            });
-            bounds.extend(new kakao.maps.LatLng(Number(data[i].y), Number(data[i].x)));
-          }
-          setMarkers([...markers]);
-          map.setBounds(bounds);
-        } else {
-          console.log('검색 결과가 없습니다.');
-          setMarkers([]);
-        }
-      },
-      { size: 15, page: page },
-    );
-  };
-
-  const handleHoverOut = () => {
-    if (!map) return;
-    overMarkerPos(markers[tempSelectedIndex]);
-  };
-
-  const handleClickMarker = (index: number) => {
-    if (tempSelectedIndex === index) {
-      setSelectedMarker(markers[index]);
-    } else {
-      setTempSelectedIndex(index);
-    }
-  };
-
-  const handlePageMove = (page: number) => {
+  const handlePageMove = (weight: number) => {
+    const page = curPage + weight;
     if (page < 1 || page > maxPage) return;
     setCurPage(page);
-    searchPlaces(searchRef.current, page);
-    setTempSelectedIndex(-1);
+    searchPlaces(searchRef.current, page, setMaxPage);
   };
 
-  useEffect(() => {}, []);
   return (
     <MapContainer>
+      {kakaoLoading && <LoadingState />}
+      <MarkerContiner>
+        <div>
+          <img src='/icons/star-fill.svg' alt='북마크' width={24} />
+          북마크
+        </div>
+        {bookmarkMakers.length !== 0 && (
+          <Markers>
+            {bookmarkMakers.map((marker: MarkerType, index: number) => (
+              <MarkerWeather
+                key={'marker' + index}
+                marker={marker}
+                onClickBookmark={onClickBookmark}
+                onFocusMarker={onFocusMarker}
+              />
+            ))}
+          </Markers>
+        )}
+      </MarkerContiner>
+
+      <MarkerContiner>
+        <div>
+          <img src='/icons/search.svg' alt='검색' width={24} />
+          조회
+        </div>
+        {currentMarkers.length !== 0 && (
+          <Markers>
+            {currentMarkers.map((marker: MarkerType, index: number) => (
+              <MarkerWeather
+                key={'marker' + index}
+                marker={marker}
+                onClickBookmark={onClickBookmark}
+                onFocusMarker={onFocusMarker}
+              />
+            ))}
+          </Markers>
+        )}
+      </MarkerContiner>
+
       <FormContainer>
         <Form>
           <Form.Control
@@ -138,39 +110,33 @@ const MapPage = () => {
         </Form>
         <Button onClick={insertAddress}>확인</Button>
       </FormContainer>
-
-      {markers.length > 0 && (
-        <MarkersContainer>
-          <ListGroup>
-            {markers.map((marker: MarkerType, index: number) => (
-              <ListGroup.Item
-                className={tempSelectedIndex === index ? 'selected' : ''}
-                key={index}
-                onMouseOver={() => overMarkerPos(marker)}
-                onMouseOut={handleHoverOut}
-                onClick={() => handleClickMarker(index)}
-              >
-                {marker.content}
-              </ListGroup.Item>
-            ))}
-          </ListGroup>
-        </MarkersContainer>
-      )}
-
-      <Map
-        center={{
-          lat: 37.566826,
-          lng: 126.9786567,
-        }}
-        level={mapLevel}
-        ref={mapRef}
-        onCreate={setMap}
-        id='kakao-map'
-      >
-        {markers.map((marker: MarkerType) => (
-          <MapMarker position={marker.position} onClick={() => console.log('marker : ', marker)} />
-        ))}
-      </Map>
+      <KakaoMapContainer>
+        <Map
+          center={{
+            lat: 37.566826,
+            lng: 126.9786567,
+          }}
+          ref={mapRef}
+          onCreate={setMap}
+          id='kakao-map'
+        >
+          {onMapMarkers.map((marker: OnMapMarkerType, index: number) => (
+            <MapMarker
+              key={'onMapMarker' + index}
+              position={marker.position}
+              // 이미지가 겹쳐서 보이지 않는 이슈
+              // 기본 마커 이미지는 사용하지 않을 것이기에 map에 마커가 존재하는 지를 확인해야 함
+              image={marker.image}
+            />
+          ))}
+        </Map>
+      </KakaoMapContainer>
+      <MarkersFooter
+        map={map}
+        markers={pinMarkers}
+        handlePageMove={handlePageMove}
+        onClickMarkerFooter={onClickMarkerFooter}
+      />
     </MapContainer>
   );
 };
@@ -178,18 +144,47 @@ const MapPage = () => {
 export default MapPage;
 
 const MapContainer = styled.div`
-  #kakao-map {
-    display: flex;
+  overflow: auto;
+  border-radius: 16px;
+`;
 
-    min-height: 100vh;
+const MarkerContiner = styled.div`
+  display: flex;
+  flex-direction: column;
+  min-height: 200px;
+  margin: 16px;
+  padding: 16px;
+  border: 1px solid #0d6efd;
+  border-radius: 16px;
+
+  > div {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 24px;
+    font-weight: 600;
+  }
+`;
+
+const Markers = styled.div`
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+`;
+
+const KakaoMapContainer = styled.div`
+  margin: 16px;
+  #kakao-map {
+    height: 70vh;
     width: 100%;
   }
 `;
+
 const FormContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-bottom: 30px;
+  margin: 0 16px;
 
   form {
     flex-grow: 1;
@@ -199,20 +194,5 @@ const FormContainer = styled.div`
   button {
     min-width: 80px;
     min-height: 40px;
-  }
-`;
-
-const MarkersContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  * {
-    cursor: pointer;
-    border-radius: 0;
-  }
-  .selected {
-    // blue selected highlight
-    background-color: #0d6efd;
-    color: white;
-    border: 1px solid white;
   }
 `;

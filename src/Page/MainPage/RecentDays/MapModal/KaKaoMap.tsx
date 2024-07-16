@@ -3,22 +3,15 @@ import { useDispatch } from 'react-redux';
 import { Map, MapMarker } from 'react-kakao-maps-sdk';
 
 import { useKakaoLoader } from '@src/Hook';
-import SearchResultPagination from './SearchResultPagination';
 import { transLocaleToCoord } from '@src/Util';
 import { ICoord } from '@src/API/getWeatherShort';
-import { close } from '@src/Store/kakaoModalSlice';
 import { setCity, setProvince } from '@src/Store/locationDataSlice';
+import { close } from '@src/Store/kakaoModalSlice';
+import { KakaoMapMarkerType } from '@src/Queries/useLiveDataQuery';
+import SearchResultPagination from './SearchResultPagination';
 
 import { Form, Button, ListGroup } from 'react-bootstrap';
 import styled from 'styled-components';
-
-interface MarkerType {
-  position: {
-    lat: number;
-    lng: number;
-  };
-  content: string;
-}
 
 interface IProps {
   handleChangeCoord: (coord: ICoord) => void;
@@ -26,10 +19,10 @@ interface IProps {
 
 const KaKaoMap = ({ handleChangeCoord }: IProps) => {
   const [map, setMap] = useState<kakao.maps.Map | null>(null);
-  const [markers, setMarkers] = useState<MarkerType[]>([]);
+  const [markers, setMarkers] = useState<KakaoMapMarkerType[]>([]);
   const [tempSelectedIndex, setTempSelectedIndex] = useState<number>(-1);
 
-  const [selectedMarker, setSelectedMarker] = useState<MarkerType | null>(null);
+  const [selectedMarker, setSelectedMarker] = useState<KakaoMapMarkerType | null>(null);
   const [mapLevel, setMapLevel] = useState<number>(3);
   const mapRef = useRef<kakao.maps.Map>(null);
   const [searchWord, setSearchWord] = useState<string>('');
@@ -53,7 +46,7 @@ const KaKaoMap = ({ handleChangeCoord }: IProps) => {
     setSearchWord('');
   };
 
-  const overMarkerPos = (marker: MarkerType) => {
+  const overMarkerPos = (marker: KakaoMapMarkerType) => {
     if (!map) return;
 
     // 마우스로 hover된 마커의 위치를 기준으로 지도 범위를 재설정
@@ -64,7 +57,7 @@ const KaKaoMap = ({ handleChangeCoord }: IProps) => {
     map.panTo(new kakao.maps.LatLng(position.lat, position.lng));
   };
 
-  const onClickMarker = async (marker: MarkerType) => {
+  const onClickMarker = async (marker: KakaoMapMarkerType) => {
     if (!map) return;
     const position = marker.position;
     const result = await transLocaleToCoord(position);
@@ -90,7 +83,7 @@ const KaKaoMap = ({ handleChangeCoord }: IProps) => {
           // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
           // LatLngBounds 객체에 좌표를 추가합니다
           const bounds = new kakao.maps.LatLngBounds();
-          const markers: MarkerType[] = [];
+          const markers: KakaoMapMarkerType[] = [];
           for (let i = 0; i < data.length; i++) {
             // @ts-ignore
             markers.push({
@@ -152,7 +145,7 @@ const KaKaoMap = ({ handleChangeCoord }: IProps) => {
           />
         </Form>
         <Button onClick={insertAddress}>확인</Button>
-        <CloseButton src='/x-circle.svg' onClick={() => dispatch(close())} />
+        <CloseButton src='/icons/x-circle.svg' onClick={() => dispatch(close())} />
       </FormContainer>
 
       <Map
@@ -165,15 +158,15 @@ const KaKaoMap = ({ handleChangeCoord }: IProps) => {
         onCreate={setMap}
         id='kakao-map'
       >
-        {markers.map((marker: MarkerType) => (
-          <MapMarker position={marker.position} />
+        {markers.map((marker: KakaoMapMarkerType, index: number) => (
+          <MapMarker position={marker.position} key={index} />
         ))}
       </Map>
 
       {markers.length > 0 && (
         <MarkersContainer>
           <ListGroup>
-            {markers.map((marker: MarkerType, index: number) => (
+            {markers.map((marker: KakaoMapMarkerType, index: number) => (
               <ListGroup.Item
                 className={tempSelectedIndex === index ? 'selected' : ''}
                 key={index}

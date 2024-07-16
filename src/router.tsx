@@ -1,15 +1,7 @@
 import { createBrowserRouter } from 'react-router-dom';
 
-import { MainPage, MapPage } from '@src/Page';
+import { MainPage, MapPage, ErrorPage } from '@src/Page';
 import { Layout } from '@src/Component';
-
-const TempPage = () => {
-  return (
-    <div>
-      <h1>Temp Page</h1>
-    </div>
-  );
-};
 
 const BrowserRouter = createBrowserRouter([
   {
@@ -18,15 +10,15 @@ const BrowserRouter = createBrowserRouter([
     children: [
       {
         path: '/',
-        element: <TempPage />,
-      },
-      {
-        path: '/chart',
         element: <MainPage />,
       },
       {
-        path: '/map',
+        path: '/live',
         element: <MapPage />,
+      },
+      {
+        path: '/error',
+        element: <ErrorPage />,
       },
     ],
   },

@@ -1,4 +1,4 @@
-import TempLoading from './TempLoading';
 import Layout from './Layout';
+import LoadingState from './LoadingState';
 
-export { TempLoading, Layout };
+export { Layout, LoadingState };

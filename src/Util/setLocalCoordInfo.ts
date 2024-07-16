@@ -8,10 +8,11 @@ interface ICoordInfo {
 const setLocalCoordInfo = (coord: ICoordInfo) => {
   const { nx, ny, province, city } = coord;
   const prevCity = localStorage.getItem('city');
-  if (prevCity === city) {
-    alert('동일한 지역입니다.');
-    return null;
-  }
+  // 중복 검색 방지 해제?
+  // if (prevCity === city) {
+  //   alert(`${prevCity}와 동일한 지역입니다.`);
+  //   return null;
+  // }
 
   localStorage.setItem('coord', JSON.stringify({ nx, ny }));
   localStorage.setItem('province', province);

@@ -92,17 +92,25 @@ const LocationHeader = ({ handleChangeCoord }: IProps) => {
           <option value=''>선택</option>
 
           {Object.keys(short_local).map(key => {
-            return <option value={key}>{key}</option>;
+            return (
+              <option value={key} key={key}>
+                {key}
+              </option>
+            );
           })}
         </Form.Select>
         <Form.Select onChange={onChangeCity} value={city}>
           <option value=''>선택</option>
           {province &&
             Object.keys(short_local[province]).map(key => {
-              return <option value={key}>{key}</option>;
+              return (
+                <option value={key} key={key}>
+                  {key}
+                </option>
+              );
             })}
         </Form.Select>
-        <text>의 날씨는?</text>
+        <div>의 날씨는?</div>
       </LocationHeaderSelector>
       <LocationHeaderButtons>
         <Button onClick={() => currentLocation()}>현재 위치로 설정</Button>
