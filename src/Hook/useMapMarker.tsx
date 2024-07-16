@@ -187,7 +187,8 @@ const useMapMarker = ({ map }: Props) => {
       });
       changeOnMapMarkers(parsedOnMapMarkers);
 
-      if (map) {
+      // parsedOnMapMarkers의 length가 있을 때만 bound 설정
+      if (map && parsedOnMapMarkers.length) {
         const bounds = new kakao.maps.LatLngBounds();
         parsedOnMapMarkers.forEach((marker: OnMapMarkerType) => {
           const position = new kakao.maps.LatLng(marker.position.lat, marker.position.lng);

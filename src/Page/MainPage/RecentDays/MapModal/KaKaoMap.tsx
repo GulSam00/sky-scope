@@ -85,7 +85,6 @@ const KaKaoMap = ({ handleChangeCoord }: IProps) => {
           const bounds = new kakao.maps.LatLngBounds();
           const markers: KakaoMapMarkerType[] = [];
           for (let i = 0; i < data.length; i++) {
-            // @ts-ignore
             markers.push({
               position: {
                 lat: Number(data[i].y),
