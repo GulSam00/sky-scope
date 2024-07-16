@@ -16,7 +16,7 @@ const MarkersFooter = ({ map, markers, handlePageMove, onClickMarkerFooter }: Pr
 
   const overMarkerPos = (marker: KakaoMapMarkerType) => {
     if (!map) return;
-    const position = marker?.position;
+    const position = marker.position;
     map.setLevel(2);
     map.panTo(new kakao.maps.LatLng(position.lat, position.lng));
   };
