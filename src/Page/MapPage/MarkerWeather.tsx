@@ -61,7 +61,7 @@ const MarkerWeather = ({ marker, onClickBookmark, onFocusMarker }: Props) => {
       dispatch(loadedData());
     }
     if (error) {
-      console.log(error);
+      alert(error);
       navigate('/error');
     }
   }, [isLoading]);

@@ -189,14 +189,14 @@ const useMapMarker = ({ map }: Props) => {
 
       if (map) {
         const bounds = new kakao.maps.LatLngBounds();
-        onMapMarkers.forEach((marker: OnMapMarkerType) => {
+        parsedOnMapMarkers.forEach((marker: OnMapMarkerType) => {
           const position = new kakao.maps.LatLng(marker.position.lat, marker.position.lng);
           bounds.extend(position);
         });
         map.setBounds(bounds);
       }
     }
-  }, []);
+  }, [map]);
 
   return {
     pinMarkers,
