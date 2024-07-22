@@ -3,18 +3,20 @@ import { Map, MapMarker } from 'react-kakao-maps-sdk';
 
 import { LoadingState } from '@src/Component';
 import { useKakaoLoader, useMapMarker } from '@src/Hook';
-import { MarkerType, OnMapMarkerType } from '@src/Queries/useLiveDataQuery';
+import { OnMapMarkerType } from '@src/Queries/useLiveDataQuery';
 
 import { Form, Button } from 'react-bootstrap';
 import styled from 'styled-components';
+
+import BookmarkMarkers from './BookmarkMarkers';
 import MarkersFooter from './MarkersFooter';
-import MarkerWeather from './MarkerWeather';
+import CurrentMarkers from './CurrentMarkers';
 
 const MapPage = () => {
   const [map, setMap] = useState<kakao.maps.Map | null>(null);
   const {
     pinMarkers,
-    showCurrentMarkers: currentMarkers,
+    currentMarkers,
     bookmarkMakers,
     onMapMarkers,
     onFocusMarker,
@@ -66,43 +68,13 @@ const MapPage = () => {
     <MapContainer>
       {kakaoLoading && <LoadingState />}
 
-      <MarkerContiner>
-        <div>
-          <img src='/icons/star-fill.svg' alt='북마크' width={24} />
-          북마크
-        </div>
-        {bookmarkMakers.length !== 0 && (
-          <Markers>
-            {bookmarkMakers.map((marker: MarkerType, index: number) => (
-              <MarkerWeather
-                key={'marker' + index}
-                marker={marker}
-                onClickBookmark={onClickBookmark}
-                onFocusMarker={onFocusMarker}
-              />
-            ))}
-          </Markers>
-        )}
-      </MarkerContiner>
+      <BookmarkMarkers
+        bookmarkMakers={bookmarkMakers}
+        onClickBookmark={onClickBookmark}
+        onFocusMarker={onFocusMarker}
+      />
 
-      <MarkerContiner>
-        <div>
-          <img src='/icons/search.svg' alt='검색' width={24} />
-          조회
-        </div>
-        {currentMarkers.length !== 0 && (
-          <Markers>
-            {currentMarkers.map((marker: MarkerType, index: number) => (
-              <MarkerWeather
-                key={'marker' + index}
-                marker={marker}
-                onClickBookmark={onClickBookmark}
-                onFocusMarker={onFocusMarker}
-              />
-            ))}
-          </Markers>
-        )}
-      </MarkerContiner>
+      <CurrentMarkers currentMarkers={currentMarkers} onClickBookmark={onClickBookmark} onFocusMarker={onFocusMarker} />
 
       <FormContainer>
         <Form>
@@ -153,30 +125,6 @@ export default MapPage;
 const MapContainer = styled.div`
   overflow: auto;
   border-radius: 16px;
-`;
-
-const MarkerContiner = styled.div`
-  display: flex;
-  flex-direction: column;
-  min-height: 200px;
-  margin: 16px;
-  padding: 16px;
-  border: 1px solid #0d6efd;
-  border-radius: 16px;
-
-  > div {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 24px;
-    font-weight: 600;
-  }
-`;
-
-const Markers = styled.div`
-  display: flex;
-  gap: 16px;
-  overflow-x: auto;
 `;
 
 const KakaoMapContainer = styled.div`
