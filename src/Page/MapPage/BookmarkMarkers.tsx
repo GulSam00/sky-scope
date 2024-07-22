@@ -20,7 +20,7 @@ const BookmarkMakers = ({ bookmarkMakers, onClickBookmark, onFocusMarker }: Prop
         <Markers>
           {bookmarkMakers.map((marker: MarkerType) => (
             <MarkerWeather
-              key={'bookmark' + marker.code}
+              key={'bookmark' + marker.code + marker.content}
               marker={marker}
               onClickBookmark={onClickBookmark}
               onFocusMarker={onFocusMarker}

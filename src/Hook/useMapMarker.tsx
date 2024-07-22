@@ -76,32 +76,29 @@ const useMapMarker = ({ map }: Props) => {
     return 0;
   };
 
-  const onClickMarkerFooter = useCallback(
-    async (marker: KakaoMapMarkerType) => {
-      if (!map) return;
-      const newMarker = {} as MarkerType;
-      newMarker.originalPosition = marker.position;
-      newMarker.content = marker.content;
-      const result = await transLocaleToCoord(marker.position);
+  const onClickMarkerFooter = async (marker: KakaoMapMarkerType) => {
+    if (!map) return;
+    const newMarker = {} as MarkerType;
+    newMarker.originalPosition = marker.position;
+    newMarker.content = marker.content;
+    const result = await transLocaleToCoord(marker.position);
 
-      if (!result) {
-        return;
-      }
+    if (!result) {
+      return;
+    }
 
-      const { nx, ny, province, city, code } = result;
-      if (currentMarkers) {
-        if (isSwapMarker(marker.content) !== 0) return;
-      }
+    const { nx, ny, province, city, code } = result;
+    if (currentMarkers) {
+      if (isSwapMarker(marker.content) !== 0) return;
+    }
 
-      const prasedPosition = { lat: ny, lng: nx };
-      Object.assign(newMarker, { province, city, code, position: prasedPosition, isBookmarked: false });
-      setCurrentMarkers([newMarker, ...currentMarkers]);
+    const prasedPosition = { lat: ny, lng: nx };
+    Object.assign(newMarker, { province, city, code, position: prasedPosition, isBookmarked: false });
+    setCurrentMarkers([newMarker, ...currentMarkers]);
 
-      const image = { src: '/icons/search.svg', size: { width: 36, height: 36 } };
-      changeOnMapMarker({ image, position: marker.position, content: marker.content, status: 'search' });
-    },
-    [currentMarkers, bookmarkMakers, map],
-  );
+    const image = { src: '/icons/search.svg', size: { width: 36, height: 36 } };
+    changeOnMapMarker({ image, position: marker.position, content: marker.content, status: 'search' });
+  };
 
   const onClickBookmark = useCallback(
     (code: string, isBookmarked: boolean) => {
