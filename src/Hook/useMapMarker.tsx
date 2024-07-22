@@ -9,6 +9,7 @@ interface Props {
 const useMapMarker = ({ map }: Props) => {
   const [pinMarkers, setPinMarkers] = useState<KakaoMapMarkerType[]>([]);
   const [currentMarkers, setCurrentMarkers] = useState<MarkerType[]>([]);
+  const [showCurrentMarkers, setShowCurrentMarkers] = useState<MarkerType[]>([]);
   const [bookmarkMakers, setBookmarkMakers] = useState<MarkerType[]>([]);
   const [onMapMarkers, setOnMapMarkers] = useState<OnMapMarkerType[]>([]);
 
@@ -56,12 +57,12 @@ const useMapMarker = ({ map }: Props) => {
   };
 
   const isSwapMarker = (content: string) => {
-    const currentIndex = currentMarkers.findIndex(item => item.content === content);
+    const currentIndex = showCurrentMarkers.findIndex(item => item.content === content);
     const bookmarkIndex = bookmarkMakers.findIndex(item => item.content === content);
     if (currentIndex !== -1) {
-      const firstMarker = currentMarkers[currentIndex];
-      currentMarkers.splice(currentIndex, 1);
-      setCurrentMarkers([firstMarker, ...currentMarkers]);
+      const firstMarker = showCurrentMarkers[currentIndex];
+      showCurrentMarkers.splice(currentIndex, 1);
+      setShowCurrentMarkers([firstMarker, ...showCurrentMarkers]);
       return 1;
     }
     if (bookmarkIndex !== -1) {
@@ -86,18 +87,19 @@ const useMapMarker = ({ map }: Props) => {
       }
 
       const { nx, ny, province, city, code } = result;
-      if (currentMarkers) {
+      if (showCurrentMarkers) {
         if (isSwapMarker(marker.content) !== 0) return;
       }
 
       const prasedPosition = { lat: ny, lng: nx };
       Object.assign(newMarker, { province, city, code, position: prasedPosition, isBookmarked: false });
       setCurrentMarkers([newMarker, ...currentMarkers]);
+      setShowCurrentMarkers([newMarker, ...showCurrentMarkers]);
 
       const image = { src: '/icons/search.svg', size: { width: 36, height: 36 } };
       changeOnMapMarker({ image, position: marker.position, content: marker.content, status: 'search' });
     },
-    [currentMarkers],
+    [currentMarkers, map],
   );
 
   const onClickBookmark = (code: string, isBookmarked: boolean) => {
@@ -108,6 +110,7 @@ const useMapMarker = ({ map }: Props) => {
       firstMarker.isBookmarked = true;
       currentMarkers.splice(index, 1);
       setCurrentMarkers([...currentMarkers]);
+      setShowCurrentMarkers([...currentMarkers]);
       setBookmarkMakers([firstMarker, ...bookmarkMakers]);
       const image = { src: '/icons/star-fill.svg', size: { width: 36, height: 36 } };
       const position = firstMarker.originalPosition;
@@ -124,6 +127,7 @@ const useMapMarker = ({ map }: Props) => {
       bookmarkMakers.splice(index, 1);
       setBookmarkMakers([...bookmarkMakers]);
       setCurrentMarkers([firstMarker, ...currentMarkers]);
+      setShowCurrentMarkers([firstMarker, ...showCurrentMarkers]);
 
       const image = { src: '/icons/search.svg', size: { width: 36, height: 36 } };
       const position = firstMarker.originalPosition;
@@ -203,7 +207,7 @@ const useMapMarker = ({ map }: Props) => {
 
   return {
     pinMarkers,
-    currentMarkers,
+    showCurrentMarkers,
     bookmarkMakers,
     onMapMarkers,
     onFocusMarker,

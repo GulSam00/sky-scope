@@ -1,8 +1,8 @@
 import { useState, useRef, useCallback } from 'react';
 import { Map, MapMarker } from 'react-kakao-maps-sdk';
 
-import { useKakaoLoader, useMapMarker } from '@src/Hook';
 import { LoadingState } from '@src/Component';
+import { useKakaoLoader, useMapMarker } from '@src/Hook';
 import { MarkerType, OnMapMarkerType } from '@src/Queries/useLiveDataQuery';
 
 import { Form, Button } from 'react-bootstrap';
@@ -14,7 +14,7 @@ const MapPage = () => {
   const [map, setMap] = useState<kakao.maps.Map | null>(null);
   const {
     pinMarkers,
-    currentMarkers,
+    showCurrentMarkers: currentMarkers,
     bookmarkMakers,
     onMapMarkers,
     onFocusMarker,
@@ -51,17 +51,21 @@ const MapPage = () => {
 
   const handlePageMove = useCallback(
     (weight: number) => {
+      if (!map) return;
+
       const page = curPage + weight;
       if (page < 1 || page > maxPage) return;
+
       setCurPage(page);
       searchPlaces(searchRef.current, page, setMaxPage);
     },
-    [curPage],
+    [map, curPage, maxPage],
   );
 
   return (
     <MapContainer>
       {kakaoLoading && <LoadingState />}
+
       <MarkerContiner>
         <div>
           <img src='/icons/star-fill.svg' alt='북마크' width={24} />
