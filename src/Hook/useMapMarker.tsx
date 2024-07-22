@@ -19,10 +19,13 @@ const useMapMarker = ({ map }: Props) => {
     map.panTo(kakaoPosition);
   };
 
-  const onFocusMarker = useCallback((marker: MarkerType) => {
-    isSwapMarker(marker.content);
-    focusMap(marker.originalPosition);
-  }, []);
+  const onFocusMarker = useCallback(
+    (marker: MarkerType) => {
+      isSwapMarker(marker.content);
+      focusMap(marker.originalPosition);
+    },
+    [currentMarkers, bookmarkMakers],
+  );
 
   const changeOnMapMarkers = (dstOnMapMarkers: OnMapMarkerType[]) => {
     // 이전의 pin 마커를 제거, onMapMarkers 대신 사용
