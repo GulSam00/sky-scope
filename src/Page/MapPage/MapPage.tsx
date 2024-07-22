@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useCallback } from 'react';
 import { Map, MapMarker } from 'react-kakao-maps-sdk';
 
 import { useKakaoLoader, useMapMarker } from '@src/Hook';
@@ -49,12 +49,15 @@ const MapPage = () => {
     setSearchWord('');
   };
 
-  const handlePageMove = (weight: number) => {
-    const page = curPage + weight;
-    if (page < 1 || page > maxPage) return;
-    setCurPage(page);
-    searchPlaces(searchRef.current, page, setMaxPage);
-  };
+  const handlePageMove = useCallback(
+    (weight: number) => {
+      const page = curPage + weight;
+      if (page < 1 || page > maxPage) return;
+      setCurPage(page);
+      searchPlaces(searchRef.current, page, setMaxPage);
+    },
+    [curPage],
+  );
 
   return (
     <MapContainer>

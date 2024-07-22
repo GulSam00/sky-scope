@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { transLocaleToCoord } from '@src/Util';
 
 import { KakaoMapMarkerType, MarkerType, OnMapMarkerType } from '@src/Queries/useLiveDataQuery';
@@ -73,30 +73,32 @@ const useMapMarker = ({ map }: Props) => {
     return 0;
   };
 
-  const onClickMarkerFooter = async (marker: KakaoMapMarkerType) => {
-    if (!map) return;
+  const onClickMarkerFooter = useCallback(
+    async (marker: KakaoMapMarkerType) => {
+      if (!map) return;
+      const newMarker = {} as MarkerType;
+      newMarker.originalPosition = marker.position;
+      newMarker.content = marker.content;
+      const result = await transLocaleToCoord(marker.position);
 
-    const newMarker = {} as MarkerType;
-    newMarker.originalPosition = marker.position;
-    newMarker.content = marker.content;
-    const result = await transLocaleToCoord(marker.position);
+      if (!result) {
+        return;
+      }
 
-    if (!result) {
-      return;
-    }
+      const { nx, ny, province, city, code } = result;
+      if (currentMarkers) {
+        if (isSwapMarker(marker.content) !== 0) return;
+      }
 
-    const { nx, ny, province, city, code } = result;
-    if (currentMarkers) {
-      if (isSwapMarker(marker.content) !== 0) return;
-    }
+      const prasedPosition = { lat: ny, lng: nx };
+      Object.assign(newMarker, { province, city, code, position: prasedPosition, isBookmarked: false });
+      setCurrentMarkers([newMarker, ...currentMarkers]);
 
-    const prasedPosition = { lat: ny, lng: nx };
-    Object.assign(newMarker, { province, city, code, position: prasedPosition, isBookmarked: false });
-    setCurrentMarkers([newMarker, ...currentMarkers]);
-
-    const image = { src: '/icons/search.svg', size: { width: 36, height: 36 } };
-    changeOnMapMarker({ image, position: marker.position, content: marker.content, status: 'search' });
-  };
+      const image = { src: '/icons/search.svg', size: { width: 36, height: 36 } };
+      changeOnMapMarker({ image, position: marker.position, content: marker.content, status: 'search' });
+    },
+    [currentMarkers],
+  );
 
   const onClickBookmark = (code: string, isBookmarked: boolean) => {
     if (isBookmarked === false) {

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 
 import { KakaoMapMarkerType } from '@src/Queries/useLiveDataQuery';
 
@@ -65,7 +65,7 @@ const MarkersFooter = ({ map, markers, handlePageMove, onClickMarkerFooter }: Pr
   );
 };
 
-export default MarkersFooter;
+export default React.memo(MarkersFooter);
 
 const MarkersContainer = styled.div`
   display: flex;
