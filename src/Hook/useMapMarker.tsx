@@ -19,10 +19,10 @@ const useMapMarker = ({ map }: Props) => {
     map.panTo(kakaoPosition);
   };
 
-  const onFocusMarker = (marker: MarkerType) => {
+  const onFocusMarker = useCallback((marker: MarkerType) => {
     isSwapMarker(marker.content);
     focusMap(marker.originalPosition);
-  };
+  }, []);
 
   const changeOnMapMarkers = (dstOnMapMarkers: OnMapMarkerType[]) => {
     // 이전의 pin 마커를 제거, onMapMarkers 대신 사용
@@ -100,40 +100,43 @@ const useMapMarker = ({ map }: Props) => {
     [currentMarkers, bookmarkMakers, map],
   );
 
-  const onClickBookmark = (code: string, isBookmarked: boolean) => {
-    if (isBookmarked === false) {
-      // 북마크 추가
-      const index = currentMarkers.findIndex(item => item.code === code);
-      const firstMarker = currentMarkers[index];
-      firstMarker.isBookmarked = true;
-      currentMarkers.splice(index, 1);
-      setCurrentMarkers([...currentMarkers]);
-      setBookmarkMakers([firstMarker, ...bookmarkMakers]);
-      const image = { src: '/icons/star-fill.svg', size: { width: 36, height: 36 } };
-      const position = firstMarker.originalPosition;
-      const content = firstMarker.content;
-      const status = 'bookmark';
-      changeOnMapMarker({ image, position, content, status });
-      focusMap(position);
-      localStorage.setItem('bookmarks', JSON.stringify([firstMarker, ...bookmarkMakers]));
-    } else {
-      // 북마크 해제
-      const index = bookmarkMakers.findIndex(item => item.code === code);
-      const firstMarker = bookmarkMakers[index];
-      firstMarker.isBookmarked = false;
-      bookmarkMakers.splice(index, 1);
-      setBookmarkMakers([...bookmarkMakers]);
-      setCurrentMarkers([firstMarker, ...currentMarkers]);
+  const onClickBookmark = useCallback(
+    (code: string, isBookmarked: boolean) => {
+      if (isBookmarked === false) {
+        // 북마크 추가
+        const index = currentMarkers.findIndex(item => item.code === code);
+        const firstMarker = currentMarkers[index];
+        firstMarker.isBookmarked = true;
+        currentMarkers.splice(index, 1);
+        setCurrentMarkers([...currentMarkers]);
+        setBookmarkMakers([firstMarker, ...bookmarkMakers]);
+        const image = { src: '/icons/star-fill.svg', size: { width: 36, height: 36 } };
+        const position = firstMarker.originalPosition;
+        const content = firstMarker.content;
+        const status = 'bookmark';
+        changeOnMapMarker({ image, position, content, status });
+        focusMap(position);
+        localStorage.setItem('bookmarks', JSON.stringify([firstMarker, ...bookmarkMakers]));
+      } else {
+        // 북마크 해제
+        const index = bookmarkMakers.findIndex(item => item.code === code);
+        const firstMarker = bookmarkMakers[index];
+        firstMarker.isBookmarked = false;
+        bookmarkMakers.splice(index, 1);
+        setBookmarkMakers([...bookmarkMakers]);
+        setCurrentMarkers([firstMarker, ...currentMarkers]);
 
-      const image = { src: '/icons/search.svg', size: { width: 36, height: 36 } };
-      const position = firstMarker.originalPosition;
-      const content = firstMarker.content;
-      const status = 'search';
-      changeOnMapMarker({ image, position, content, status });
-      focusMap(position);
-      localStorage.setItem('bookmarks', JSON.stringify([...bookmarkMakers]));
-    }
-  };
+        const image = { src: '/icons/search.svg', size: { width: 36, height: 36 } };
+        const position = firstMarker.originalPosition;
+        const content = firstMarker.content;
+        const status = 'search';
+        changeOnMapMarker({ image, position, content, status });
+        focusMap(position);
+        localStorage.setItem('bookmarks', JSON.stringify([...bookmarkMakers]));
+      }
+    },
+    [currentMarkers, bookmarkMakers],
+  );
 
   const searchPlaces = (keyword: string, page: number, setMaxPage: React.Dispatch<React.SetStateAction<number>>) => {
     if (!map) return;
