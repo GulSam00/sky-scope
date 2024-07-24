@@ -35,9 +35,9 @@ export interface MarkerType extends KakaoMapMarkerType {
   isBookmarked: boolean;
 }
 
-const useLiveDataQuery = (today: Date, marker: MarkerType | null) => {
+const useLiveDataQuery = (today: Date, marker: MarkerType) => {
   const { data, isLoading, error, status } = useQuery<IParseObj | undefined>({
-    queryKey: ['live', marker ? marker.code : 'no-marker'],
+    queryKey: ['live', marker.code, marker.content],
     queryFn: async () => {
       const location: ICoord = {
         nx: marker ? marker.position.lng : 0,
