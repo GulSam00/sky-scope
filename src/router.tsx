@@ -2,11 +2,10 @@ import React, { Suspense, lazy } from 'react';
 import { createBrowserRouter } from 'react-router-dom';
 import { LoadingState } from '@src/Component';
 
-// import { MainPage, MapPage, ErrorPage } from '@src/Page';
 import { Layout } from '@src/Component';
 
-const MainPage = lazy(() => import('@src/Page/MainPage'));
 const MapPage = lazy(() => import('@src/Page/MapPage'));
+const ChartPage = lazy(() => import('@src/Page/ChartPage'));
 const ErrorPage = lazy(() => import('@src/Page/ErrorPage'));
 
 const LazyComponent = ({ children }: { children: React.ReactNode }) => {
@@ -22,18 +21,19 @@ const BrowserRouter = createBrowserRouter([
         path: '/',
         element: (
           <LazyComponent>
-            <MainPage />
-          </LazyComponent>
-        ),
-      },
-      {
-        path: '/live',
-        element: (
-          <LazyComponent>
             <MapPage />
           </LazyComponent>
         ),
       },
+      {
+        path: '/chart',
+        element: (
+          <LazyComponent>
+            <ChartPage />
+          </LazyComponent>
+        ),
+      },
+
       {
         path: '/error',
         element: (
