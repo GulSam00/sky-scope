@@ -1,5 +1,5 @@
-import MainPage from './MainPage';
+import ChartPage from './ChartPage';
 import MapPage from './MapPage';
 import ErrorPage from './ErrorPage';
 
-export { MainPage, MapPage, ErrorPage };
+export { ChartPage, MapPage, ErrorPage };

@@ -5,7 +5,7 @@ import RecentDays from './RecentDays';
 import { RootState } from '@src/Store/store';
 import { styled } from 'styled-components';
 
-const MainPage = () => {
+const ChartPage = () => {
   const { isOpen } = useSelector((state: RootState) => state.kakaoModalSliceReducer);
 
   useEffect(() => {
@@ -23,7 +23,7 @@ const MainPage = () => {
   );
 };
 
-export default MainPage;
+export default ChartPage;
 
 const DayContainer = styled.div`
   display: flex;

@@ -20,12 +20,12 @@ const Layout = () => {
         <Nav variant='tabs'>
           <Nav.Item>
             <Nav.Link href='/' disabled={location.pathname === '/'}>
-              예보 차트
+              실시간 날씨
             </Nav.Link>
           </Nav.Item>
           <Nav.Item>
-            <Nav.Link href='/live' disabled={location.pathname === '/live'}>
-              실시간 날씨
+            <Nav.Link href='/chart' disabled={location.pathname === '/chart'}>
+              예보 차트
             </Nav.Link>
           </Nav.Item>
         </Nav>
