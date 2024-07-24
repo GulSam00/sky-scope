@@ -32,6 +32,7 @@ const MapPage = () => {
     focusIndex,
     handleChangeInput,
     handleChangeFocus,
+    onClickSearchButton,
     onClickAutoGroup,
   } = useAutoSearch();
 
@@ -45,6 +46,7 @@ const MapPage = () => {
   const insertAddress = () => {
     setCurPage(1);
     searchPlaces(searchWord, 1, setMaxPage);
+    onClickSearchButton();
   };
 
   const handlePageMove = useCallback(
@@ -77,7 +79,7 @@ const MapPage = () => {
           <Form.Control
             size='lg'
             type='text'
-            placeholder='테스트'
+            placeholder='날씨를 알고 싶은 장소는?'
             value={searchWord}
             onChange={handleChangeInput}
             onKeyDown={handleChangeFocus}
@@ -169,6 +171,7 @@ const ListGroupContainer = styled.div`
   z-index: 1000;
   padding: 0 16px;
   width: 100%;
+  cursor: pointer;
 
   .focus {
     background-color: #0d6efd;

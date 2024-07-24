@@ -1,18 +1,21 @@
+import { set } from 'date-fns';
 import { useState, useCallback } from 'react';
 
 const useAutoSearch = () => {
   const [isAutoSearch, setIsAutoSearch] = useState<boolean>(false);
   const [searchWord, setSearchWord] = useState<string>('');
-  const [searchAutoList, setSearchAutoList] = useState<string[]>([]);
 
+  const [searchAutoList, setSearchAutoList] = useState<string[]>([]);
   const [focusIndex, setFocusIndex] = useState(-1);
 
   const handleChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
+
     const value = e.target.value;
     setSearchWord(value);
-    const ps = new kakao.maps.services.Places();
 
     if (value.length) {
+      const ps = new kakao.maps.services.Places();
       ps.keywordSearch(value, (data, status, pagination) => {
         if (status === kakao.maps.services.Status.OK) {
           const list = data.map((item: any) => item.place_name).slice(0, 5);
@@ -23,12 +26,10 @@ const useAutoSearch = () => {
           setIsAutoSearch(false);
         }
       });
-    }
+    } else setIsAutoSearch(false);
   };
 
   const handleChangeFocus = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (isAutoSearch === false) return;
-
     if (e.key === 'ArrowDown') {
       const index = (focusIndex + 1) % searchAutoList.length;
       setFocusIndex(index);
@@ -37,6 +38,7 @@ const useAutoSearch = () => {
       setFocusIndex(index);
     } else if (e.key === 'Enter') {
       e.preventDefault();
+      if (!isAutoSearch) return;
       setSearchWord(searchAutoList[focusIndex]);
       setIsAutoSearch(false);
       setSearchAutoList([]);
@@ -50,6 +52,11 @@ const useAutoSearch = () => {
     setSearchAutoList([]);
   };
 
+  const onClickSearchButton = () => {
+    setSearchWord('');
+    setIsAutoSearch(false);
+  };
+
   return {
     isAutoSearch,
     searchWord,
@@ -57,6 +64,7 @@ const useAutoSearch = () => {
     focusIndex,
     handleChangeInput,
     handleChangeFocus,
+    onClickSearchButton,
     onClickAutoGroup,
   };
 };
