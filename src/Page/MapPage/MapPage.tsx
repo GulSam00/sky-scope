@@ -1,14 +1,16 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useCallback } from 'react';
 import { Map, MapMarker } from 'react-kakao-maps-sdk';
 
-import { useKakaoLoader, useMapMarker } from '@src/Hook';
 import { LoadingState } from '@src/Component';
-import { MarkerType, OnMapMarkerType } from '@src/Queries/useLiveDataQuery';
+import { useKakaoLoader, useMapMarker, useAutoSearch } from '@src/Hook';
+import { OnMapMarkerType } from '@src/Queries/useLiveDataQuery';
 
-import { Form, Button } from 'react-bootstrap';
+import { Form, Button, ListGroup } from 'react-bootstrap';
 import styled from 'styled-components';
+
+import BookmarkMarkers from './BookmarkMarkers';
 import MarkersFooter from './MarkersFooter';
-import MarkerWeather from './MarkerWeather';
+import CurrentMarkers from './CurrentMarkers';
 
 const MapPage = () => {
   const [map, setMap] = useState<kakao.maps.Map | null>(null);
@@ -23,93 +25,95 @@ const MapPage = () => {
     searchPlaces,
   } = useMapMarker({ map });
 
+  const {
+    isAutoSearch,
+    searchWord,
+    lastSearchWord,
+    searchAutoList,
+    focusIndex,
+    handleChangeInput,
+    handleChangeFocus,
+    onClickSearchButton,
+    onClickAutoGroup,
+  } = useAutoSearch();
+
   const mapRef = useRef<kakao.maps.Map>(null);
-  const [searchWord, setSearchWord] = useState<string>('');
-  const searchRef = useRef<string>('');
 
   const [curPage, setCurPage] = useState<number>(1);
   const [maxPage, setMaxPage] = useState<number>(1);
 
   const { kakaoLoading, kakaoError } = useKakaoLoader();
 
-  const handleInput = (e: any) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      if (!e.target.value) return;
-      insertAddress();
-      return;
-    }
-    setSearchWord(e.target.value);
-  };
-
   const insertAddress = () => {
+    // searchWord가 변경되는 도중 호출하는 이슈
+    if (!map || !searchWord) return;
     setCurPage(1);
-    searchPlaces(searchWord, 1, setMaxPage);
-    searchRef.current = searchWord;
-    setSearchWord('');
+    const ps = new kakao.maps.services.Places();
+    ps.keywordSearch(searchWord, (data, status, pagination) => {
+      if (status === kakao.maps.services.Status.OK) {
+        searchPlaces(searchWord, 1, setMaxPage);
+        onClickSearchButton(true);
+      } else {
+        alert('검색 결과가 없습니다.');
+        onClickSearchButton(false);
+      }
+    });
   };
 
-  const handlePageMove = (weight: number) => {
-    const page = curPage + weight;
-    if (page < 1 || page > maxPage) return;
-    setCurPage(page);
-    searchPlaces(searchRef.current, page, setMaxPage);
-  };
+  const handlePageMove = useCallback(
+    (weight: number) => {
+      if (!map) return;
+
+      const page = curPage + weight;
+      if (page < 1 || page > maxPage) return;
+
+      setCurPage(page);
+      searchPlaces(lastSearchWord, page, setMaxPage);
+    },
+    [map, curPage, maxPage],
+  );
 
   return (
     <MapContainer>
       {kakaoLoading && <LoadingState />}
-      <MarkerContiner>
-        <div>
-          <img src='/icons/star-fill.svg' alt='북마크' width={24} />
-          북마크
-        </div>
-        {bookmarkMakers.length !== 0 && (
-          <Markers>
-            {bookmarkMakers.map((marker: MarkerType, index: number) => (
-              <MarkerWeather
-                key={'marker' + index}
-                marker={marker}
-                onClickBookmark={onClickBookmark}
-                onFocusMarker={onFocusMarker}
-              />
-            ))}
-          </Markers>
-        )}
-      </MarkerContiner>
 
-      <MarkerContiner>
-        <div>
-          <img src='/icons/search.svg' alt='검색' width={24} />
-          조회
-        </div>
-        {currentMarkers.length !== 0 && (
-          <Markers>
-            {currentMarkers.map((marker: MarkerType, index: number) => (
-              <MarkerWeather
-                key={'marker' + index}
-                marker={marker}
-                onClickBookmark={onClickBookmark}
-                onFocusMarker={onFocusMarker}
-              />
-            ))}
-          </Markers>
-        )}
-      </MarkerContiner>
+      <BookmarkMarkers
+        bookmarkMakers={bookmarkMakers}
+        onClickBookmark={onClickBookmark}
+        onFocusMarker={onFocusMarker}
+      />
+
+      <CurrentMarkers currentMarkers={currentMarkers} onClickBookmark={onClickBookmark} onFocusMarker={onFocusMarker} />
 
       <FormContainer>
         <Form>
           <Form.Control
             size='lg'
             type='text'
-            placeholder='주소 입력'
+            placeholder='날씨를 알고 싶은 장소는?'
             value={searchWord}
-            onChange={handleInput}
-            onKeyDown={handleInput} // Handle key down event
+            onChange={handleChangeInput}
+            onKeyDown={handleChangeFocus}
           />
         </Form>
         <Button onClick={insertAddress}>확인</Button>
       </FormContainer>
+
+      {isAutoSearch && (
+        <ListGroupContainer>
+          <ListGroup>
+            {searchAutoList.map((item: string, index: number) => (
+              <ListGroup.Item
+                className={`${focusIndex === index && 'focus'}`}
+                key={'searchAutoList' + index}
+                onClick={() => onClickAutoGroup(item)}
+              >
+                {item}
+              </ListGroup.Item>
+            ))}
+          </ListGroup>
+        </ListGroupContainer>
+      )}
       <KakaoMapContainer>
         <Map
           center={{
@@ -148,30 +152,6 @@ const MapContainer = styled.div`
   border-radius: 16px;
 `;
 
-const MarkerContiner = styled.div`
-  display: flex;
-  flex-direction: column;
-  min-height: 200px;
-  margin: 16px;
-  padding: 16px;
-  border: 1px solid #0d6efd;
-  border-radius: 16px;
-
-  > div {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 24px;
-    font-weight: 600;
-  }
-`;
-
-const Markers = styled.div`
-  display: flex;
-  gap: 16px;
-  overflow-x: auto;
-`;
-
 const KakaoMapContainer = styled.div`
   margin: 16px;
   #kakao-map {
@@ -194,5 +174,18 @@ const FormContainer = styled.div`
   button {
     min-width: 80px;
     min-height: 40px;
+  }
+`;
+
+const ListGroupContainer = styled.div`
+  position: absolute;
+  z-index: 1000;
+  padding: 0 16px;
+  width: 100%;
+  cursor: pointer;
+
+  .focus {
+    background-color: #0d6efd;
+    color: white;
   }
 `;

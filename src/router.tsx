@@ -1,24 +1,46 @@
+import React, { Suspense, lazy } from 'react';
 import { createBrowserRouter } from 'react-router-dom';
+import { LoadingState } from '@src/Component';
 
-import { MainPage, MapPage, ErrorPage } from '@src/Page';
 import { Layout } from '@src/Component';
 
+const MapPage = lazy(() => import('@src/Page/MapPage'));
+const ChartPage = lazy(() => import('@src/Page/ChartPage'));
+const ErrorPage = lazy(() => import('@src/Page/ErrorPage'));
+
+const LazyComponent = ({ children }: { children: React.ReactNode }) => {
+  return <Suspense fallback={<LoadingState />}>{children}</Suspense>;
+};
 const BrowserRouter = createBrowserRouter([
   {
     path: '/',
     element: <Layout />,
+
     children: [
       {
         path: '/',
-        element: <MainPage />,
+        element: (
+          <LazyComponent>
+            <MapPage />
+          </LazyComponent>
+        ),
       },
       {
-        path: '/live',
-        element: <MapPage />,
+        path: '/chart',
+        element: (
+          <LazyComponent>
+            <ChartPage />
+          </LazyComponent>
+        ),
       },
+
       {
         path: '/error',
-        element: <ErrorPage />,
+        element: (
+          <LazyComponent>
+            <ErrorPage />
+          </LazyComponent>
+        ),
       },
     ],
   },

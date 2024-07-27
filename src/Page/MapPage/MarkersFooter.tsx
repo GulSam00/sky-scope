@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { KakaoMapMarkerType } from '@src/Queries/useLiveDataQuery';
 
@@ -15,7 +15,7 @@ const MarkersFooter = ({ map, markers, handlePageMove, onClickMarkerFooter }: Pr
   const [tempSelectedIndex, setTempSelectedIndex] = useState<number>(-1);
 
   const overMarkerPos = (marker: KakaoMapMarkerType) => {
-    if (!map) return;
+    if (!map || !marker) return;
     const position = marker.position;
     map.setLevel(2);
     map.panTo(new kakao.maps.LatLng(position.lat, position.lng));
@@ -29,18 +29,16 @@ const MarkersFooter = ({ map, markers, handlePageMove, onClickMarkerFooter }: Pr
   const handleClickMarker = (index: number) => {
     onClickMarkerFooter(markers[index]);
     setTempSelectedIndex(index);
-
-    // if (tempSelectedIndex === index) {
-    //   onClickMarkerFooter(markers[index]);
-    // } else {
-    //   setTempSelectedIndex(index);
-    // }
   };
 
   const handleClickMovePage = (page: number) => {
     handlePageMove(page);
     setTempSelectedIndex(-1);
   };
+
+  useEffect(() => {
+    console.log('MarkersFooter rendered');
+  }, []);
 
   return (
     <MarkersContainer>
@@ -65,7 +63,7 @@ const MarkersFooter = ({ map, markers, handlePageMove, onClickMarkerFooter }: Pr
   );
 };
 
-export default MarkersFooter;
+export default React.memo(MarkersFooter);
 
 const MarkersContainer = styled.div`
   display: flex;

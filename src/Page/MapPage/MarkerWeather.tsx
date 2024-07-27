@@ -90,7 +90,7 @@ const MarkerWeather = ({ marker, onClickBookmark, onFocusMarker }: Props) => {
 
           <div className='content'>
             <div>
-              <div>{transformSkyCode(data.SKY1)}</div>
+              <div>{transformSkyCode(data.PTY)}</div>
               <div>{data.RN1}mm</div>
             </div>
           </div>
