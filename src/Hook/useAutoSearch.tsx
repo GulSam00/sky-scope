@@ -4,7 +4,7 @@ import { useState, useCallback } from 'react';
 const useAutoSearch = () => {
   const [isAutoSearch, setIsAutoSearch] = useState<boolean>(false);
   const [searchWord, setSearchWord] = useState<string>('');
-
+  const [lastSearchWord, setLastSearchWord] = useState<string>('');
   const [searchAutoList, setSearchAutoList] = useState<string[]>([]);
   const [focusIndex, setFocusIndex] = useState(-1);
 
@@ -41,8 +41,6 @@ const useAutoSearch = () => {
       if (!isAutoSearch) return;
       setSearchWord(searchAutoList[focusIndex]);
       setIsAutoSearch(false);
-      setSearchAutoList([]);
-      setFocusIndex(-1);
     }
   };
 
@@ -52,14 +50,18 @@ const useAutoSearch = () => {
     setSearchAutoList([]);
   };
 
-  const onClickSearchButton = () => {
-    setSearchWord('');
+  const onClickSearchButton = (isSuccess: boolean) => {
     setIsAutoSearch(false);
+    setSearchWord('');
+    if (isSuccess) {
+      setLastSearchWord(searchWord);
+    }
   };
 
   return {
     isAutoSearch,
     searchWord,
+    lastSearchWord,
     searchAutoList,
     focusIndex,
     handleChangeInput,

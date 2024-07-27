@@ -76,29 +76,32 @@ const useMapMarker = ({ map }: Props) => {
     return 0;
   };
 
-  const onClickMarkerFooter = async (marker: KakaoMapMarkerType) => {
-    if (!map) return;
-    const newMarker = {} as MarkerType;
-    newMarker.originalPosition = marker.position;
-    newMarker.content = marker.content;
-    const result = await transLocaleToCoord(marker.position);
+  const onClickMarkerFooter = useCallback(
+    async (marker: KakaoMapMarkerType) => {
+      if (!map) return;
+      const newMarker = {} as MarkerType;
+      newMarker.originalPosition = marker.position;
+      newMarker.content = marker.content;
+      const result = await transLocaleToCoord(marker.position);
 
-    if (!result) {
-      return;
-    }
+      if (!result) {
+        return;
+      }
 
-    const { nx, ny, province, city, code } = result;
-    if (currentMarkers) {
-      if (isSwapMarker(marker.content) !== 0) return;
-    }
+      const { nx, ny, province, city, code } = result;
+      if (currentMarkers) {
+        if (isSwapMarker(marker.content) !== 0) return;
+      }
 
-    const prasedPosition = { lat: ny, lng: nx };
-    Object.assign(newMarker, { province, city, code, position: prasedPosition, isBookmarked: false });
-    setCurrentMarkers([newMarker, ...currentMarkers]);
+      const prasedPosition = { lat: ny, lng: nx };
+      Object.assign(newMarker, { province, city, code, position: prasedPosition, isBookmarked: false });
+      setCurrentMarkers([newMarker, ...currentMarkers]);
 
-    const image = { src: '/icons/search.svg', size: { width: 36, height: 36 } };
-    changeOnMapMarker({ image, position: marker.position, content: marker.content, status: 'search' });
-  };
+      const image = { src: '/icons/search.svg', size: { width: 36, height: 36 } };
+      changeOnMapMarker({ image, position: marker.position, content: marker.content, status: 'search' });
+    },
+    [currentMarkers, bookmarkMakers],
+  );
 
   const onClickBookmark = useCallback(
     (code: string, isBookmarked: boolean) => {
@@ -140,8 +143,8 @@ const useMapMarker = ({ map }: Props) => {
 
   const searchPlaces = (keyword: string, page: number, setMaxPage: React.Dispatch<React.SetStateAction<number>>) => {
     if (!map) return;
-    const ps = new kakao.maps.services.Places();
 
+    const ps = new kakao.maps.services.Places();
     ps.keywordSearch(
       keyword,
       (data, status, pagination) => {
@@ -153,19 +156,17 @@ const useMapMarker = ({ map }: Props) => {
           const bounds = new kakao.maps.LatLngBounds();
           const kakaoSearchMarkers: KakaoMapMarkerType[] = [];
           const parsedOnMapMarkers: OnMapMarkerType[] = [];
-          for (let i = 0; i < data.length; i++) {
-            const position = { lat: Number(data[i].y), lng: Number(data[i].x) };
+
+          data.forEach(place => {
+            const position = { lat: Number(place.y), lng: Number(place.x) };
             const image = { src: '/icons/geo-pin.svg', size: { width: 36, height: 36 } };
-            const content = data[i].place_name;
+            const content = place.place_name;
             const status = 'pin';
-            kakaoSearchMarkers.push({
-              position,
-              content,
-            });
+            kakaoSearchMarkers.push({ position, content });
             parsedOnMapMarkers.push({ image, position, content, status });
-            const kakaoPosition = new kakao.maps.LatLng(position.lat, position.lng);
-            bounds.extend(kakaoPosition);
-          }
+            bounds.extend(new kakao.maps.LatLng(position.lat, position.lng));
+          });
+
           changeOnMapMarkers(parsedOnMapMarkers);
           setPinMarkers([...kakaoSearchMarkers]);
           map.setBounds(bounds);

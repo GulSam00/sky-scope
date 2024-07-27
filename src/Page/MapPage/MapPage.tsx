@@ -28,6 +28,7 @@ const MapPage = () => {
   const {
     isAutoSearch,
     searchWord,
+    lastSearchWord,
     searchAutoList,
     focusIndex,
     handleChangeInput,
@@ -44,9 +45,19 @@ const MapPage = () => {
   const { kakaoLoading, kakaoError } = useKakaoLoader();
 
   const insertAddress = () => {
+    // searchWord가 변경되는 도중 호출하는 이슈
+    if (!map || !searchWord) return;
     setCurPage(1);
-    searchPlaces(searchWord, 1, setMaxPage);
-    onClickSearchButton();
+    const ps = new kakao.maps.services.Places();
+    ps.keywordSearch(searchWord, (data, status, pagination) => {
+      if (status === kakao.maps.services.Status.OK) {
+        searchPlaces(searchWord, 1, setMaxPage);
+        onClickSearchButton(true);
+      } else {
+        alert('검색 결과가 없습니다.');
+        onClickSearchButton(false);
+      }
+    });
   };
 
   const handlePageMove = useCallback(
@@ -57,7 +68,7 @@ const MapPage = () => {
       if (page < 1 || page > maxPage) return;
 
       setCurPage(page);
-      searchPlaces(searchWord, page, setMaxPage);
+      searchPlaces(lastSearchWord, page, setMaxPage);
     },
     [map, curPage, maxPage],
   );
