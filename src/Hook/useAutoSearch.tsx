@@ -1,4 +1,3 @@
-import { set } from 'date-fns';
 import { useState, useCallback } from 'react';
 
 const useAutoSearch = () => {
@@ -13,7 +12,6 @@ const useAutoSearch = () => {
 
     const value = e.target.value;
     setSearchWord(value);
-
     if (value.length) {
       const ps = new kakao.maps.services.Places();
       ps.keywordSearch(value, (data, status, pagination) => {
@@ -45,8 +43,8 @@ const useAutoSearch = () => {
   };
 
   const onClickAutoGroup = (place: string) => {
-    setSearchWord(place);
     setIsAutoSearch(false);
+    setSearchWord(place);
     setSearchAutoList([]);
   };
 
