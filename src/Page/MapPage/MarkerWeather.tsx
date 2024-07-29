@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
 import { useLiveDataQuery } from '@src/Queries';
-import { MarkerType } from '@src/Queries/useLiveDataQuery';
+import { KakaoSearchType } from '@src/Queries/useLiveDataQuery';
 import { loadingData, loadedData } from '@src/Store/loadingStateSlice';
 
 import { Spinner } from 'react-bootstrap';
@@ -21,9 +21,9 @@ import {
 } from 'react-bootstrap-icons';
 
 interface Props {
-  marker: MarkerType;
+  marker: KakaoSearchType;
   onClickBookmark: (localeCode: string, isBookmarked: boolean) => void;
-  onFocusMarker: (marker: MarkerType) => void;
+  onFocusMarker: (marker: KakaoSearchType) => void;
 }
 const MarkerWeather = ({ marker, onClickBookmark, onFocusMarker }: Props) => {
   const { isLoading, data, error } = useLiveDataQuery(new Date(), marker);

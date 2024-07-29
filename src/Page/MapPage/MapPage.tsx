@@ -3,7 +3,7 @@ import { Map, MapMarker } from 'react-kakao-maps-sdk';
 
 import { LoadingState } from '@src/Component';
 import { useKakaoLoader, useMapMarker, useAutoSearch } from '@src/Hook';
-import { OnMapMarkerType } from '@src/Queries/useLiveDataQuery';
+import { KakaoMapMarkerType } from '@src/Queries/useLiveDataQuery';
 
 import { Form, Button, ListGroup } from 'react-bootstrap';
 import styled from 'styled-components';
@@ -124,7 +124,7 @@ const MapPage = () => {
           onCreate={setMap}
           id='kakao-map'
         >
-          {onMapMarkers.map((marker: OnMapMarkerType, index: number) => (
+          {onMapMarkers.map((marker: KakaoMapMarkerType, index: number) => (
             <MapMarker
               key={'onMapMarker' + index}
               position={marker.position}

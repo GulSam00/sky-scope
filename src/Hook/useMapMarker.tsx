@@ -1,17 +1,17 @@
 import { useState, useEffect, useCallback } from 'react';
 import { transLocaleToCoord } from '@src/Util';
 
-import { KakaoMapMarkerType, MarkerType, OnMapMarkerType, markerStatus } from '@src/Queries/useLiveDataQuery';
+import { LocateData, KakaoSearchType, KakaoMapMarkerType, markerStatus } from '@src/Queries/useLiveDataQuery';
 
 interface Props {
   map: kakao.maps.Map | null;
 }
 
 const useMapMarker = ({ map }: Props) => {
-  const [footerMarkers, setFooterMarkers] = useState<KakaoMapMarkerType[]>([]);
-  const [currentMarkers, setCurrentMarkers] = useState<MarkerType[]>([]);
-  const [bookmarkMakers, setBookmarkMakers] = useState<MarkerType[]>([]);
-  const [onMapMarkers, setOnMapMarkers] = useState<OnMapMarkerType[]>([]);
+  const [footerMarkers, setFooterMarkers] = useState<LocateData[]>([]);
+  const [currentMarkers, setCurrentMarkers] = useState<KakaoSearchType[]>([]);
+  const [bookmarkMakers, setBookmarkMakers] = useState<KakaoSearchType[]>([]);
+  const [onMapMarkers, setOnMapMarkers] = useState<KakaoMapMarkerType[]>([]);
 
   const focusMap = (position: { lat: number; lng: number }) => {
     if (!map) return;
@@ -21,19 +21,19 @@ const useMapMarker = ({ map }: Props) => {
   };
 
   const onFocusMarker = useCallback(
-    (marker: MarkerType) => {
+    (marker: KakaoSearchType) => {
       isSwapMarker(marker.placeId);
       focusMap(marker.originalPosition);
     },
     [currentMarkers, bookmarkMakers],
   );
 
-  const changeOnMapMarkers = (dstOnMapMarkers: OnMapMarkerType[]) => {
+  const changeOnMapMarkers = (dstOnMapMarkers: KakaoMapMarkerType[]) => {
     console.log('dstOnMapMarkers', dstOnMapMarkers);
     // 이전의 pin 마커를 제거, onMapMarkers 대신 사용
-    const removePrevPinMarkers = onMapMarkers.filter((item: OnMapMarkerType) => item.status !== 'pin');
+    const removePrevPinMarkers = onMapMarkers.filter((item: KakaoMapMarkerType) => item.status !== 'pin');
 
-    const filteredMarkers = dstOnMapMarkers.filter((item: OnMapMarkerType) => {
+    const filteredMarkers = dstOnMapMarkers.filter((item: KakaoMapMarkerType) => {
       const findIndex = removePrevPinMarkers.findIndex(marker => marker.placeId === item.placeId);
       // onMapMarkers에 없을 경우 추가
       if (findIndex === -1) {
@@ -50,10 +50,11 @@ const useMapMarker = ({ map }: Props) => {
     setOnMapMarkers([...filteredMarkers, ...removePrevPinMarkers]);
   };
 
-  const changeOnMapMarker = (dstOnMapMarker: KakaoMapMarkerType, status: string) => {
+  const changeOnMapMarker = (dstOnMapMarker: LocateData, status: string) => {
     console.log('dstOnMapMarker', dstOnMapMarker);
 
-    const newOnMapMarker = {} as OnMapMarkerType;
+    const newOnMapMarker = {} as KakaoMapMarkerType;
+    // KakaoSearchType의 position은 실제 좌표가 아니고 기상청 API에서 사용하는 좌표
     newOnMapMarker.position = dstOnMapMarker.position;
     newOnMapMarker.content = dstOnMapMarker.content;
     newOnMapMarker.placeId = dstOnMapMarker.placeId;
@@ -90,9 +91,9 @@ const useMapMarker = ({ map }: Props) => {
   };
 
   const onClickMarkerFooter = useCallback(
-    async (marker: KakaoMapMarkerType) => {
+    async (marker: LocateData) => {
       if (!map) return;
-      const newMarker = {} as MarkerType;
+      const newMarker = {} as KakaoSearchType;
       newMarker.originalPosition = marker.position;
       newMarker.content = marker.content;
       newMarker.placeId = marker.placeId;
@@ -111,7 +112,7 @@ const useMapMarker = ({ map }: Props) => {
       Object.assign(newMarker, { province, city, localeCode, position: prasedPosition, isBookmarked: false });
       setCurrentMarkers([newMarker, ...currentMarkers]);
 
-      console.log('KakaoMapMarkerType');
+      console.log('LocateData');
       changeOnMapMarker(marker, 'search');
     },
     [currentMarkers, bookmarkMakers, onMapMarkers],
@@ -129,7 +130,7 @@ const useMapMarker = ({ map }: Props) => {
         setBookmarkMakers([firstMarker, ...bookmarkMakers]);
         const position = firstMarker.originalPosition;
 
-        console.log('MarkerType');
+        console.log('KakaoSearchType');
         changeOnMapMarker(firstMarker, 'bookmark');
         focusMap(position);
         localStorage.setItem('bookmarks', JSON.stringify([firstMarker, ...bookmarkMakers]));
@@ -143,7 +144,7 @@ const useMapMarker = ({ map }: Props) => {
         setCurrentMarkers([firstMarker, ...currentMarkers]);
         const position = firstMarker.originalPosition;
 
-        console.log('MarkerType');
+        console.log('KakaoSearchType');
 
         changeOnMapMarker(firstMarker, 'search');
         focusMap(position);
@@ -166,8 +167,8 @@ const useMapMarker = ({ map }: Props) => {
           // LatLngBounds 객체에 좌표를 추가
           // 좌표들이 모두 보이게 지도의 중심좌표와 레벨을 재설정 할 수 있다
           const bounds = new kakao.maps.LatLngBounds();
-          const kakaoSearchMarkers: KakaoMapMarkerType[] = [];
-          const parsedOnMapMarkers: OnMapMarkerType[] = [];
+          const kakaoSearchMarkers: LocateData[] = [];
+          const parsedOnMapMarkers: KakaoMapMarkerType[] = [];
 
           console.log('data : ', data);
           data.forEach(place => {
@@ -195,10 +196,10 @@ const useMapMarker = ({ map }: Props) => {
   useEffect(() => {
     const localBookmarks = localStorage.getItem('bookmarks');
     if (localBookmarks) {
-      const parsedBookmarks: MarkerType[] = JSON.parse(localBookmarks);
+      const parsedBookmarks: KakaoSearchType[] = JSON.parse(localBookmarks);
       setBookmarkMakers(parsedBookmarks);
 
-      const parsedOnMapMarkers: OnMapMarkerType[] = parsedBookmarks.map((bookmark: MarkerType) => {
+      const parsedOnMapMarkers: KakaoMapMarkerType[] = parsedBookmarks.map((bookmark: KakaoSearchType) => {
         const image = { src: '/icons/star-fill.svg', size: { width: 36, height: 36 } };
         const position = bookmark.originalPosition;
         const content = bookmark.content;
@@ -212,7 +213,7 @@ const useMapMarker = ({ map }: Props) => {
       // parsedOnMapMarkers의 length가 있을 때만 bound 설정
       if (map && parsedOnMapMarkers.length) {
         const bounds = new kakao.maps.LatLngBounds();
-        parsedOnMapMarkers.forEach((marker: OnMapMarkerType) => {
+        parsedOnMapMarkers.forEach((marker: KakaoMapMarkerType) => {
           const position = new kakao.maps.LatLng(marker.position.lat, marker.position.lng);
           bounds.extend(position);
         });

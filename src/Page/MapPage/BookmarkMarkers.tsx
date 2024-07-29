@@ -1,12 +1,12 @@
 import React from 'react';
-import { MarkerType } from '@src/Queries/useLiveDataQuery';
+import { KakaoSearchType } from '@src/Queries/useLiveDataQuery';
 import MarkerWeather from './MarkerWeather';
 import styled from 'styled-components';
 
 interface Props {
-  bookmarkMakers: MarkerType[];
+  bookmarkMakers: KakaoSearchType[];
   onClickBookmark: (localeCode: string, isBookmarked: boolean) => void;
-  onFocusMarker: (marker: MarkerType) => void;
+  onFocusMarker: (marker: KakaoSearchType) => void;
 }
 
 const BookmarkMakers = ({ bookmarkMakers, onClickBookmark, onFocusMarker }: Props) => {
@@ -18,7 +18,7 @@ const BookmarkMakers = ({ bookmarkMakers, onClickBookmark, onFocusMarker }: Prop
       </div>
       {bookmarkMakers.length !== 0 && (
         <Markers>
-          {bookmarkMakers.map((marker: MarkerType) => (
+          {bookmarkMakers.map((marker: KakaoSearchType) => (
             <MarkerWeather
               key={'bookmark' + marker.localeCode + marker.content}
               marker={marker}

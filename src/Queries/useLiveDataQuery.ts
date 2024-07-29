@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { getWeatherLive } from '@src/API';
 import { IParseObj, ICoord } from '@src/API/getWeatherLive';
 
-export interface KakaoMapMarkerType {
+export interface LocateData {
   position: {
     lat: number;
     lng: number;
@@ -14,7 +14,7 @@ export interface KakaoMapMarkerType {
 
 export type markerStatus = 'bookmark' | 'search' | 'pin';
 
-export interface OnMapMarkerType extends KakaoMapMarkerType {
+export interface KakaoMapMarkerType extends LocateData {
   image: {
     src: string;
     size: {
@@ -25,7 +25,7 @@ export interface OnMapMarkerType extends KakaoMapMarkerType {
   status: markerStatus;
 }
 
-export interface MarkerType extends KakaoMapMarkerType {
+export interface KakaoSearchType extends LocateData {
   originalPosition: {
     lat: number;
     lng: number;
@@ -36,7 +36,7 @@ export interface MarkerType extends KakaoMapMarkerType {
   localeCode: string;
 }
 
-const useLiveDataQuery = (today: Date, marker: MarkerType) => {
+const useLiveDataQuery = (today: Date, marker: KakaoSearchType) => {
   const { data, isLoading, error, status } = useQuery<IParseObj | undefined>({
     queryKey: ['live', marker.localeCode, marker.content],
     queryFn: async () => {
