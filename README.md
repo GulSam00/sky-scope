@@ -44,19 +44,8 @@
 
 # 주요 기능
 
-## 날씨 정보 차트 제공
-
-<div align="left">
-
-* 특정 지역의 3일 간의 날씨를 제공합니다.
-* nivo chart 라이브러리를 사용해서 조회 결과를 직관적으로 보여주고자 하였습니다.
-* Dropdown에서 도, 시를 선택하는 방식이 아닌 카카오 지도 검색으로 해당 위치의 날씨 데이터를 받을 수 있게 적절한 파싱 작업을 거쳤습니다.
-
-</div>
-
-https://github.com/user-attachments/assets/97311481-744a-4030-9820-4d743871534e
-
 ## 카카오 지도 상에서 검색한 장소 날씨 제공 & 북마크 기능
+https://github.com/user-attachments/assets/027dc358-24d4-4bc4-9330-16977ad460de
 
 <div align="left">
 
@@ -68,7 +57,16 @@ https://github.com/user-attachments/assets/97311481-744a-4030-9820-4d743871534e
   
 </div>
 
-https://github.com/user-attachments/assets/48d50db2-a170-409f-8cc4-1ebdc9b7aac0
+## 날씨 정보 차트 제공
+https://github.com/user-attachments/assets/97311481-744a-4030-9820-4d743871534e
+
+<div align="left">
+
+* 특정 지역의 3일 간의 날씨를 제공합니다.
+* nivo chart 라이브러리를 사용해서 조회 결과를 직관적으로 보여주고자 하였습니다.
+* Dropdown에서 도, 시를 선택하는 방식이 아닌 카카오 지도 검색으로 해당 위치의 날씨 데이터를 받을 수 있게 적절한 파싱 작업을 거쳤습니다.
+
+</div>
 
 # 프로젝트 기록
 
