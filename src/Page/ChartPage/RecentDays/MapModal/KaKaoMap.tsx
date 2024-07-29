@@ -92,7 +92,7 @@ const KaKaoMap = ({ handleChangeCoord }: IProps) => {
                 lat: Number(data[i].y),
                 lng: Number(data[i].x),
               },
-              content: data[i].place_name,
+              placeName: data[i].place_name,
               placeId: data[i].id,
             });
             bounds.extend(new kakao.maps.LatLng(Number(data[i].y), Number(data[i].x)));
@@ -178,7 +178,7 @@ const KaKaoMap = ({ handleChangeCoord }: IProps) => {
                 onMouseOut={handleHoverOut}
                 onClick={() => handleClickMarker(index)}
               >
-                {marker.content}
+                {marker.placeName}
               </ListGroup.Item>
             ))}
           </ListGroup>
@@ -190,7 +190,7 @@ const KaKaoMap = ({ handleChangeCoord }: IProps) => {
         <ConfirmModal>
           <ConfirmModalContent>
             <div className='content'>
-              [{selectedMarker.content}] 가 위치한 지역의
+              [{selectedMarker.placeName}] 가 위치한 지역의
               <br />
               날씨 정보를 검색합니다.
             </div>

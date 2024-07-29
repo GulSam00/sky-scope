@@ -20,7 +20,7 @@ const BookmarkMakers = ({ bookmarkMakers, onClickBookmark, onFocusMarker }: Prop
         <Markers>
           {bookmarkMakers.map((marker: KakaoSearchType) => (
             <MarkerWeather
-              key={'bookmark' + marker.localeCode + marker.content}
+              key={'bookmark' + marker.localeCode + marker.placeName}
               marker={marker}
               onClickBookmark={onClickBookmark}
               onFocusMarker={onFocusMarker}

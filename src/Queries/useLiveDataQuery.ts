@@ -8,7 +8,7 @@ export interface LocateDataType {
     lat: number;
     lng: number;
   };
-  content: string;
+  placeName: string;
   placeId: string;
 }
 
@@ -38,7 +38,7 @@ export interface KakaoSearchType extends LocateDataType {
 
 const useLiveDataQuery = (today: Date, marker: KakaoSearchType) => {
   const { data, isLoading, error, status } = useQuery<IParseObj | undefined>({
-    queryKey: ['live', marker.localeCode, marker.content],
+    queryKey: ['live', marker.localeCode, marker.placeName],
     queryFn: async () => {
       const location: ICoord = {
         nx: marker.apiLocalPosition ? marker.apiLocalPosition.lng : 0,
@@ -55,7 +55,7 @@ const useLiveDataQuery = (today: Date, marker: KakaoSearchType) => {
       if (data && marker) {
         data.province = marker.province;
         data.city = marker.city;
-        data.content = marker.content;
+        data.content = marker.placeName;
       }
       return data;
     },

@@ -165,11 +165,11 @@ const useMapMarker = ({ map }: Props) => {
           data.forEach(place => {
             const position = { lat: Number(place.y), lng: Number(place.x) };
             const image = { src: '/icons/geo-pin.svg', size: { width: 36, height: 36 } };
-            const content = place.place_name;
+            const placeName = place.place_name;
             const status = 'pin';
             const placeId = place.id;
-            kakaoSearchMarkers.push({ position, content, placeId });
-            parsedOnMapMarkers.push({ image, position, content, status, placeId });
+            kakaoSearchMarkers.push({ position, placeName, placeId });
+            parsedOnMapMarkers.push({ image, position, placeName, status, placeId });
             bounds.extend(new kakao.maps.LatLng(position.lat, position.lng));
           });
           // console.log('kakaoSearchMarkers : ', kakaoSearchMarkers);
@@ -193,11 +193,9 @@ const useMapMarker = ({ map }: Props) => {
 
       const parsedOnMapMarkers: KakaoMapMarkerType[] = parsedBookmarks.map((bookmark: KakaoSearchType) => {
         const image = { src: '/icons/star-fill.svg', size: { width: 36, height: 36 } };
-        const position = bookmark.position;
-        const content = bookmark.content;
-        const placeId = bookmark.placeId;
+        const { position, placeName, placeId } = bookmark;
         const status = 'bookmark';
-        return { image, position, content, status, placeId };
+        return { image, position, placeName, status, placeId };
       });
       changeOnMapMarkers(parsedOnMapMarkers);
 

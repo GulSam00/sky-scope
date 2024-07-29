@@ -53,7 +53,7 @@ const MarkersFooter = ({ map, markers, handlePageMove, onClickMarkerFooter }: Pr
               onMouseOut={handleHoverOut}
               onClick={() => handleClickMarker(index)}
             >
-              {marker.content}
+              {marker.placeName}
             </div>
           ))}
           <CaretRight key='rightBtn' onClick={() => handleClickMovePage(1)} />
