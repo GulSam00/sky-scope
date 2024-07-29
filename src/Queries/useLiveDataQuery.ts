@@ -60,7 +60,7 @@ const useLiveDataQuery = (today: Date, marker: KakaoSearchType) => {
       return data;
     },
     retry: 2,
-    retryDelay: 3000,
+    retryDelay: 1000,
     enabled: marker !== null,
     staleTime: 1000 * 60, // 1분
   });
