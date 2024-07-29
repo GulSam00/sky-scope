@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 import { LocateDataType } from '@src/Queries/useLiveDataQuery';
 
@@ -11,7 +11,7 @@ interface Props {
   handlePageMove: (page: number) => void;
   onClickMarkerFooter: (marker: LocateDataType) => void;
 }
-const MarkersFooter = ({ map, markers, handlePageMove, onClickMarkerFooter }: Props) => {
+const PlacesFooter = ({ map, markers, handlePageMove, onClickMarkerFooter }: Props) => {
   const [tempSelectedIndex, setTempSelectedIndex] = useState<number>(-1);
 
   const overMarkerPos = (marker: LocateDataType) => {
@@ -36,10 +36,6 @@ const MarkersFooter = ({ map, markers, handlePageMove, onClickMarkerFooter }: Pr
     setTempSelectedIndex(-1);
   };
 
-  useEffect(() => {
-    console.log('MarkersFooter rendered');
-  }, []);
-
   return (
     <MarkersContainer>
       {markers.length > 0 && (
@@ -63,7 +59,7 @@ const MarkersFooter = ({ map, markers, handlePageMove, onClickMarkerFooter }: Pr
   );
 };
 
-export default React.memo(MarkersFooter);
+export default React.memo(PlacesFooter);
 
 const MarkersContainer = styled.div`
   display: flex;

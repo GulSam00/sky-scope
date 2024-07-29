@@ -4,21 +4,21 @@ import MarkerWeather from './MarkerWeather';
 import styled from 'styled-components';
 
 interface Props {
-  bookmarkMakers: KakaoSearchType[];
+  bookmarkPlaces: KakaoSearchType[];
   onClickBookmark: (localeCode: string, isBookmarked: boolean) => void;
   onFocusMarker: (marker: KakaoSearchType) => void;
 }
 
-const BookmarkMakers = ({ bookmarkMakers, onClickBookmark, onFocusMarker }: Props) => {
+const BookmarkPlaces = ({ bookmarkPlaces, onClickBookmark, onFocusMarker }: Props) => {
   return (
     <MarkerContiner>
       <div>
         <img src='/icons/star-fill.svg' alt='북마크' width={24} />
         북마크
       </div>
-      {bookmarkMakers.length !== 0 && (
+      {bookmarkPlaces.length !== 0 && (
         <Markers>
-          {bookmarkMakers.map((marker: KakaoSearchType) => (
+          {bookmarkPlaces.map((marker: KakaoSearchType) => (
             <MarkerWeather
               key={'bookmark' + marker.localeCode + marker.placeName}
               marker={marker}
@@ -32,7 +32,7 @@ const BookmarkMakers = ({ bookmarkMakers, onClickBookmark, onFocusMarker }: Prop
   );
 };
 
-export default React.memo(BookmarkMakers);
+export default React.memo(BookmarkPlaces);
 
 const MarkerContiner = styled.div`
   display: flex;

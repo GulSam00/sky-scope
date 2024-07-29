@@ -8,9 +8,9 @@ interface Props {
 }
 
 const useMapMarker = ({ map }: Props) => {
-  const [footerMarkers, setFooterMarkers] = useState<LocateDataType[]>([]);
-  const [currentMarkers, setCurrentMarkers] = useState<KakaoSearchType[]>([]);
-  const [bookmarkMakers, setBookmarkMakers] = useState<KakaoSearchType[]>([]);
+  const [footerPlaces, setFooterPlaces] = useState<LocateDataType[]>([]);
+  const [currentPlaces, setCurrentPlaces] = useState<KakaoSearchType[]>([]);
+  const [bookmarkPlaces, setBookmarkPlaces] = useState<KakaoSearchType[]>([]);
   const [onMapMarkers, setOnMapMarkers] = useState<KakaoMapMarkerType[]>([]);
 
   const focusMap = (position: { lat: number; lng: number }) => {
@@ -25,7 +25,7 @@ const useMapMarker = ({ map }: Props) => {
       isSwapMarker(marker.placeId);
       focusMap(marker.position);
     },
-    [currentMarkers, bookmarkMakers],
+    [currentPlaces, bookmarkPlaces],
   );
 
   const changeOnMapMarkers = (dstOnMapMarkers: KakaoMapMarkerType[]) => {
@@ -68,18 +68,18 @@ const useMapMarker = ({ map }: Props) => {
   };
 
   const isSwapMarker = (placeId: string) => {
-    const currentIndex = currentMarkers.findIndex(item => item.placeId === placeId);
-    const bookmarkIndex = bookmarkMakers.findIndex(item => item.placeId === placeId);
+    const currentIndex = currentPlaces.findIndex(item => item.placeId === placeId);
+    const bookmarkIndex = bookmarkPlaces.findIndex(item => item.placeId === placeId);
     if (currentIndex !== -1) {
-      const firstMarker = currentMarkers[currentIndex];
-      currentMarkers.splice(currentIndex, 1);
-      setCurrentMarkers([firstMarker, ...currentMarkers]);
+      const firstMarker = currentPlaces[currentIndex];
+      currentPlaces.splice(currentIndex, 1);
+      setCurrentPlaces([firstMarker, ...currentPlaces]);
       return 1;
     }
     if (bookmarkIndex !== -1) {
-      const firstMarker = bookmarkMakers[bookmarkIndex];
-      bookmarkMakers.splice(bookmarkIndex, 1);
-      setBookmarkMakers([firstMarker, ...bookmarkMakers]);
+      const firstMarker = bookmarkPlaces[bookmarkIndex];
+      bookmarkPlaces.splice(bookmarkIndex, 1);
+      setBookmarkPlaces([firstMarker, ...bookmarkPlaces]);
       return 2;
     }
     return 0;
@@ -96,53 +96,53 @@ const useMapMarker = ({ map }: Props) => {
       }
 
       const { nx, ny, province, city, localeCode } = result;
-      if (currentMarkers) {
+      if (currentPlaces) {
         if (isSwapMarker(marker.placeId) !== 0) return;
       }
 
       const apiLocalPosition = { lat: ny, lng: nx };
       Object.assign(newMarker, { province, city, localeCode, apiLocalPosition, isBookmarked: false });
-      setCurrentMarkers([newMarker, ...currentMarkers]);
+      setCurrentPlaces([newMarker, ...currentPlaces]);
 
       // console.log('LocateDataType');
       changeOnMapMarker(marker, 'search');
     },
-    [currentMarkers, bookmarkMakers, onMapMarkers],
+    [currentPlaces, bookmarkPlaces, onMapMarkers],
   );
 
   const onClickBookmark = useCallback(
     (localeCode: string, isBookmarked: boolean) => {
       if (isBookmarked === false) {
         // 북마크 추가
-        const index = currentMarkers.findIndex(item => item.localeCode === localeCode);
-        const firstMarker = currentMarkers[index];
+        const index = currentPlaces.findIndex(item => item.localeCode === localeCode);
+        const firstMarker = currentPlaces[index];
         firstMarker.isBookmarked = true;
-        currentMarkers.splice(index, 1);
-        setCurrentMarkers([...currentMarkers]);
-        setBookmarkMakers([firstMarker, ...bookmarkMakers]);
+        currentPlaces.splice(index, 1);
+        setCurrentPlaces([...currentPlaces]);
+        setBookmarkPlaces([firstMarker, ...bookmarkPlaces]);
 
         const position = firstMarker.position;
         // console.log('KakaoSearchType');
         changeOnMapMarker(firstMarker, 'bookmark');
         focusMap(position);
-        localStorage.setItem('bookmarks', JSON.stringify([firstMarker, ...bookmarkMakers]));
+        localStorage.setItem('bookmarks', JSON.stringify([firstMarker, ...bookmarkPlaces]));
       } else {
         // 북마크 해제
-        const index = bookmarkMakers.findIndex(item => item.localeCode === localeCode);
-        const firstMarker = bookmarkMakers[index];
+        const index = bookmarkPlaces.findIndex(item => item.localeCode === localeCode);
+        const firstMarker = bookmarkPlaces[index];
         firstMarker.isBookmarked = false;
-        bookmarkMakers.splice(index, 1);
-        setBookmarkMakers([...bookmarkMakers]);
-        setCurrentMarkers([firstMarker, ...currentMarkers]);
+        bookmarkPlaces.splice(index, 1);
+        setBookmarkPlaces([...bookmarkPlaces]);
+        setCurrentPlaces([firstMarker, ...currentPlaces]);
 
         const position = firstMarker.position;
         // console.log('KakaoSearchType');
         changeOnMapMarker(firstMarker, 'search');
         focusMap(position);
-        localStorage.setItem('bookmarks', JSON.stringify([...bookmarkMakers]));
+        localStorage.setItem('bookmarks', JSON.stringify([...bookmarkPlaces]));
       }
     },
-    [currentMarkers, bookmarkMakers],
+    [currentPlaces, bookmarkPlaces],
   );
 
   const searchPlaces = (keyword: string, page: number, setMaxPage: React.Dispatch<React.SetStateAction<number>>) => {
@@ -175,7 +175,7 @@ const useMapMarker = ({ map }: Props) => {
           // console.log('kakaoSearchMarkers : ', kakaoSearchMarkers);
           // console.log('parsedOnMapMarkers : ', parsedOnMapMarkers);
           changeOnMapMarkers(parsedOnMapMarkers);
-          setFooterMarkers([...kakaoSearchMarkers]);
+          setFooterPlaces([...kakaoSearchMarkers]);
           map.setBounds(bounds);
         } else {
           alert('검색 결과가 없습니다.');
@@ -189,7 +189,7 @@ const useMapMarker = ({ map }: Props) => {
     const localBookmarks = localStorage.getItem('bookmarks');
     if (localBookmarks) {
       const parsedBookmarks: KakaoSearchType[] = JSON.parse(localBookmarks);
-      setBookmarkMakers(parsedBookmarks);
+      setBookmarkPlaces(parsedBookmarks);
 
       const parsedOnMapMarkers: KakaoMapMarkerType[] = parsedBookmarks.map((bookmark: KakaoSearchType) => {
         const image = { src: '/icons/star-fill.svg', size: { width: 36, height: 36 } };
@@ -212,9 +212,9 @@ const useMapMarker = ({ map }: Props) => {
   }, [map]);
 
   return {
-    footerMarkers,
-    currentMarkers,
-    bookmarkMakers,
+    footerPlaces,
+    currentPlaces,
+    bookmarkPlaces,
     onMapMarkers,
     onFocusMarker,
     onClickMarkerFooter,

@@ -4,21 +4,21 @@ import MarkerWeather from './MarkerWeather';
 import styled from 'styled-components';
 
 interface Props {
-  currentMarkers: KakaoSearchType[];
+  currentPlaces: KakaoSearchType[];
   onClickBookmark: (localeCode: string, isBookmarked: boolean) => void;
   onFocusMarker: (marker: KakaoSearchType) => void;
 }
 
-const CurrentMarkers = ({ currentMarkers, onClickBookmark, onFocusMarker }: Props) => {
+const CurrentPlaces = ({ currentPlaces, onClickBookmark, onFocusMarker }: Props) => {
   return (
     <MarkerContiner>
       <div>
         <img src='/icons/search.svg' alt='검색' width={24} />
         조회
       </div>
-      {currentMarkers.length !== 0 && (
+      {currentPlaces.length !== 0 && (
         <Markers>
-          {currentMarkers.map((marker: KakaoSearchType) => (
+          {currentPlaces.map((marker: KakaoSearchType) => (
             <MarkerWeather
               key={'bookmark' + marker.localeCode + marker.placeName}
               marker={marker}
@@ -32,7 +32,7 @@ const CurrentMarkers = ({ currentMarkers, onClickBookmark, onFocusMarker }: Prop
   );
 };
 
-export default React.memo(CurrentMarkers);
+export default React.memo(CurrentPlaces);
 
 const MarkerContiner = styled.div`
   display: flex;
