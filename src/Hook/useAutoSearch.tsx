@@ -37,7 +37,8 @@ const useAutoSearch = () => {
     } else if (e.key === 'Enter') {
       e.preventDefault();
       if (!isAutoSearch) return;
-      setSearchWord(searchAutoList[focusIndex]);
+      if (focusIndex !== -1) setSearchWord(searchAutoList[focusIndex]);
+
       setIsAutoSearch(false);
     }
   };

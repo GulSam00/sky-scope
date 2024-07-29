@@ -1,20 +1,20 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
-import { KakaoMapMarkerType } from '@src/Queries/useLiveDataQuery';
+import { LocateDataType } from '@src/Queries/useLiveDataQuery';
 
 import styled from 'styled-components';
 import { CaretLeft, CaretRight } from 'react-bootstrap-icons';
 
 interface Props {
   map: kakao.maps.Map | null;
-  markers: KakaoMapMarkerType[];
+  markers: LocateDataType[];
   handlePageMove: (page: number) => void;
-  onClickMarkerFooter: (marker: KakaoMapMarkerType) => void;
+  onClickMarkerFooter: (marker: LocateDataType) => void;
 }
-const MarkersFooter = ({ map, markers, handlePageMove, onClickMarkerFooter }: Props) => {
+const PlacesFooter = ({ map, markers, handlePageMove, onClickMarkerFooter }: Props) => {
   const [tempSelectedIndex, setTempSelectedIndex] = useState<number>(-1);
 
-  const overMarkerPos = (marker: KakaoMapMarkerType) => {
+  const overMarkerPos = (marker: LocateDataType) => {
     if (!map || !marker) return;
     const position = marker.position;
     map.setLevel(2);
@@ -36,16 +36,12 @@ const MarkersFooter = ({ map, markers, handlePageMove, onClickMarkerFooter }: Pr
     setTempSelectedIndex(-1);
   };
 
-  useEffect(() => {
-    console.log('MarkersFooter rendered');
-  }, []);
-
   return (
     <MarkersContainer>
       {markers.length > 0 && (
         <MarkerGroup>
           <CaretLeft key='leftBtn' onClick={() => handleClickMovePage(-1)} />
-          {markers.map((marker: KakaoMapMarkerType, index: number) => (
+          {markers.map((marker: LocateDataType, index: number) => (
             <div
               className={tempSelectedIndex === index ? 'selected' : ''}
               key={'marker' + index}
@@ -53,7 +49,7 @@ const MarkersFooter = ({ map, markers, handlePageMove, onClickMarkerFooter }: Pr
               onMouseOut={handleHoverOut}
               onClick={() => handleClickMarker(index)}
             >
-              {marker.content}
+              {marker.placeName}
             </div>
           ))}
           <CaretRight key='rightBtn' onClick={() => handleClickMovePage(1)} />
@@ -63,7 +59,7 @@ const MarkersFooter = ({ map, markers, handlePageMove, onClickMarkerFooter }: Pr
   );
 };
 
-export default React.memo(MarkersFooter);
+export default React.memo(PlacesFooter);
 
 const MarkersContainer = styled.div`
   display: flex;
