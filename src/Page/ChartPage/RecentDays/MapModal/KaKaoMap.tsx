@@ -48,9 +48,6 @@ const KaKaoMap = ({ handleChangeCoord }: IProps) => {
 
   const overMarkerPos = (marker: LocateDataType) => {
     if (!map) return;
-    console.log('markers : ', markers);
-    console.log('marker : ', marker);
-
     // 마우스로 hover된 마커의 위치를 기준으로 지도 범위를 재설정
 
     const position = marker.position;
@@ -97,11 +94,10 @@ const KaKaoMap = ({ handleChangeCoord }: IProps) => {
             });
             bounds.extend(new kakao.maps.LatLng(Number(data[i].y), Number(data[i].x)));
           }
-          console.log('markers : ', markers);
           setMarkers([...markers]);
           map.setBounds(bounds);
         } else {
-          console.log('검색 결과가 없습니다.');
+          alert('검색 결과가 없습니다.');
           setMarkers([]);
         }
       },

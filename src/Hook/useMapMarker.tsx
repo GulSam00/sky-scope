@@ -29,7 +29,7 @@ const useMapMarker = ({ map }: Props) => {
   );
 
   const changeOnMapMarkers = (dstOnMapMarkers: KakaoMapMarkerType[]) => {
-    console.log('dstOnMapMarkers', dstOnMapMarkers);
+    // console.log('dstOnMapMarkers', dstOnMapMarkers);
     // 이전의 pin 마커를 제거, onMapMarkers 대신 사용
     const removePrevPinMarkers = onMapMarkers.filter((item: KakaoMapMarkerType) => item.status !== 'pin');
 
@@ -161,7 +161,6 @@ const useMapMarker = ({ map }: Props) => {
           const kakaoSearchMarkers: LocateDataType[] = [];
           const parsedOnMapMarkers: KakaoMapMarkerType[] = [];
 
-          console.log('data : ', data);
           data.forEach(place => {
             const position = { lat: Number(place.y), lng: Number(place.x) };
             const image = { src: '/icons/geo-pin.svg', size: { width: 36, height: 36 } };
