@@ -7,7 +7,7 @@ interface Props {
   map: kakao.maps.Map | null;
 }
 const useMapMarker = ({ map }: Props) => {
-  const [pinMarkers, setPinMarkers] = useState<KakaoMapMarkerType[]>([]);
+  const [footerMarkers, setFooterMarkers] = useState<KakaoMapMarkerType[]>([]);
   const [currentMarkers, setCurrentMarkers] = useState<MarkerType[]>([]);
   const [bookmarkMakers, setBookmarkMakers] = useState<MarkerType[]>([]);
   const [onMapMarkers, setOnMapMarkers] = useState<OnMapMarkerType[]>([]);
@@ -88,26 +88,27 @@ const useMapMarker = ({ map }: Props) => {
         return;
       }
 
-      const { nx, ny, province, city, code } = result;
+      const { nx, ny, province, city, localeCode } = result;
       if (currentMarkers) {
         if (isSwapMarker(marker.content) !== 0) return;
       }
 
       const prasedPosition = { lat: ny, lng: nx };
-      Object.assign(newMarker, { province, city, code, position: prasedPosition, isBookmarked: false });
+      Object.assign(newMarker, { province, city, localeCode, position: prasedPosition, isBookmarked: false });
       setCurrentMarkers([newMarker, ...currentMarkers]);
 
       const image = { src: '/icons/search.svg', size: { width: 36, height: 36 } };
       changeOnMapMarker({ image, position: marker.position, content: marker.content, status: 'search' });
+      console.log('onMapMarkers', onMapMarkers);
     },
-    [currentMarkers, bookmarkMakers],
+    [currentMarkers, bookmarkMakers, onMapMarkers],
   );
 
   const onClickBookmark = useCallback(
-    (code: string, isBookmarked: boolean) => {
+    (localeCode: string, isBookmarked: boolean) => {
       if (isBookmarked === false) {
         // 북마크 추가
-        const index = currentMarkers.findIndex(item => item.code === code);
+        const index = currentMarkers.findIndex(item => item.localeCode === localeCode);
         const firstMarker = currentMarkers[index];
         firstMarker.isBookmarked = true;
         currentMarkers.splice(index, 1);
@@ -122,7 +123,7 @@ const useMapMarker = ({ map }: Props) => {
         localStorage.setItem('bookmarks', JSON.stringify([firstMarker, ...bookmarkMakers]));
       } else {
         // 북마크 해제
-        const index = bookmarkMakers.findIndex(item => item.code === code);
+        const index = bookmarkMakers.findIndex(item => item.localeCode === localeCode);
         const firstMarker = bookmarkMakers[index];
         firstMarker.isBookmarked = false;
         bookmarkMakers.splice(index, 1);
@@ -158,17 +159,19 @@ const useMapMarker = ({ map }: Props) => {
           const parsedOnMapMarkers: OnMapMarkerType[] = [];
 
           data.forEach(place => {
+            console.log(place);
             const position = { lat: Number(place.y), lng: Number(place.x) };
             const image = { src: '/icons/geo-pin.svg', size: { width: 36, height: 36 } };
             const content = place.place_name;
             const status = 'pin';
+            // const placeId = place.id;
             kakaoSearchMarkers.push({ position, content });
             parsedOnMapMarkers.push({ image, position, content, status });
             bounds.extend(new kakao.maps.LatLng(position.lat, position.lng));
           });
 
           changeOnMapMarkers(parsedOnMapMarkers);
-          setPinMarkers([...kakaoSearchMarkers]);
+          setFooterMarkers([...kakaoSearchMarkers]);
           map.setBounds(bounds);
         } else {
           alert('검색 결과가 없습니다.');
@@ -206,7 +209,7 @@ const useMapMarker = ({ map }: Props) => {
   }, [map]);
 
   return {
-    pinMarkers,
+    footerMarkers,
     currentMarkers,
     bookmarkMakers,
     onMapMarkers,

@@ -22,7 +22,7 @@ import {
 
 interface Props {
   marker: MarkerType;
-  onClickBookmark: (code: string, isBookmarked: boolean) => void;
+  onClickBookmark: (localeCode: string, isBookmarked: boolean) => void;
   onFocusMarker: (marker: MarkerType) => void;
 }
 const MarkerWeather = ({ marker, onClickBookmark, onFocusMarker }: Props) => {
@@ -51,7 +51,7 @@ const MarkerWeather = ({ marker, onClickBookmark, onFocusMarker }: Props) => {
 
   const handleClickBookmark = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     e.stopPropagation();
-    onClickBookmark(marker.code, marker.isBookmarked);
+    onClickBookmark(marker.localeCode, marker.isBookmarked);
   };
 
   useEffect(() => {

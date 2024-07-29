@@ -37,13 +37,13 @@ const transLocaleToCoord = async (position: ICoord) => {
   const province = transName(result.region_1depth_name);
   const city = result.region_2depth_name.replace(' ', '') || province;
   const address = result.address_name;
-  const code = result.code;
+  const localeCode = result.code;
   const { x: nx, y: ny } = short_local[province][city];
 
   // 로컬 스토러지에 좌표 정보 저장
   // 만약 이미 로컬에 저장한 좌표, 지역이면 null 반환
   if (setLocalCoordInfo({ nx, ny, province, city })) {
-    return { nx, ny, province, city, address, code };
+    return { nx, ny, province, city, address, localeCode };
   } else return null;
 };
 

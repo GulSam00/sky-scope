@@ -15,7 +15,7 @@ import CurrentMarkers from './CurrentMarkers';
 const MapPage = () => {
   const [map, setMap] = useState<kakao.maps.Map | null>(null);
   const {
-    pinMarkers,
+    footerMarkers,
     currentMarkers,
     bookmarkMakers,
     onMapMarkers,
@@ -137,7 +137,7 @@ const MapPage = () => {
       </KakaoMapContainer>
       <MarkersFooter
         map={map}
-        markers={pinMarkers}
+        markers={footerMarkers}
         handlePageMove={handlePageMove}
         onClickMarkerFooter={onClickMarkerFooter}
       />

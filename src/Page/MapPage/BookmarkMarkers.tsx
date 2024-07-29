@@ -5,7 +5,7 @@ import styled from 'styled-components';
 
 interface Props {
   bookmarkMakers: MarkerType[];
-  onClickBookmark: (code: string, isBookmarked: boolean) => void;
+  onClickBookmark: (localeCode: string, isBookmarked: boolean) => void;
   onFocusMarker: (marker: MarkerType) => void;
 }
 
@@ -20,7 +20,7 @@ const BookmarkMakers = ({ bookmarkMakers, onClickBookmark, onFocusMarker }: Prop
         <Markers>
           {bookmarkMakers.map((marker: MarkerType) => (
             <MarkerWeather
-              key={'bookmark' + marker.code + marker.content}
+              key={'bookmark' + marker.localeCode + marker.content}
               marker={marker}
               onClickBookmark={onClickBookmark}
               onFocusMarker={onFocusMarker}

@@ -9,6 +9,7 @@ export interface KakaoMapMarkerType {
     lng: number;
   };
   content: string;
+  placeId?: string;
 }
 
 export type markerStatus = 'bookmark' | 'search' | 'pin';
@@ -31,13 +32,13 @@ export interface MarkerType extends KakaoMapMarkerType {
   };
   province: string;
   city: string;
-  code: string;
   isBookmarked: boolean;
+  localeCode: string;
 }
 
 const useLiveDataQuery = (today: Date, marker: MarkerType) => {
   const { data, isLoading, error, status } = useQuery<IParseObj | undefined>({
-    queryKey: ['live', marker.code, marker.content],
+    queryKey: ['live', marker.localeCode, marker.content],
     queryFn: async () => {
       const location: ICoord = {
         nx: marker ? marker.position.lng : 0,
