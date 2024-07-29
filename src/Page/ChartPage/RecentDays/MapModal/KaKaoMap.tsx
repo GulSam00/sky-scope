@@ -48,8 +48,11 @@ const KaKaoMap = ({ handleChangeCoord }: IProps) => {
 
   const overMarkerPos = (marker: LocateDataType) => {
     if (!map) return;
+    console.log('markers : ', markers);
+    console.log('marker : ', marker);
 
     // 마우스로 hover된 마커의 위치를 기준으로 지도 범위를 재설정
+
     const position = marker.position;
     map.setLevel(2);
     setMapLevel(map.getLevel());
@@ -94,6 +97,7 @@ const KaKaoMap = ({ handleChangeCoord }: IProps) => {
             });
             bounds.extend(new kakao.maps.LatLng(Number(data[i].y), Number(data[i].x)));
           }
+          console.log('markers : ', markers);
           setMarkers([...markers]);
           map.setBounds(bounds);
         } else {
@@ -107,6 +111,7 @@ const KaKaoMap = ({ handleChangeCoord }: IProps) => {
 
   const handleHoverOut = () => {
     if (!map) return;
+    if (tempSelectedIndex === -1) return;
     overMarkerPos(markers[tempSelectedIndex]);
   };
 
