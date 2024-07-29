@@ -1,14 +1,14 @@
 import { useState, useEffect, useCallback } from 'react';
 import { transLocaleToCoord } from '@src/Util';
 
-import { LocateData, KakaoSearchType, KakaoMapMarkerType, markerStatus } from '@src/Queries/useLiveDataQuery';
+import { LocateDataType, KakaoSearchType, KakaoMapMarkerType, markerStatus } from '@src/Queries/useLiveDataQuery';
 
 interface Props {
   map: kakao.maps.Map | null;
 }
 
 const useMapMarker = ({ map }: Props) => {
-  const [footerMarkers, setFooterMarkers] = useState<LocateData[]>([]);
+  const [footerMarkers, setFooterMarkers] = useState<LocateDataType[]>([]);
   const [currentMarkers, setCurrentMarkers] = useState<KakaoSearchType[]>([]);
   const [bookmarkMakers, setBookmarkMakers] = useState<KakaoSearchType[]>([]);
   const [onMapMarkers, setOnMapMarkers] = useState<KakaoMapMarkerType[]>([]);
@@ -23,7 +23,7 @@ const useMapMarker = ({ map }: Props) => {
   const onFocusMarker = useCallback(
     (marker: KakaoSearchType) => {
       isSwapMarker(marker.placeId);
-      focusMap(marker.originalPosition);
+      focusMap(marker.position);
     },
     [currentMarkers, bookmarkMakers],
   );
@@ -50,7 +50,7 @@ const useMapMarker = ({ map }: Props) => {
     setOnMapMarkers([...filteredMarkers, ...removePrevPinMarkers]);
   };
 
-  const changeOnMapMarker = (dstOnMapMarker: LocateData, status: string) => {
+  const changeOnMapMarker = (dstOnMapMarker: LocateDataType, status: string) => {
     console.log('dstOnMapMarker', dstOnMapMarker);
 
     const newOnMapMarker = {} as KakaoMapMarkerType;
@@ -91,10 +91,10 @@ const useMapMarker = ({ map }: Props) => {
   };
 
   const onClickMarkerFooter = useCallback(
-    async (marker: LocateData) => {
+    async (marker: LocateDataType) => {
       if (!map) return;
       const newMarker = {} as KakaoSearchType;
-      newMarker.originalPosition = marker.position;
+      newMarker.position = marker.position;
       newMarker.content = marker.content;
       newMarker.placeId = marker.placeId;
       const result = await transLocaleToCoord(marker.position);
@@ -108,11 +108,11 @@ const useMapMarker = ({ map }: Props) => {
         if (isSwapMarker(marker.placeId) !== 0) return;
       }
 
-      const prasedPosition = { lat: ny, lng: nx };
-      Object.assign(newMarker, { province, city, localeCode, position: prasedPosition, isBookmarked: false });
+      const apiLocalPosition = { lat: ny, lng: nx };
+      Object.assign(newMarker, { province, city, localeCode, apiLocalPosition, isBookmarked: false });
       setCurrentMarkers([newMarker, ...currentMarkers]);
 
-      console.log('LocateData');
+      console.log('LocateDataType');
       changeOnMapMarker(marker, 'search');
     },
     [currentMarkers, bookmarkMakers, onMapMarkers],
@@ -128,7 +128,7 @@ const useMapMarker = ({ map }: Props) => {
         currentMarkers.splice(index, 1);
         setCurrentMarkers([...currentMarkers]);
         setBookmarkMakers([firstMarker, ...bookmarkMakers]);
-        const position = firstMarker.originalPosition;
+        const position = firstMarker.position;
 
         console.log('KakaoSearchType');
         changeOnMapMarker(firstMarker, 'bookmark');
@@ -142,7 +142,7 @@ const useMapMarker = ({ map }: Props) => {
         bookmarkMakers.splice(index, 1);
         setBookmarkMakers([...bookmarkMakers]);
         setCurrentMarkers([firstMarker, ...currentMarkers]);
-        const position = firstMarker.originalPosition;
+        const position = firstMarker.position;
 
         console.log('KakaoSearchType');
 
@@ -167,7 +167,7 @@ const useMapMarker = ({ map }: Props) => {
           // LatLngBounds 객체에 좌표를 추가
           // 좌표들이 모두 보이게 지도의 중심좌표와 레벨을 재설정 할 수 있다
           const bounds = new kakao.maps.LatLngBounds();
-          const kakaoSearchMarkers: LocateData[] = [];
+          const kakaoSearchMarkers: LocateDataType[] = [];
           const parsedOnMapMarkers: KakaoMapMarkerType[] = [];
 
           console.log('data : ', data);
@@ -181,6 +181,9 @@ const useMapMarker = ({ map }: Props) => {
             parsedOnMapMarkers.push({ image, position, content, status, placeId });
             bounds.extend(new kakao.maps.LatLng(position.lat, position.lng));
           });
+
+          console.log('kakaoSearchMarkers : ', kakaoSearchMarkers);
+          console.log('parsedOnMapMarkers : ', parsedOnMapMarkers);
 
           changeOnMapMarkers(parsedOnMapMarkers);
           setFooterMarkers([...kakaoSearchMarkers]);
@@ -201,7 +204,7 @@ const useMapMarker = ({ map }: Props) => {
 
       const parsedOnMapMarkers: KakaoMapMarkerType[] = parsedBookmarks.map((bookmark: KakaoSearchType) => {
         const image = { src: '/icons/star-fill.svg', size: { width: 36, height: 36 } };
-        const position = bookmark.originalPosition;
+        const position = bookmark.position;
         const content = bookmark.content;
         const placeId = bookmark.placeId;
         const status = 'bookmark';
