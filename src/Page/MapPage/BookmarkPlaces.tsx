@@ -1,26 +1,26 @@
 import React from 'react';
-import { MarkerType } from '@src/Queries/useLiveDataQuery';
+import { KakaoSearchType } from '@src/Queries/useLiveDataQuery';
 import MarkerWeather from './MarkerWeather';
 import styled from 'styled-components';
 
 interface Props {
-  currentMarkers: MarkerType[];
-  onClickBookmark: (code: string, isBookmarked: boolean) => void;
-  onFocusMarker: (marker: MarkerType) => void;
+  bookmarkPlaces: KakaoSearchType[];
+  onClickBookmark: (localeCode: string, isBookmarked: boolean) => void;
+  onFocusMarker: (marker: KakaoSearchType) => void;
 }
 
-const CurrentMarkers = ({ currentMarkers, onClickBookmark, onFocusMarker }: Props) => {
+const BookmarkPlaces = ({ bookmarkPlaces, onClickBookmark, onFocusMarker }: Props) => {
   return (
     <MarkerContiner>
       <div>
-        <img src='/icons/search.svg' alt='검색' width={24} />
-        조회
+        <img src='/icons/star-fill.svg' alt='북마크' width={24} />
+        북마크
       </div>
-      {currentMarkers.length !== 0 && (
+      {bookmarkPlaces.length !== 0 && (
         <Markers>
-          {currentMarkers.map((marker: MarkerType) => (
+          {bookmarkPlaces.map((marker: KakaoSearchType) => (
             <MarkerWeather
-              key={'bookmark' + marker.code + marker.content}
+              key={'bookmark' + marker.localeCode + marker.placeName}
               marker={marker}
               onClickBookmark={onClickBookmark}
               onFocusMarker={onFocusMarker}
@@ -32,7 +32,7 @@ const CurrentMarkers = ({ currentMarkers, onClickBookmark, onFocusMarker }: Prop
   );
 };
 
-export default React.memo(CurrentMarkers);
+export default React.memo(BookmarkPlaces);
 
 const MarkerContiner = styled.div`
   display: flex;

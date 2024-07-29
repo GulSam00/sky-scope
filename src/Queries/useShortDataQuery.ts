@@ -15,7 +15,7 @@ const useShortDataQuery = (today: Date, location: ICoord) => {
       return result;
     },
     retry: 2,
-    retryDelay: 3000,
+    retryDelay: 1000,
     enabled: location !== null,
     staleTime: 1000 * 60, // 1분
   });

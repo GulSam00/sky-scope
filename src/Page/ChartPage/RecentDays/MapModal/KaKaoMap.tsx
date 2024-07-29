@@ -7,7 +7,7 @@ import { transLocaleToCoord } from '@src/Util';
 import { ICoord } from '@src/API/getWeatherShort';
 import { setCity, setProvince } from '@src/Store/locationDataSlice';
 import { close } from '@src/Store/kakaoModalSlice';
-import { KakaoMapMarkerType } from '@src/Queries/useLiveDataQuery';
+import { LocateDataType } from '@src/Queries/useLiveDataQuery';
 import SearchResultPagination from './SearchResultPagination';
 
 import { Form, Button, ListGroup } from 'react-bootstrap';
@@ -19,10 +19,10 @@ interface IProps {
 
 const KaKaoMap = ({ handleChangeCoord }: IProps) => {
   const [map, setMap] = useState<kakao.maps.Map | null>(null);
-  const [markers, setMarkers] = useState<KakaoMapMarkerType[]>([]);
+  const [markers, setMarkers] = useState<LocateDataType[]>([]);
   const [tempSelectedIndex, setTempSelectedIndex] = useState<number>(-1);
 
-  const [selectedMarker, setSelectedMarker] = useState<KakaoMapMarkerType | null>(null);
+  const [selectedMarker, setSelectedMarker] = useState<LocateDataType | null>(null);
   const [mapLevel, setMapLevel] = useState<number>(3);
   const mapRef = useRef<kakao.maps.Map>(null);
   const [searchWord, setSearchWord] = useState<string>('');
@@ -46,10 +46,10 @@ const KaKaoMap = ({ handleChangeCoord }: IProps) => {
     setSearchWord('');
   };
 
-  const overMarkerPos = (marker: KakaoMapMarkerType) => {
+  const overMarkerPos = (marker: LocateDataType) => {
     if (!map) return;
-
     // 마우스로 hover된 마커의 위치를 기준으로 지도 범위를 재설정
+
     const position = marker.position;
     map.setLevel(2);
     setMapLevel(map.getLevel());
@@ -57,11 +57,10 @@ const KaKaoMap = ({ handleChangeCoord }: IProps) => {
     map.panTo(new kakao.maps.LatLng(position.lat, position.lng));
   };
 
-  const onClickMarker = async (marker: KakaoMapMarkerType) => {
+  const onClickMarker = async (marker: LocateDataType) => {
     if (!map) return;
     const position = marker.position;
     const result = await transLocaleToCoord(position);
-
     if (result) {
       const { nx, ny, province, city } = result;
       dispatch(setProvince(province));
@@ -83,21 +82,22 @@ const KaKaoMap = ({ handleChangeCoord }: IProps) => {
           // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
           // LatLngBounds 객체에 좌표를 추가합니다
           const bounds = new kakao.maps.LatLngBounds();
-          const markers: KakaoMapMarkerType[] = [];
+          const markers: LocateDataType[] = [];
           for (let i = 0; i < data.length; i++) {
             markers.push({
               position: {
                 lat: Number(data[i].y),
                 lng: Number(data[i].x),
               },
-              content: data[i].place_name,
+              placeName: data[i].place_name,
+              placeId: data[i].id,
             });
             bounds.extend(new kakao.maps.LatLng(Number(data[i].y), Number(data[i].x)));
           }
           setMarkers([...markers]);
           map.setBounds(bounds);
         } else {
-          console.log('검색 결과가 없습니다.');
+          alert('검색 결과가 없습니다.');
           setMarkers([]);
         }
       },
@@ -107,6 +107,7 @@ const KaKaoMap = ({ handleChangeCoord }: IProps) => {
 
   const handleHoverOut = () => {
     if (!map) return;
+    if (tempSelectedIndex === -1) return;
     overMarkerPos(markers[tempSelectedIndex]);
   };
 
@@ -157,7 +158,7 @@ const KaKaoMap = ({ handleChangeCoord }: IProps) => {
         onCreate={setMap}
         id='kakao-map'
       >
-        {markers.map((marker: KakaoMapMarkerType, index: number) => (
+        {markers.map((marker: LocateDataType, index: number) => (
           <MapMarker position={marker.position} key={index} />
         ))}
       </Map>
@@ -165,7 +166,7 @@ const KaKaoMap = ({ handleChangeCoord }: IProps) => {
       {markers.length > 0 && (
         <MarkersContainer>
           <ListGroup>
-            {markers.map((marker: KakaoMapMarkerType, index: number) => (
+            {markers.map((marker: LocateDataType, index: number) => (
               <ListGroup.Item
                 className={tempSelectedIndex === index ? 'selected' : ''}
                 key={index}
@@ -173,7 +174,7 @@ const KaKaoMap = ({ handleChangeCoord }: IProps) => {
                 onMouseOut={handleHoverOut}
                 onClick={() => handleClickMarker(index)}
               >
-                {marker.content}
+                {marker.placeName}
               </ListGroup.Item>
             ))}
           </ListGroup>
@@ -185,7 +186,7 @@ const KaKaoMap = ({ handleChangeCoord }: IProps) => {
         <ConfirmModal>
           <ConfirmModalContent>
             <div className='content'>
-              [{selectedMarker.content}] 가 위치한 지역의
+              [{selectedMarker.placeName}] 가 위치한 지역의
               <br />
               날씨 정보를 검색합니다.
             </div>
