@@ -9,7 +9,7 @@ export interface KakaoMapMarkerType {
     lng: number;
   };
   content: string;
-  placeId?: string;
+  placeId: string;
 }
 
 export type markerStatus = 'bookmark' | 'search' | 'pin';

@@ -1,11 +1,12 @@
 import { useState, useEffect, useCallback } from 'react';
 import { transLocaleToCoord } from '@src/Util';
 
-import { KakaoMapMarkerType, MarkerType, OnMapMarkerType } from '@src/Queries/useLiveDataQuery';
+import { KakaoMapMarkerType, MarkerType, OnMapMarkerType, markerStatus } from '@src/Queries/useLiveDataQuery';
 
 interface Props {
   map: kakao.maps.Map | null;
 }
+
 const useMapMarker = ({ map }: Props) => {
   const [footerMarkers, setFooterMarkers] = useState<KakaoMapMarkerType[]>([]);
   const [currentMarkers, setCurrentMarkers] = useState<MarkerType[]>([]);
@@ -21,18 +22,19 @@ const useMapMarker = ({ map }: Props) => {
 
   const onFocusMarker = useCallback(
     (marker: MarkerType) => {
-      isSwapMarker(marker.content);
+      isSwapMarker(marker.placeId);
       focusMap(marker.originalPosition);
     },
     [currentMarkers, bookmarkMakers],
   );
 
   const changeOnMapMarkers = (dstOnMapMarkers: OnMapMarkerType[]) => {
+    console.log('dstOnMapMarkers', dstOnMapMarkers);
     // 이전의 pin 마커를 제거, onMapMarkers 대신 사용
     const removePrevPinMarkers = onMapMarkers.filter((item: OnMapMarkerType) => item.status !== 'pin');
 
     const filteredMarkers = dstOnMapMarkers.filter((item: OnMapMarkerType) => {
-      const findIndex = removePrevPinMarkers.findIndex(marker => marker.content === item.content);
+      const findIndex = removePrevPinMarkers.findIndex(marker => marker.placeId === item.placeId);
       // onMapMarkers에 없을 경우 추가
       if (findIndex === -1) {
         return item;
@@ -48,19 +50,30 @@ const useMapMarker = ({ map }: Props) => {
     setOnMapMarkers([...filteredMarkers, ...removePrevPinMarkers]);
   };
 
-  const changeOnMapMarker = (dstOnMapMarker: OnMapMarkerType) => {
-    const index = onMapMarkers.findIndex(item => item.content === dstOnMapMarker.content);
-    if (index !== -1 && dstOnMapMarker.status !== 'pin') {
-      onMapMarkers[index] = dstOnMapMarker;
+  const changeOnMapMarker = (dstOnMapMarker: KakaoMapMarkerType, status: string) => {
+    console.log('dstOnMapMarker', dstOnMapMarker);
+
+    const newOnMapMarker = {} as OnMapMarkerType;
+    newOnMapMarker.position = dstOnMapMarker.position;
+    newOnMapMarker.content = dstOnMapMarker.content;
+    newOnMapMarker.placeId = dstOnMapMarker.placeId;
+    newOnMapMarker.status = status as markerStatus;
+    const imageSrc = status === 'bookmark' ? '/icons/star-fill.svg' : '/icons/search.svg';
+    const image = { src: imageSrc, size: { width: 36, height: 36 } };
+    newOnMapMarker.image = image;
+
+    const index = onMapMarkers.findIndex(item => item.placeId === newOnMapMarker.placeId);
+    if (index !== -1 && newOnMapMarker.status !== 'pin') {
+      onMapMarkers[index] = newOnMapMarker;
       setOnMapMarkers([...onMapMarkers]);
     } else {
-      setOnMapMarkers([dstOnMapMarker, ...onMapMarkers]);
+      setOnMapMarkers([newOnMapMarker, ...onMapMarkers]);
     }
   };
 
-  const isSwapMarker = (content: string) => {
-    const currentIndex = currentMarkers.findIndex(item => item.content === content);
-    const bookmarkIndex = bookmarkMakers.findIndex(item => item.content === content);
+  const isSwapMarker = (placeId: string) => {
+    const currentIndex = currentMarkers.findIndex(item => item.placeId === placeId);
+    const bookmarkIndex = bookmarkMakers.findIndex(item => item.placeId === placeId);
     if (currentIndex !== -1) {
       const firstMarker = currentMarkers[currentIndex];
       currentMarkers.splice(currentIndex, 1);
@@ -82,6 +95,7 @@ const useMapMarker = ({ map }: Props) => {
       const newMarker = {} as MarkerType;
       newMarker.originalPosition = marker.position;
       newMarker.content = marker.content;
+      newMarker.placeId = marker.placeId;
       const result = await transLocaleToCoord(marker.position);
 
       if (!result) {
@@ -90,16 +104,15 @@ const useMapMarker = ({ map }: Props) => {
 
       const { nx, ny, province, city, localeCode } = result;
       if (currentMarkers) {
-        if (isSwapMarker(marker.content) !== 0) return;
+        if (isSwapMarker(marker.placeId) !== 0) return;
       }
 
       const prasedPosition = { lat: ny, lng: nx };
       Object.assign(newMarker, { province, city, localeCode, position: prasedPosition, isBookmarked: false });
       setCurrentMarkers([newMarker, ...currentMarkers]);
 
-      const image = { src: '/icons/search.svg', size: { width: 36, height: 36 } };
-      changeOnMapMarker({ image, position: marker.position, content: marker.content, status: 'search' });
-      console.log('onMapMarkers', onMapMarkers);
+      console.log('KakaoMapMarkerType');
+      changeOnMapMarker(marker, 'search');
     },
     [currentMarkers, bookmarkMakers, onMapMarkers],
   );
@@ -114,11 +127,10 @@ const useMapMarker = ({ map }: Props) => {
         currentMarkers.splice(index, 1);
         setCurrentMarkers([...currentMarkers]);
         setBookmarkMakers([firstMarker, ...bookmarkMakers]);
-        const image = { src: '/icons/star-fill.svg', size: { width: 36, height: 36 } };
         const position = firstMarker.originalPosition;
-        const content = firstMarker.content;
-        const status = 'bookmark';
-        changeOnMapMarker({ image, position, content, status });
+
+        console.log('MarkerType');
+        changeOnMapMarker(firstMarker, 'bookmark');
         focusMap(position);
         localStorage.setItem('bookmarks', JSON.stringify([firstMarker, ...bookmarkMakers]));
       } else {
@@ -129,12 +141,11 @@ const useMapMarker = ({ map }: Props) => {
         bookmarkMakers.splice(index, 1);
         setBookmarkMakers([...bookmarkMakers]);
         setCurrentMarkers([firstMarker, ...currentMarkers]);
-
-        const image = { src: '/icons/search.svg', size: { width: 36, height: 36 } };
         const position = firstMarker.originalPosition;
-        const content = firstMarker.content;
-        const status = 'search';
-        changeOnMapMarker({ image, position, content, status });
+
+        console.log('MarkerType');
+
+        changeOnMapMarker(firstMarker, 'search');
         focusMap(position);
         localStorage.setItem('bookmarks', JSON.stringify([...bookmarkMakers]));
       }
@@ -158,15 +169,15 @@ const useMapMarker = ({ map }: Props) => {
           const kakaoSearchMarkers: KakaoMapMarkerType[] = [];
           const parsedOnMapMarkers: OnMapMarkerType[] = [];
 
+          console.log('data : ', data);
           data.forEach(place => {
-            console.log(place);
             const position = { lat: Number(place.y), lng: Number(place.x) };
             const image = { src: '/icons/geo-pin.svg', size: { width: 36, height: 36 } };
             const content = place.place_name;
             const status = 'pin';
-            // const placeId = place.id;
-            kakaoSearchMarkers.push({ position, content });
-            parsedOnMapMarkers.push({ image, position, content, status });
+            const placeId = place.id;
+            kakaoSearchMarkers.push({ position, content, placeId });
+            parsedOnMapMarkers.push({ image, position, content, status, placeId });
             bounds.extend(new kakao.maps.LatLng(position.lat, position.lng));
           });
 
@@ -191,8 +202,10 @@ const useMapMarker = ({ map }: Props) => {
         const image = { src: '/icons/star-fill.svg', size: { width: 36, height: 36 } };
         const position = bookmark.originalPosition;
         const content = bookmark.content;
+        const placeId = bookmark.placeId;
         const status = 'bookmark';
-        return { image, position, content, status };
+
+        return { image, position, content, status, placeId };
       });
       changeOnMapMarkers(parsedOnMapMarkers);
 
