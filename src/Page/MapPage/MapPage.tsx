@@ -19,6 +19,7 @@ const MapPage = () => {
     currentPlaces,
     bookmarkPlaces,
     onMapMarkers,
+    onClickMarker,
     onFocusPlace,
     onClickFooterPlace,
     onClickPlace,
@@ -127,6 +128,7 @@ const MapPage = () => {
               // 이미지가 겹쳐서 보이지 않는 이슈
               // 기본 마커 이미지는 사용하지 않을 것이기에 map에 마커가 존재하는 지를 확인해야 함
               image={marker.image}
+              onClick={() => onClickMarker(marker)}
             />
           ))}
         </Map>

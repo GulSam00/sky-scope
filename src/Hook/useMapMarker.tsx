@@ -20,6 +20,11 @@ const useMapMarker = ({ map }: Props) => {
     map.panTo(kakaoPosition);
   };
 
+  const onClickMarker = (marker: KakaoMapMarkerType) => {
+    focusMap(marker.position);
+    isSwapMarker(marker.placeId);
+  };
+
   const onFocusPlace = useCallback(
     (marker: KakaoSearchType) => {
       isSwapMarker(marker.placeId);
@@ -215,6 +220,7 @@ const useMapMarker = ({ map }: Props) => {
     currentPlaces,
     bookmarkPlaces,
     onMapMarkers,
+    onClickMarker,
     onFocusPlace,
     onClickFooterPlace,
     onClickPlace,
