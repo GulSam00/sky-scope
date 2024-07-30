@@ -4,24 +4,24 @@ import PlaceWeather from './PlaceWeather';
 import styled from 'styled-components';
 
 interface Props {
-  bookmarkPlaces: KakaoSearchType[];
+  places: KakaoSearchType[];
   onFocusPlace: (marker: KakaoSearchType) => void;
   onClickPlace: (localeCode: string, isBookmarked: boolean) => void;
   onDeletePlace: (localeCode: string, isBookmarked: boolean) => void;
+  type: string;
+  children: React.ReactNode;
 }
 
-const BookmarkPlaces = ({ bookmarkPlaces, onFocusPlace, onClickPlace, onDeletePlace }: Props) => {
+const DynamicPlaces = ({ places, onFocusPlace, onClickPlace, onDeletePlace, type, children }: Props) => {
   return (
     <MarkerContiner>
-      <div>
-        <img src='/icons/star-fill.svg' alt='북마크' width={24} />
-        북마크
-      </div>
-      {bookmarkPlaces.length !== 0 && (
+      {children}
+
+      {places.length !== 0 && (
         <Markers>
-          {bookmarkPlaces.map((marker: KakaoSearchType) => (
+          {places.map((marker: KakaoSearchType) => (
             <PlaceWeather
-              key={'bookmark' + marker.localeCode + marker.placeName}
+              key={type + marker.localeCode + marker.placeName}
               marker={marker}
               onClickPlace={onClickPlace}
               onFocusPlace={onFocusPlace}
@@ -34,7 +34,7 @@ const BookmarkPlaces = ({ bookmarkPlaces, onFocusPlace, onClickPlace, onDeletePl
   );
 };
 
-export default React.memo(BookmarkPlaces);
+export default React.memo(DynamicPlaces);
 
 const MarkerContiner = styled.div`
   display: flex;

@@ -8,8 +8,7 @@ import { KakaoMapMarkerType } from '@src/Queries/useLiveDataQuery';
 import { Form, Button, ListGroup } from 'react-bootstrap';
 import styled from 'styled-components';
 
-import BookmarkPlaces from './BookmarkPlaces';
-import CurrentPlaces from './CurrentPlaces';
+import DynamicPlaces from './DynamicPlaces';
 import FooterPlaces from './FooterPlaces';
 
 const MapPage = () => {
@@ -79,19 +78,31 @@ const MapPage = () => {
     <MapContainer>
       {kakaoLoading && <LoadingState />}
 
-      <BookmarkPlaces
-        bookmarkPlaces={bookmarkPlaces}
+      <DynamicPlaces
+        places={bookmarkPlaces}
         onFocusPlace={onFocusPlace}
         onClickPlace={onClickPlace}
         onDeletePlace={onDeletePlace}
-      />
+        type='bookmark'
+      >
+        <div>
+          <img src='/icons/star-fill.svg' alt='북마크' width={24} />
+          북마크
+        </div>
+      </DynamicPlaces>
 
-      <CurrentPlaces
-        currentPlaces={currentPlaces}
+      <DynamicPlaces
+        places={currentPlaces}
         onFocusPlace={onFocusPlace}
         onClickPlace={onClickPlace}
         onDeletePlace={onDeletePlace}
-      />
+        type='current'
+      >
+        <div>
+          <img src='/icons/search.svg' alt='검색' width={24} />
+          조회
+        </div>
+      </DynamicPlaces>
 
       <FormContainer>
         <Form>
