@@ -25,7 +25,7 @@ interface Props {
   onClickPlace: (localeCode: string, isBookmarked: boolean) => void;
   onFocusPlace: (marker: KakaoSearchType) => void;
 }
-const MarkerWeather = ({ marker, onClickPlace, onFocusPlace }: Props) => {
+const PlaceWeather = ({ marker, onClickPlace, onFocusPlace }: Props) => {
   const { isLoading, data, error } = useLiveDataQuery(new Date(), marker);
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -106,7 +106,7 @@ const MarkerWeather = ({ marker, onClickPlace, onFocusPlace }: Props) => {
   );
 };
 
-export default MarkerWeather;
+export default PlaceWeather;
 
 const MarkerWeatherContainer = styled.div`
   position: relative;

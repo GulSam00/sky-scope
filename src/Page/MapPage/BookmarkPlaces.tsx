@@ -1,6 +1,6 @@
 import React from 'react';
 import { KakaoSearchType } from '@src/Queries/useLiveDataQuery';
-import MarkerWeather from './MarkerWeather';
+import PlaceWeather from './PlaceWeather';
 import styled from 'styled-components';
 
 interface Props {
@@ -19,7 +19,7 @@ const BookmarkPlaces = ({ bookmarkPlaces, onClickPlace, onFocusPlace }: Props) =
       {bookmarkPlaces.length !== 0 && (
         <Markers>
           {bookmarkPlaces.map((marker: KakaoSearchType) => (
-            <MarkerWeather
+            <PlaceWeather
               key={'bookmark' + marker.localeCode + marker.placeName}
               marker={marker}
               onClickPlace={onClickPlace}
