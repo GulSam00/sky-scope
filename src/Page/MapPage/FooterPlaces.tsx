@@ -9,9 +9,9 @@ interface Props {
   map: kakao.maps.Map | null;
   places: LocateDataType[];
   handlePageMove: (page: number) => void;
-  onClickMarkerFooter: (marker: LocateDataType) => void;
+  onClickFooterPlace: (marker: LocateDataType) => void;
 }
-const PlacesFooter = ({ map, places, handlePageMove, onClickMarkerFooter }: Props) => {
+const FooterPlaces = ({ map, places, handlePageMove, onClickFooterPlace }: Props) => {
   const [tempSelectedIndex, setTempSelectedIndex] = useState<number>(-1);
 
   const overMarkerPos = (marker: LocateDataType) => {
@@ -27,7 +27,7 @@ const PlacesFooter = ({ map, places, handlePageMove, onClickMarkerFooter }: Prop
   };
 
   const handleClickMarker = (index: number) => {
-    onClickMarkerFooter(places[index]);
+    onClickFooterPlace(places[index]);
     setTempSelectedIndex(index);
   };
 
@@ -63,7 +63,7 @@ const PlacesFooter = ({ map, places, handlePageMove, onClickMarkerFooter }: Prop
   );
 };
 
-export default React.memo(PlacesFooter);
+export default React.memo(FooterPlaces);
 
 const MarkersContainer = styled.div`
   display: flex;

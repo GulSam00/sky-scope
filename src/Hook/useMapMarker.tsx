@@ -20,7 +20,7 @@ const useMapMarker = ({ map }: Props) => {
     map.panTo(kakaoPosition);
   };
 
-  const onFocusMarker = useCallback(
+  const onFocusPlace = useCallback(
     (marker: KakaoSearchType) => {
       isSwapMarker(marker.placeId);
       focusMap(marker.position);
@@ -85,7 +85,7 @@ const useMapMarker = ({ map }: Props) => {
     return 0;
   };
 
-  const onClickMarkerFooter = useCallback(
+  const onClickFooterPlace = useCallback(
     async (marker: LocateDataType) => {
       if (!map) return;
       const newMarker = { ...marker } as KakaoSearchType;
@@ -110,7 +110,7 @@ const useMapMarker = ({ map }: Props) => {
     [currentPlaces, bookmarkPlaces, onMapMarkers],
   );
 
-  const onClickBookmark = useCallback(
+  const onClickPlace = useCallback(
     (localeCode: string, isBookmarked: boolean) => {
       if (isBookmarked === false) {
         // 북마크 추가
@@ -215,9 +215,9 @@ const useMapMarker = ({ map }: Props) => {
     currentPlaces,
     bookmarkPlaces,
     onMapMarkers,
-    onFocusMarker,
-    onClickMarkerFooter,
-    onClickBookmark,
+    onFocusPlace,
+    onClickFooterPlace,
+    onClickPlace,
     searchPlaces,
   };
 };

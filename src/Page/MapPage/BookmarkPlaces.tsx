@@ -5,11 +5,11 @@ import styled from 'styled-components';
 
 interface Props {
   bookmarkPlaces: KakaoSearchType[];
-  onClickBookmark: (localeCode: string, isBookmarked: boolean) => void;
-  onFocusMarker: (marker: KakaoSearchType) => void;
+  onClickPlace: (localeCode: string, isBookmarked: boolean) => void;
+  onFocusPlace: (marker: KakaoSearchType) => void;
 }
 
-const BookmarkPlaces = ({ bookmarkPlaces, onClickBookmark, onFocusMarker }: Props) => {
+const BookmarkPlaces = ({ bookmarkPlaces, onClickPlace, onFocusPlace }: Props) => {
   return (
     <MarkerContiner>
       <div>
@@ -22,8 +22,8 @@ const BookmarkPlaces = ({ bookmarkPlaces, onClickBookmark, onFocusMarker }: Prop
             <MarkerWeather
               key={'bookmark' + marker.localeCode + marker.placeName}
               marker={marker}
-              onClickBookmark={onClickBookmark}
-              onFocusMarker={onFocusMarker}
+              onClickPlace={onClickPlace}
+              onFocusPlace={onFocusPlace}
             />
           ))}
         </Markers>

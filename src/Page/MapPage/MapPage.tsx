@@ -10,7 +10,7 @@ import styled from 'styled-components';
 
 import BookmarkPlaces from './BookmarkPlaces';
 import CurrentPlaces from './CurrentPlaces';
-import PlacesFooter from './PlacesFooter';
+import FooterPlaces from './FooterPlaces';
 
 const MapPage = () => {
   const [map, setMap] = useState<kakao.maps.Map | null>(null);
@@ -19,9 +19,9 @@ const MapPage = () => {
     currentPlaces,
     bookmarkPlaces,
     onMapMarkers,
-    onFocusMarker,
-    onClickMarkerFooter,
-    onClickBookmark,
+    onFocusPlace,
+    onClickFooterPlace,
+    onClickPlace,
     searchPlaces,
   } = useMapMarker({ map });
 
@@ -77,9 +77,9 @@ const MapPage = () => {
     <MapContainer>
       {kakaoLoading && <LoadingState />}
 
-      <BookmarkPlaces bookmarkPlaces={bookmarkPlaces} onClickBookmark={onClickBookmark} onFocusMarker={onFocusMarker} />
+      <BookmarkPlaces bookmarkPlaces={bookmarkPlaces} onClickPlace={onClickPlace} onFocusPlace={onFocusPlace} />
 
-      <CurrentPlaces currentPlaces={currentPlaces} onClickBookmark={onClickBookmark} onFocusMarker={onFocusMarker} />
+      <CurrentPlaces currentPlaces={currentPlaces} onClickPlace={onClickPlace} onFocusPlace={onFocusPlace} />
 
       <FormContainer>
         <Form>
@@ -131,11 +131,11 @@ const MapPage = () => {
           ))}
         </Map>
       </KakaoMapContainer>
-      <PlacesFooter
+      <FooterPlaces
         map={map}
         places={footerPlaces}
         handlePageMove={handlePageMove}
-        onClickMarkerFooter={onClickMarkerFooter}
+        onClickFooterPlace={onClickFooterPlace}
       />
     </MapContainer>
   );

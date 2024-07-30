@@ -22,10 +22,10 @@ import {
 
 interface Props {
   marker: KakaoSearchType;
-  onClickBookmark: (localeCode: string, isBookmarked: boolean) => void;
-  onFocusMarker: (marker: KakaoSearchType) => void;
+  onClickPlace: (localeCode: string, isBookmarked: boolean) => void;
+  onFocusPlace: (marker: KakaoSearchType) => void;
 }
-const MarkerWeather = ({ marker, onClickBookmark, onFocusMarker }: Props) => {
+const MarkerWeather = ({ marker, onClickPlace, onFocusPlace }: Props) => {
   const { isLoading, data, error } = useLiveDataQuery(new Date(), marker);
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -51,7 +51,7 @@ const MarkerWeather = ({ marker, onClickBookmark, onFocusMarker }: Props) => {
 
   const handleClickBookmark = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     e.stopPropagation();
-    onClickBookmark(marker.localeCode, marker.isBookmarked);
+    onClickPlace(marker.localeCode, marker.isBookmarked);
   };
 
   useEffect(() => {
@@ -69,7 +69,7 @@ const MarkerWeather = ({ marker, onClickBookmark, onFocusMarker }: Props) => {
   return (
     <MarkerWeatherContainer>
       {data ? (
-        <div onClick={() => onFocusMarker(marker)}>
+        <div onClick={() => onFocusPlace(marker)}>
           <div className='bookmark' onClick={e => handleClickBookmark(e)}>
             {marker.isBookmarked ? (
               <img src='/icons/star-fill.svg' alt='star' width={24} />
