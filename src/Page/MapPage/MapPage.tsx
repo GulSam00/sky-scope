@@ -133,7 +133,7 @@ const MapPage = () => {
       </KakaoMapContainer>
       <PlacesFooter
         map={map}
-        markers={footerPlaces}
+        places={footerPlaces}
         handlePageMove={handlePageMove}
         onClickMarkerFooter={onClickMarkerFooter}
       />
