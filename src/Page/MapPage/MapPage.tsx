@@ -20,10 +20,11 @@ const MapPage = () => {
     bookmarkPlaces,
     mapMarkers,
     onClickMarker,
-    onFocusPlace,
-    onClickFooterPlace,
-    onClickPlace,
     searchPlaces,
+    onFocusPlace,
+    onClickPlace,
+    onDeletePlace,
+    onClickFooterPlace,
   } = useMapMarker({ map });
 
   const {
@@ -78,9 +79,19 @@ const MapPage = () => {
     <MapContainer>
       {kakaoLoading && <LoadingState />}
 
-      <BookmarkPlaces bookmarkPlaces={bookmarkPlaces} onClickPlace={onClickPlace} onFocusPlace={onFocusPlace} />
+      <BookmarkPlaces
+        bookmarkPlaces={bookmarkPlaces}
+        onFocusPlace={onFocusPlace}
+        onClickPlace={onClickPlace}
+        onDeletePlace={onDeletePlace}
+      />
 
-      <CurrentPlaces currentPlaces={currentPlaces} onClickPlace={onClickPlace} onFocusPlace={onFocusPlace} />
+      <CurrentPlaces
+        currentPlaces={currentPlaces}
+        onFocusPlace={onFocusPlace}
+        onClickPlace={onClickPlace}
+        onDeletePlace={onDeletePlace}
+      />
 
       <FormContainer>
         <Form>

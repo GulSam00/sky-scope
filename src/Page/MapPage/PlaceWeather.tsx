@@ -22,10 +22,11 @@ import {
 
 interface Props {
   marker: KakaoSearchType;
-  onClickPlace: (localeCode: string, isBookmarked: boolean) => void;
   onFocusPlace: (marker: KakaoSearchType) => void;
+  onClickPlace: (localeCode: string, isBookmarked: boolean) => void;
+  onDeletePlace: (localeCode: string, isBookmarked: boolean) => void;
 }
-const PlaceWeather = ({ marker, onClickPlace, onFocusPlace }: Props) => {
+const PlaceWeather = ({ marker, onFocusPlace, onClickPlace, onDeletePlace }: Props) => {
   const { isLoading, data, error } = useLiveDataQuery(new Date(), marker);
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -54,6 +55,11 @@ const PlaceWeather = ({ marker, onClickPlace, onFocusPlace }: Props) => {
     onClickPlace(marker.localeCode, marker.isBookmarked);
   };
 
+  const handleClickDelete = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    e.stopPropagation();
+    onDeletePlace(marker.localeCode, marker.isBookmarked);
+  };
+
   useEffect(() => {
     if (isLoading) {
       dispatch(loadingData());
@@ -77,6 +83,10 @@ const PlaceWeather = ({ marker, onClickPlace, onFocusPlace }: Props) => {
               <img src='/icons/star.svg' alt='star' width={24} />
             )}
           </div>
+          <div className='delete' onClick={e => handleClickDelete(e)}>
+            <img src='/icons/x-lg.svg' alt='delete' width={24} />
+          </div>
+
           <div className='location'>
             {data.province} {data.city}
           </div>
@@ -120,6 +130,13 @@ const MarkerWeatherContainer = styled.div`
   cursor: pointer;
 
   .bookmark {
+    position: absolute;
+    right: 40px;
+    display: flex;
+    align-items: start;
+  }
+
+  .delete {
     position: absolute;
     right: 10px;
     display: flex;

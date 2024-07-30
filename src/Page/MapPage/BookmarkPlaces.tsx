@@ -5,11 +5,12 @@ import styled from 'styled-components';
 
 interface Props {
   bookmarkPlaces: KakaoSearchType[];
-  onClickPlace: (localeCode: string, isBookmarked: boolean) => void;
   onFocusPlace: (marker: KakaoSearchType) => void;
+  onClickPlace: (localeCode: string, isBookmarked: boolean) => void;
+  onDeletePlace: (localeCode: string, isBookmarked: boolean) => void;
 }
 
-const BookmarkPlaces = ({ bookmarkPlaces, onClickPlace, onFocusPlace }: Props) => {
+const BookmarkPlaces = ({ bookmarkPlaces, onFocusPlace, onClickPlace, onDeletePlace }: Props) => {
   return (
     <MarkerContiner>
       <div>
@@ -24,6 +25,7 @@ const BookmarkPlaces = ({ bookmarkPlaces, onClickPlace, onFocusPlace }: Props) =
               marker={marker}
               onClickPlace={onClickPlace}
               onFocusPlace={onFocusPlace}
+              onDeletePlace={onDeletePlace}
             />
           ))}
         </Markers>

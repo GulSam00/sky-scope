@@ -25,6 +25,45 @@ const useMapMarker = ({ map }: Props) => {
     isSwapMarker(marker.placeId);
   };
 
+  const searchPlaces = (keyword: string, page: number, setMaxPage: React.Dispatch<React.SetStateAction<number>>) => {
+    if (!map) return;
+
+    const ps = new kakao.maps.services.Places();
+    ps.keywordSearch(
+      keyword,
+      (data, status, pagination) => {
+        if (status === kakao.maps.services.Status.OK) {
+          setMaxPage(pagination.last);
+          // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
+          // LatLngBounds 객체에 좌표를 추가
+          // 좌표들이 모두 보이게 지도의 중심좌표와 레벨을 재설정 할 수 있다
+          const bounds = new kakao.maps.LatLngBounds();
+          const kakaoSearchMarkers: LocateDataType[] = [];
+          const parsedOnMapMarkers: KakaoMapMarkerType[] = [];
+
+          data.forEach(place => {
+            const position = { lat: Number(place.y), lng: Number(place.x) };
+            const image = { src: '/icons/geo-pin.svg', size: { width: 36, height: 36 } };
+            const placeName = place.place_name;
+            const status = 'pin';
+            const placeId = place.id;
+            kakaoSearchMarkers.push({ position, placeName, placeId });
+            parsedOnMapMarkers.push({ image, position, placeName, status, placeId });
+            bounds.extend(new kakao.maps.LatLng(position.lat, position.lng));
+          });
+          // console.log('kakaoSearchMarkers : ', kakaoSearchMarkers);
+          // console.log('parsedOnMapMarkers : ', parsedOnMapMarkers);
+          changeOnMapMarkers(parsedOnMapMarkers);
+          setFooterPlaces([...kakaoSearchMarkers]);
+          map.setBounds(bounds);
+        } else {
+          alert('검색 결과가 없습니다.');
+        }
+      },
+      { size: 5, page: page },
+    );
+  };
+
   const onFocusPlace = useCallback(
     (marker: KakaoSearchType) => {
       isSwapMarker(marker.placeId);
@@ -90,31 +129,6 @@ const useMapMarker = ({ map }: Props) => {
     return 0;
   };
 
-  const onClickFooterPlace = useCallback(
-    async (marker: LocateDataType) => {
-      if (!map) return;
-      const newMarker = { ...marker } as KakaoSearchType;
-
-      const result = await transLocaleToCoord(marker.position);
-      if (!result) {
-        return;
-      }
-
-      const { nx, ny, province, city, localeCode } = result;
-      if (currentPlaces) {
-        if (isSwapMarker(marker.placeId) !== 0) return;
-      }
-
-      const apiLocalPosition = { lat: ny, lng: nx };
-      Object.assign(newMarker, { province, city, localeCode, apiLocalPosition, isBookmarked: false });
-      setCurrentPlaces([newMarker, ...currentPlaces]);
-
-      // console.log('LocateDataType');
-      changeOnMapMarker(marker, 'search');
-    },
-    [currentPlaces, bookmarkPlaces, mapMarkers],
-  );
-
   const onClickPlace = useCallback(
     (localeCode: string, isBookmarked: boolean) => {
       if (isBookmarked === false) {
@@ -150,44 +164,46 @@ const useMapMarker = ({ map }: Props) => {
     [currentPlaces, bookmarkPlaces],
   );
 
-  const searchPlaces = (keyword: string, page: number, setMaxPage: React.Dispatch<React.SetStateAction<number>>) => {
-    if (!map) return;
+  const onDeletePlace = useCallback(
+    (localeCode: string, isBookmarked: boolean) => {
+      if (isBookmarked === true) {
+        const index = bookmarkPlaces.findIndex(item => item.localeCode === localeCode);
+        bookmarkPlaces.splice(index, 1);
+        setBookmarkPlaces([...bookmarkPlaces]);
+        localStorage.setItem('bookmarks', JSON.stringify([...bookmarkPlaces]));
+      } else {
+        const index = currentPlaces.findIndex(item => item.localeCode === localeCode);
+        currentPlaces.splice(index, 1);
+        setCurrentPlaces([...currentPlaces]);
+      }
+    },
+    [currentPlaces, bookmarkPlaces],
+  );
 
-    const ps = new kakao.maps.services.Places();
-    ps.keywordSearch(
-      keyword,
-      (data, status, pagination) => {
-        if (status === kakao.maps.services.Status.OK) {
-          setMaxPage(pagination.last);
-          // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
-          // LatLngBounds 객체에 좌표를 추가
-          // 좌표들이 모두 보이게 지도의 중심좌표와 레벨을 재설정 할 수 있다
-          const bounds = new kakao.maps.LatLngBounds();
-          const kakaoSearchMarkers: LocateDataType[] = [];
-          const parsedOnMapMarkers: KakaoMapMarkerType[] = [];
+  const onClickFooterPlace = useCallback(
+    async (marker: LocateDataType) => {
+      if (!map) return;
+      const newMarker = { ...marker } as KakaoSearchType;
 
-          data.forEach(place => {
-            const position = { lat: Number(place.y), lng: Number(place.x) };
-            const image = { src: '/icons/geo-pin.svg', size: { width: 36, height: 36 } };
-            const placeName = place.place_name;
-            const status = 'pin';
-            const placeId = place.id;
-            kakaoSearchMarkers.push({ position, placeName, placeId });
-            parsedOnMapMarkers.push({ image, position, placeName, status, placeId });
-            bounds.extend(new kakao.maps.LatLng(position.lat, position.lng));
-          });
-          // console.log('kakaoSearchMarkers : ', kakaoSearchMarkers);
-          // console.log('parsedOnMapMarkers : ', parsedOnMapMarkers);
-          changeOnMapMarkers(parsedOnMapMarkers);
-          setFooterPlaces([...kakaoSearchMarkers]);
-          map.setBounds(bounds);
-        } else {
-          alert('검색 결과가 없습니다.');
-        }
-      },
-      { size: 5, page: page },
-    );
-  };
+      const result = await transLocaleToCoord(marker.position);
+      if (!result) {
+        return;
+      }
+
+      const { nx, ny, province, city, localeCode } = result;
+      if (currentPlaces) {
+        if (isSwapMarker(marker.placeId) !== 0) return;
+      }
+
+      const apiLocalPosition = { lat: ny, lng: nx };
+      Object.assign(newMarker, { province, city, localeCode, apiLocalPosition, isBookmarked: false });
+      setCurrentPlaces([newMarker, ...currentPlaces]);
+
+      // console.log('LocateDataType');
+      changeOnMapMarker(marker, 'search');
+    },
+    [currentPlaces, bookmarkPlaces, mapMarkers],
+  );
 
   useEffect(() => {
     const localBookmarks = localStorage.getItem('bookmarks');
@@ -221,10 +237,11 @@ const useMapMarker = ({ map }: Props) => {
     bookmarkPlaces,
     mapMarkers,
     onClickMarker,
-    onFocusPlace,
-    onClickFooterPlace,
-    onClickPlace,
     searchPlaces,
+    onFocusPlace,
+    onClickPlace,
+    onDeletePlace,
+    onClickFooterPlace,
   };
 };
 
