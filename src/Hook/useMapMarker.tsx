@@ -11,7 +11,7 @@ const useMapMarker = ({ map }: Props) => {
   const [footerPlaces, setFooterPlaces] = useState<LocateDataType[]>([]);
   const [currentPlaces, setCurrentPlaces] = useState<KakaoSearchType[]>([]);
   const [bookmarkPlaces, setBookmarkPlaces] = useState<KakaoSearchType[]>([]);
-  const [onMapMarkers, setOnMapMarkers] = useState<KakaoMapMarkerType[]>([]);
+  const [mapMarkers, setMapMarkers] = useState<KakaoMapMarkerType[]>([]);
 
   const focusMap = (position: { lat: number; lng: number }) => {
     if (!map) return;
@@ -35,8 +35,8 @@ const useMapMarker = ({ map }: Props) => {
 
   const changeOnMapMarkers = (dstOnMapMarkers: KakaoMapMarkerType[]) => {
     // console.log('dstOnMapMarkers', dstOnMapMarkers);
-    // 이전의 pin 마커를 제거, onMapMarkers 대신 사용
-    const removePrevPinMarkers = onMapMarkers.filter((item: KakaoMapMarkerType) => item.status !== 'pin');
+    // 이전의 pin 마커를 제거, mapMarkers 대신 사용
+    const removePrevPinMarkers = mapMarkers.filter((item: KakaoMapMarkerType) => item.status !== 'pin');
 
     const filteredMarkers = dstOnMapMarkers.filter((item: KakaoMapMarkerType) => {
       const findIndex = removePrevPinMarkers.findIndex(marker => marker.placeId === item.placeId);
@@ -52,7 +52,7 @@ const useMapMarker = ({ map }: Props) => {
     });
     // onMapMarkers에 존재하지 않는 장소들을 추가
     // else if 문에서 수정된 status를 반영
-    setOnMapMarkers([...filteredMarkers, ...removePrevPinMarkers]);
+    setMapMarkers([...filteredMarkers, ...removePrevPinMarkers]);
   };
 
   const changeOnMapMarker = (dstOnMapMarker: LocateDataType, status: string) => {
@@ -63,12 +63,12 @@ const useMapMarker = ({ map }: Props) => {
     newOnMapMarker.status = status as markerStatus;
     newOnMapMarker.image = image;
 
-    const index = onMapMarkers.findIndex(item => item.placeId === newOnMapMarker.placeId);
+    const index = mapMarkers.findIndex(item => item.placeId === newOnMapMarker.placeId);
     if (index !== -1 && newOnMapMarker.status !== 'pin') {
-      onMapMarkers[index] = newOnMapMarker;
-      setOnMapMarkers([...onMapMarkers]);
+      mapMarkers[index] = newOnMapMarker;
+      setMapMarkers([...mapMarkers]);
     } else {
-      setOnMapMarkers([newOnMapMarker, ...onMapMarkers]);
+      setMapMarkers([newOnMapMarker, ...mapMarkers]);
     }
   };
 
@@ -112,7 +112,7 @@ const useMapMarker = ({ map }: Props) => {
       // console.log('LocateDataType');
       changeOnMapMarker(marker, 'search');
     },
-    [currentPlaces, bookmarkPlaces, onMapMarkers],
+    [currentPlaces, bookmarkPlaces, mapMarkers],
   );
 
   const onClickPlace = useCallback(
@@ -219,7 +219,7 @@ const useMapMarker = ({ map }: Props) => {
     footerPlaces,
     currentPlaces,
     bookmarkPlaces,
-    onMapMarkers,
+    mapMarkers,
     onClickMarker,
     onFocusPlace,
     onClickFooterPlace,

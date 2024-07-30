@@ -18,7 +18,7 @@ const MapPage = () => {
     footerPlaces,
     currentPlaces,
     bookmarkPlaces,
-    onMapMarkers,
+    mapMarkers,
     onClickMarker,
     onFocusPlace,
     onClickFooterPlace,
@@ -121,7 +121,7 @@ const MapPage = () => {
           onCreate={setMap}
           id='kakao-map'
         >
-          {onMapMarkers.map((marker: KakaoMapMarkerType, index: number) => (
+          {mapMarkers.map((marker: KakaoMapMarkerType, index: number) => (
             <MapMarker
               key={'onMapMarker' + index}
               position={marker.position}
