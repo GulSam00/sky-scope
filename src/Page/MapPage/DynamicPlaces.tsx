@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { KakaoSearchType } from '@src/Queries/useLiveDataQuery';
 import PlaceWeather from './PlaceWeather';
 import styled from 'styled-components';
@@ -13,9 +13,11 @@ interface Props {
 }
 
 const DynamicPlaces = ({ places, onFocusPlace, onClickPlace, onDeletePlace, type, children }: Props) => {
+  const memoizedChildren = useMemo(() => children, [children]);
+
   return (
     <MarkerContiner>
-      {children}
+      {memoizedChildren}
 
       {places.length !== 0 && (
         <Markers>
