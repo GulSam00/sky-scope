@@ -31,8 +31,6 @@ const PlaceWeather = ({ marker, onFocusPlace, onClickPlace, onDeletePlace }: Pro
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  console.log('mareker : ', marker);
-
   const transformSkyCode = (skyCode: string) => {
     switch (Number(skyCode)) {
       case 1:

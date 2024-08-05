@@ -94,10 +94,10 @@ const useMapMarker = ({ map }: Props) => {
     setMapMarkers([...filteredMarkers, ...removePrevPinMarkers]);
   };
 
-  const changeOnMapMarker = (dstOnMapMarker: LocateDataType, status: string) => {
+  const changeOnMapMarker = (dstOnMapMarker: LocateDataType, changingStatus: string) => {
     // dstOnMapMarker가 아니라 바로 placeId를 받게 변경
     // onDeletePlace에서도 호출
-    if (status === 'delete') {
+    if (changingStatus === 'delete') {
       const index = mapMarkers.findIndex(item => item.placeId === dstOnMapMarker.placeId);
       if (index !== -1) {
         mapMarkers.splice(index, 1);
@@ -106,9 +106,9 @@ const useMapMarker = ({ map }: Props) => {
     } else {
       const newOnMapMarker = { ...dstOnMapMarker } as KakaoMapMarkerType;
 
-      const imageSrc = status === 'bookmark' ? '/icons/star-fill.svg' : '/icons/search.svg';
+      const imageSrc = changingStatus === 'bookmark' ? '/icons/star-fill.svg' : '/icons/search.svg';
       const image = { src: imageSrc, size: { width: 36, height: 36 } };
-      newOnMapMarker.status = status as markerStatus;
+      newOnMapMarker.status = changingStatus as markerStatus;
       newOnMapMarker.image = image;
 
       const index = mapMarkers.findIndex(item => item.placeId === newOnMapMarker.placeId);
@@ -151,7 +151,6 @@ const useMapMarker = ({ map }: Props) => {
         setBookmarkPlaces([firstMarker, ...bookmarkPlaces]);
 
         const position = firstMarker.position;
-        // console.log('KakaoSearchType');
         changeOnMapMarker(firstMarker, 'bookmark');
         focusMap(position);
         localStorage.setItem('bookmarks', JSON.stringify([firstMarker, ...bookmarkPlaces]));
@@ -165,7 +164,6 @@ const useMapMarker = ({ map }: Props) => {
         setCurrentPlaces([firstMarker, ...currentPlaces]);
 
         const position = firstMarker.position;
-        // console.log('KakaoSearchType');
         changeOnMapMarker(firstMarker, 'search');
         focusMap(position);
         localStorage.setItem('bookmarks', JSON.stringify([...bookmarkPlaces]));
@@ -178,12 +176,16 @@ const useMapMarker = ({ map }: Props) => {
     (placeId: string, isBookmarked: boolean) => {
       if (isBookmarked === true) {
         const index = bookmarkPlaces.findIndex(item => item.placeId === placeId);
+        const deleteMarker = bookmarkPlaces[index];
         bookmarkPlaces.splice(index, 1);
         setBookmarkPlaces([...bookmarkPlaces]);
+        changeOnMapMarker(deleteMarker, 'delete');
         localStorage.setItem('bookmarks', JSON.stringify([...bookmarkPlaces]));
       } else {
         const index = currentPlaces.findIndex(item => item.placeId === placeId);
+        const deleteMarker = currentPlaces[index];
         currentPlaces.splice(index, 1);
+        changeOnMapMarker(deleteMarker, 'delete');
         setCurrentPlaces([...currentPlaces]);
       }
     },
@@ -209,7 +211,6 @@ const useMapMarker = ({ map }: Props) => {
       Object.assign(newMarker, { province, city, localeCode, apiLocalPosition, isBookmarked: false });
       setCurrentPlaces([newMarker, ...currentPlaces]);
 
-      // console.log('LocateDataType');
       changeOnMapMarker(marker, 'search');
     },
     [currentPlaces, bookmarkPlaces, mapMarkers],
