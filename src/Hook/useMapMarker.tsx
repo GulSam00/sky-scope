@@ -94,27 +94,39 @@ const useMapMarker = ({ map }: Props) => {
     setMapMarkers([...filteredMarkers, ...removePrevPinMarkers]);
   };
 
-  const changeOnMapMarker = (dstOnMapMarker: LocateDataType, changingStatus: string) => {
+  const changeOnMapMarker = (locateTypeDstOnMapMarker: LocateDataType, changingStatus: string) => {
     if (changingStatus === 'delete') {
+      const dstOnMapMarker = { ...locateTypeDstOnMapMarker } as KakaoSearchType;
       const index = mapMarkers.findIndex(item => item.placeId === dstOnMapMarker.placeId);
       if (index !== -1) {
+        // const correctFooterIndex = footerPlaces.findIndex(item => item.placeId === dstOnMapMarker.placeId);
+        // if (correctFooterIndex !== -1) {
+        //   const newMarker: KakaoMapMarkerType[] = mapMarkers.map((marker, i) => {
+        //     return { ...marker, status: 'pin' };
+        //   });
+        //   setMapMarkers([...newMarker]);
+        // } else {
+        //   mapMarkers.splice(index, 1);
+        //   setMapMarkers([...mapMarkers]);
+        // }
+
         mapMarkers.splice(index, 1);
         setMapMarkers([...mapMarkers]);
       }
     } else {
-      const newOnMapMarker = { ...dstOnMapMarker } as KakaoMapMarkerType;
+      const dstOnMapMarker = { ...locateTypeDstOnMapMarker } as KakaoMapMarkerType;
 
       const imageSrc = changingStatus === 'bookmark' ? '/icons/star-fill.svg' : '/icons/search.svg';
       const image = { src: imageSrc, size: { width: 36, height: 36 } };
-      newOnMapMarker.status = changingStatus as markerStatus;
-      newOnMapMarker.image = image;
+      dstOnMapMarker.status = changingStatus as markerStatus;
+      dstOnMapMarker.image = image;
 
-      const index = mapMarkers.findIndex(item => item.placeId === newOnMapMarker.placeId);
-      if (index !== -1 && newOnMapMarker.status !== 'pin') {
-        mapMarkers[index] = newOnMapMarker;
+      const index = mapMarkers.findIndex(item => item.placeId === dstOnMapMarker.placeId);
+      if (index !== -1 && dstOnMapMarker.status !== 'pin') {
+        mapMarkers[index] = dstOnMapMarker;
         setMapMarkers([...mapMarkers]);
       } else {
-        setMapMarkers([newOnMapMarker, ...mapMarkers]);
+        setMapMarkers([dstOnMapMarker, ...mapMarkers]);
       }
     }
   };

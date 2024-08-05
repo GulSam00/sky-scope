@@ -63,7 +63,7 @@ const MapPage = () => {
   };
 
   const showWholeMarker = () => {
-    if (!map) return;
+    if (!map || !mapMarkers.length) return;
 
     const bounds = new kakao.maps.LatLngBounds();
     mapMarkers.forEach((marker: KakaoMapMarkerType) => {
