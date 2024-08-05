@@ -95,6 +95,8 @@ const useMapMarker = ({ map }: Props) => {
   };
 
   const changeOnMapMarker = (dstOnMapMarker: LocateDataType, status: string) => {
+    // dstOnMapMarker가 아니라 바로 placeId를 받게 변경
+    // onDeletePlace에서도 호출
     if (status === 'delete') {
       const index = mapMarkers.findIndex(item => item.placeId === dstOnMapMarker.placeId);
       if (index !== -1) {
@@ -138,10 +140,10 @@ const useMapMarker = ({ map }: Props) => {
   };
 
   const onClickPlace = useCallback(
-    (localeCode: string, isBookmarked: boolean) => {
+    (placeId: string, isBookmarked: boolean) => {
       if (isBookmarked === false) {
         // 북마크 추가
-        const index = currentPlaces.findIndex(item => item.localeCode === localeCode);
+        const index = currentPlaces.findIndex(item => item.placeId === placeId);
         const firstMarker = currentPlaces[index];
         firstMarker.isBookmarked = true;
         currentPlaces.splice(index, 1);
@@ -155,7 +157,7 @@ const useMapMarker = ({ map }: Props) => {
         localStorage.setItem('bookmarks', JSON.stringify([firstMarker, ...bookmarkPlaces]));
       } else {
         // 북마크 해제
-        const index = bookmarkPlaces.findIndex(item => item.localeCode === localeCode);
+        const index = bookmarkPlaces.findIndex(item => item.placeId === placeId);
         const firstMarker = bookmarkPlaces[index];
         firstMarker.isBookmarked = false;
         bookmarkPlaces.splice(index, 1);
@@ -173,14 +175,14 @@ const useMapMarker = ({ map }: Props) => {
   );
 
   const onDeletePlace = useCallback(
-    (localeCode: string, isBookmarked: boolean) => {
+    (placeId: string, isBookmarked: boolean) => {
       if (isBookmarked === true) {
-        const index = bookmarkPlaces.findIndex(item => item.localeCode === localeCode);
+        const index = bookmarkPlaces.findIndex(item => item.placeId === placeId);
         bookmarkPlaces.splice(index, 1);
         setBookmarkPlaces([...bookmarkPlaces]);
         localStorage.setItem('bookmarks', JSON.stringify([...bookmarkPlaces]));
       } else {
-        const index = currentPlaces.findIndex(item => item.localeCode === localeCode);
+        const index = currentPlaces.findIndex(item => item.placeId === placeId);
         currentPlaces.splice(index, 1);
         setCurrentPlaces([...currentPlaces]);
       }

@@ -6,8 +6,8 @@ import styled from 'styled-components';
 interface Props {
   places: KakaoSearchType[];
   onFocusPlace: (marker: KakaoSearchType) => void;
-  onClickPlace: (localeCode: string, isBookmarked: boolean) => void;
-  onDeletePlace: (localeCode: string, isBookmarked: boolean) => void;
+  onClickPlace: (placeId: string, isBookmarked: boolean) => void;
+  onDeletePlace: (placeId: string, isBookmarked: boolean) => void;
   type: string;
 }
 
@@ -39,7 +39,7 @@ const DynamicPlaces = ({ places, onFocusPlace, onClickPlace, onDeletePlace, type
         <Markers>
           {places.map((marker: KakaoSearchType) => (
             <PlaceWeather
-              key={type + marker.localeCode + marker.placeName}
+              key={type + marker.placeId + marker.placeName}
               marker={marker}
               onClickPlace={onClickPlace}
               onFocusPlace={onFocusPlace}

@@ -23,13 +23,15 @@ import {
 interface Props {
   marker: KakaoSearchType;
   onFocusPlace: (marker: KakaoSearchType) => void;
-  onClickPlace: (localeCode: string, isBookmarked: boolean) => void;
-  onDeletePlace: (localeCode: string, isBookmarked: boolean) => void;
+  onClickPlace: (placeId: string, isBookmarked: boolean) => void;
+  onDeletePlace: (placeId: string, isBookmarked: boolean) => void;
 }
 const PlaceWeather = ({ marker, onFocusPlace, onClickPlace, onDeletePlace }: Props) => {
   const { isLoading, data, error } = useLiveDataQuery(new Date(), marker);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  console.log('mareker : ', marker);
 
   const transformSkyCode = (skyCode: string) => {
     switch (Number(skyCode)) {
@@ -52,12 +54,12 @@ const PlaceWeather = ({ marker, onFocusPlace, onClickPlace, onDeletePlace }: Pro
 
   const handleClickBookmark = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     e.stopPropagation();
-    onClickPlace(marker.localeCode, marker.isBookmarked);
+    onClickPlace(marker.placeId, marker.isBookmarked);
   };
 
   const handleClickDelete = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     e.stopPropagation();
-    onDeletePlace(marker.localeCode, marker.isBookmarked);
+    onDeletePlace(marker.placeId, marker.isBookmarked);
   };
 
   useEffect(() => {
