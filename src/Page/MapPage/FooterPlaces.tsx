@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { LocateDataType } from '@src/Queries/useLiveDataQuery';
 
@@ -7,11 +7,11 @@ import { CaretLeft, CaretRight } from 'react-bootstrap-icons';
 
 interface Props {
   map: kakao.maps.Map | null;
-  markers: LocateDataType[];
+  places: LocateDataType[];
   handlePageMove: (page: number) => void;
-  onClickMarkerFooter: (marker: LocateDataType) => void;
+  onClickFooterPlace: (marker: LocateDataType) => void;
 }
-const PlacesFooter = ({ map, markers, handlePageMove, onClickMarkerFooter }: Props) => {
+const FooterPlaces = ({ map, places, handlePageMove, onClickFooterPlace }: Props) => {
   const [tempSelectedIndex, setTempSelectedIndex] = useState<number>(-1);
 
   const overMarkerPos = (marker: LocateDataType) => {
@@ -23,11 +23,11 @@ const PlacesFooter = ({ map, markers, handlePageMove, onClickMarkerFooter }: Pro
 
   const handleHoverOut = () => {
     if (!map) return;
-    overMarkerPos(markers[tempSelectedIndex]);
+    overMarkerPos(places[tempSelectedIndex]);
   };
 
   const handleClickMarker = (index: number) => {
-    onClickMarkerFooter(markers[index]);
+    onClickFooterPlace(places[index]);
     setTempSelectedIndex(index);
   };
 
@@ -36,12 +36,16 @@ const PlacesFooter = ({ map, markers, handlePageMove, onClickMarkerFooter }: Pro
     setTempSelectedIndex(-1);
   };
 
+  useEffect(() => {
+    setTempSelectedIndex(-1);
+  }, [places]);
+
   return (
     <MarkersContainer>
-      {markers.length > 0 && (
+      {places.length > 0 && (
         <MarkerGroup>
           <CaretLeft key='leftBtn' onClick={() => handleClickMovePage(-1)} />
-          {markers.map((marker: LocateDataType, index: number) => (
+          {places.map((marker: LocateDataType, index: number) => (
             <div
               className={tempSelectedIndex === index ? 'selected' : ''}
               key={'marker' + index}
@@ -59,7 +63,7 @@ const PlacesFooter = ({ map, markers, handlePageMove, onClickMarkerFooter }: Pro
   );
 };
 
-export default React.memo(PlacesFooter);
+export default React.memo(FooterPlaces);
 
 const MarkersContainer = styled.div`
   display: flex;

@@ -8,9 +8,8 @@ import { KakaoMapMarkerType } from '@src/Queries/useLiveDataQuery';
 import { Form, Button, ListGroup } from 'react-bootstrap';
 import styled from 'styled-components';
 
-import BookmarkPlaces from './BookmarkPlaces';
-import CurrentPlaces from './CurrentPlaces';
-import PlacesFooter from './PlacesFooter';
+import DynamicPlaces from './DynamicPlaces';
+import FooterPlaces from './FooterPlaces';
 
 const MapPage = () => {
   const [map, setMap] = useState<kakao.maps.Map | null>(null);
@@ -18,11 +17,13 @@ const MapPage = () => {
     footerPlaces,
     currentPlaces,
     bookmarkPlaces,
-    onMapMarkers,
-    onFocusMarker,
-    onClickMarkerFooter,
-    onClickBookmark,
+    mapMarkers,
+    onClickMarker,
     searchPlaces,
+    onFocusPlace,
+    onClickPlace,
+    onDeletePlace,
+    onClickFooterPlace,
   } = useMapMarker({ map });
 
   const {
@@ -77,9 +78,21 @@ const MapPage = () => {
     <MapContainer>
       {kakaoLoading && <LoadingState />}
 
-      <BookmarkPlaces bookmarkPlaces={bookmarkPlaces} onClickBookmark={onClickBookmark} onFocusMarker={onFocusMarker} />
+      <DynamicPlaces
+        places={bookmarkPlaces}
+        onFocusPlace={onFocusPlace}
+        onClickPlace={onClickPlace}
+        onDeletePlace={onDeletePlace}
+        type='bookmark'
+      />
 
-      <CurrentPlaces currentPlaces={currentPlaces} onClickBookmark={onClickBookmark} onFocusMarker={onFocusMarker} />
+      <DynamicPlaces
+        places={currentPlaces}
+        onFocusPlace={onFocusPlace}
+        onClickPlace={onClickPlace}
+        onDeletePlace={onDeletePlace}
+        type='current'
+      />
 
       <FormContainer>
         <Form>
@@ -120,22 +133,25 @@ const MapPage = () => {
           onCreate={setMap}
           id='kakao-map'
         >
-          {onMapMarkers.map((marker: KakaoMapMarkerType, index: number) => (
+          {mapMarkers.map((marker: KakaoMapMarkerType, index: number) => (
             <MapMarker
               key={'onMapMarker' + index}
               position={marker.position}
               // 이미지가 겹쳐서 보이지 않는 이슈
               // 기본 마커 이미지는 사용하지 않을 것이기에 map에 마커가 존재하는 지를 확인해야 함
               image={marker.image}
-            />
+              onClick={() => onClickMarker(marker)}
+            >
+              <MapMarkerContent>{marker.placeName}</MapMarkerContent>
+            </MapMarker>
           ))}
         </Map>
       </KakaoMapContainer>
-      <PlacesFooter
+      <FooterPlaces
         map={map}
-        markers={footerPlaces}
+        places={footerPlaces}
         handlePageMove={handlePageMove}
-        onClickMarkerFooter={onClickMarkerFooter}
+        onClickFooterPlace={onClickFooterPlace}
       />
     </MapContainer>
   );
@@ -184,4 +200,15 @@ const ListGroupContainer = styled.div`
     background-color: #0d6efd;
     color: white;
   }
+`;
+
+const MapMarkerContent = styled.div`
+  display: flex;
+  width: 150px;
+  height: 36px;
+
+  justify-content: center;
+  align-items: center;
+
+  font-size: 16px;
 `;

@@ -21,7 +21,7 @@ const instance: AxiosInstance = axios.create({
     'Content-Type': 'application/json',
     Authorization: `KakaoAK ${serviceKey}`,
   },
-  timeout: 3000,
+  timeout: 5000,
 });
 
 const getKakaoLocal = {
