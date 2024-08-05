@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { KakaoSearchType } from '@src/Queries/useLiveDataQuery';
 import PlaceWeather from './PlaceWeather';
 import styled from 'styled-components';

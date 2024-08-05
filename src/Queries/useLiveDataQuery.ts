@@ -47,7 +47,7 @@ const useLiveDataQuery = (today: Date, marker: KakaoSearchType) => {
       // endpoint : getUltraSrtNcst
       const result = await getWeatherLive(today, location);
       if (!result) {
-        throw new Error('getWeatherLive error');
+        throw new Error('실시간 날씨 정보를 가져오지 못했습니다.');
       }
       return result;
     },

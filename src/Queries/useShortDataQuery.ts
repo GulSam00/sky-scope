@@ -10,7 +10,7 @@ const useShortDataQuery = (today: Date, location: ICoord) => {
       // endpoint : getVilageFcst
       const result = await getWeatherShort(today, location);
       if (!result) {
-        throw new Error('getWeatherShort error');
+        throw new Error('단기 예보 정보를 가져오지 못했습니다.');
       }
       return result;
     },

@@ -95,19 +95,27 @@ const useMapMarker = ({ map }: Props) => {
   };
 
   const changeOnMapMarker = (dstOnMapMarker: LocateDataType, status: string) => {
-    const newOnMapMarker = { ...dstOnMapMarker } as KakaoMapMarkerType;
-
-    const imageSrc = status === 'bookmark' ? '/icons/star-fill.svg' : '/icons/search.svg';
-    const image = { src: imageSrc, size: { width: 36, height: 36 } };
-    newOnMapMarker.status = status as markerStatus;
-    newOnMapMarker.image = image;
-
-    const index = mapMarkers.findIndex(item => item.placeId === newOnMapMarker.placeId);
-    if (index !== -1 && newOnMapMarker.status !== 'pin') {
-      mapMarkers[index] = newOnMapMarker;
-      setMapMarkers([...mapMarkers]);
+    if (status === 'delete') {
+      const index = mapMarkers.findIndex(item => item.placeId === dstOnMapMarker.placeId);
+      if (index !== -1) {
+        mapMarkers.splice(index, 1);
+        setMapMarkers([...mapMarkers]);
+      }
     } else {
-      setMapMarkers([newOnMapMarker, ...mapMarkers]);
+      const newOnMapMarker = { ...dstOnMapMarker } as KakaoMapMarkerType;
+
+      const imageSrc = status === 'bookmark' ? '/icons/star-fill.svg' : '/icons/search.svg';
+      const image = { src: imageSrc, size: { width: 36, height: 36 } };
+      newOnMapMarker.status = status as markerStatus;
+      newOnMapMarker.image = image;
+
+      const index = mapMarkers.findIndex(item => item.placeId === newOnMapMarker.placeId);
+      if (index !== -1 && newOnMapMarker.status !== 'pin') {
+        mapMarkers[index] = newOnMapMarker;
+        setMapMarkers([...mapMarkers]);
+      } else {
+        setMapMarkers([newOnMapMarker, ...mapMarkers]);
+      }
     }
   };
 

@@ -68,6 +68,7 @@ const PlaceWeather = ({ marker, onFocusPlace, onClickPlace, onDeletePlace }: Pro
     }
     if (error) {
       alert(error);
+      localStorage.removeItem('bookmarks');
       navigate('/error');
     }
   }, [isLoading]);

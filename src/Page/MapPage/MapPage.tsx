@@ -123,6 +123,7 @@ const MapPage = () => {
           </ListGroup>
         </ListGroupContainer>
       )}
+
       <KakaoMapContainer>
         <Map
           center={{
@@ -142,11 +143,14 @@ const MapPage = () => {
               image={marker.image}
               onClick={() => onClickMarker(marker)}
             >
-              <MapMarkerContent>{marker.placeName}</MapMarkerContent>
+              <MapMarkerContent>
+                <div className='place'>{marker.placeName}</div>
+              </MapMarkerContent>
             </MapMarker>
           ))}
         </Map>
       </KakaoMapContainer>
+
       <FooterPlaces
         map={map}
         places={footerPlaces}
@@ -206,9 +210,16 @@ const MapMarkerContent = styled.div`
   display: flex;
   width: 150px;
   height: 36px;
+  padding: 8px;
 
-  justify-content: center;
   align-items: center;
 
-  font-size: 16px;
+  .place {
+    font-size: 16px;
+    font-weight: 500;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 `;
