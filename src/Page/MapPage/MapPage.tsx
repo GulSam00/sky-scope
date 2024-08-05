@@ -6,6 +6,7 @@ import { useKakaoLoader, useMapMarker, useAutoSearch } from '@src/Hook';
 import { KakaoMapMarkerType } from '@src/Queries/useLiveDataQuery';
 
 import { Form, Button, ListGroup } from 'react-bootstrap';
+
 import styled from 'styled-components';
 
 import DynamicPlaces from './DynamicPlaces';
@@ -59,6 +60,17 @@ const MapPage = () => {
         onClickSearchButton(false);
       }
     });
+  };
+
+  const showWholeMarker = () => {
+    if (!map) return;
+
+    const bounds = new kakao.maps.LatLngBounds();
+    mapMarkers.forEach((marker: KakaoMapMarkerType) => {
+      const position = new kakao.maps.LatLng(marker.position.lat, marker.position.lng);
+      bounds.extend(position);
+    });
+    map.setBounds(bounds);
   };
 
   const handlePageMove = useCallback(
@@ -123,6 +135,7 @@ const MapPage = () => {
           </ListGroup>
         </ListGroupContainer>
       )}
+
       <KakaoMapContainer>
         <Map
           center={{
@@ -142,11 +155,17 @@ const MapPage = () => {
               image={marker.image}
               onClick={() => onClickMarker(marker)}
             >
-              <MapMarkerContent>{marker.placeName}</MapMarkerContent>
+              <MapMarkerContent>
+                <div className='place'>{marker.placeName}</div>
+              </MapMarkerContent>
             </MapMarker>
           ))}
         </Map>
+        <WholeMap onClick={() => showWholeMarker()}>
+          <img src='/icons/crosshair.svg' alt='crosshair' />
+        </WholeMap>
       </KakaoMapContainer>
+
       <FooterPlaces
         map={map}
         places={footerPlaces}
@@ -162,14 +181,6 @@ export default MapPage;
 const MapContainer = styled.div`
   overflow: auto;
   border-radius: 16px;
-`;
-
-const KakaoMapContainer = styled.div`
-  margin: 16px;
-  #kakao-map {
-    height: 70vh;
-    width: 100%;
-  }
 `;
 
 const FormContainer = styled.div`
@@ -202,13 +213,52 @@ const ListGroupContainer = styled.div`
   }
 `;
 
+const KakaoMapContainer = styled.div`
+  position: relative;
+  margin: 16px;
+  #kakao-map {
+    height: 70vh;
+    width: 100%;
+  }
+`;
+
 const MapMarkerContent = styled.div`
   display: flex;
   width: 150px;
   height: 36px;
+  padding: 8px;
 
+  align-items: center;
+
+  .place {
+    font-size: 16px;
+    font-weight: 500;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+`;
+
+const WholeMap = styled.div`
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  z-index: 1000;
+
+  display: flex;
   justify-content: center;
   align-items: center;
 
-  font-size: 16px;
+  background-color: white;
+  height: 70px;
+  width: 70px;
+  border-radius: 50%;
+  border: 1px solid #0d6efd;
+
+  cursor: pointer;
+  img {
+    width: 30px;
+    height: 30px;
+  }
 `;

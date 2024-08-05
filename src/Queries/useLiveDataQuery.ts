@@ -9,7 +9,7 @@ export interface LocateDataType {
     lng: number;
   };
   placeName: string;
-  placeId: string;
+  placeId: string; // kakao map placeId, 유일한 값
 }
 
 export type markerStatus = 'bookmark' | 'search' | 'pin';
@@ -33,7 +33,8 @@ export interface KakaoSearchType extends LocateDataType {
   province: string;
   city: string;
   isBookmarked: boolean;
-  localeCode: string;
+  localeCode: string; // 카카오 지도의 지역 코드, 같은 지역일 경우 중복될 수 있음
+  // 쿼리 키로 사용해서 같은 지역일 경우 중복 요청을 막고 캐시를 사용
 }
 
 const useLiveDataQuery = (today: Date, marker: KakaoSearchType) => {
@@ -47,7 +48,7 @@ const useLiveDataQuery = (today: Date, marker: KakaoSearchType) => {
       // endpoint : getUltraSrtNcst
       const result = await getWeatherLive(today, location);
       if (!result) {
-        throw new Error('getWeatherLive error');
+        throw new Error('실시간 날씨 정보를 가져오지 못했습니다.');
       }
       return result;
     },
