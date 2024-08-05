@@ -141,7 +141,9 @@ const MapPage = () => {
               // 기본 마커 이미지는 사용하지 않을 것이기에 map에 마커가 존재하는 지를 확인해야 함
               image={marker.image}
               onClick={() => onClickMarker(marker)}
-            />
+            >
+              <MapMarkerContent>{marker.placeName}</MapMarkerContent>
+            </MapMarker>
           ))}
         </Map>
       </KakaoMapContainer>
@@ -198,4 +200,15 @@ const ListGroupContainer = styled.div`
     background-color: #0d6efd;
     color: white;
   }
+`;
+
+const MapMarkerContent = styled.div`
+  display: flex;
+  width: 150px;
+  height: 36px;
+
+  justify-content: center;
+  align-items: center;
+
+  font-size: 16px;
 `;
