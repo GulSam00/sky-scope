@@ -22,10 +22,11 @@ import {
 
 interface Props {
   marker: KakaoSearchType;
-  onClickBookmark: (localeCode: string, isBookmarked: boolean) => void;
-  onFocusMarker: (marker: KakaoSearchType) => void;
+  onFocusPlace: (marker: KakaoSearchType) => void;
+  onClickPlace: (localeCode: string, isBookmarked: boolean) => void;
+  onDeletePlace: (localeCode: string, isBookmarked: boolean) => void;
 }
-const MarkerWeather = ({ marker, onClickBookmark, onFocusMarker }: Props) => {
+const PlaceWeather = ({ marker, onFocusPlace, onClickPlace, onDeletePlace }: Props) => {
   const { isLoading, data, error } = useLiveDataQuery(new Date(), marker);
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -51,7 +52,12 @@ const MarkerWeather = ({ marker, onClickBookmark, onFocusMarker }: Props) => {
 
   const handleClickBookmark = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     e.stopPropagation();
-    onClickBookmark(marker.localeCode, marker.isBookmarked);
+    onClickPlace(marker.localeCode, marker.isBookmarked);
+  };
+
+  const handleClickDelete = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    e.stopPropagation();
+    onDeletePlace(marker.localeCode, marker.isBookmarked);
   };
 
   useEffect(() => {
@@ -69,7 +75,7 @@ const MarkerWeather = ({ marker, onClickBookmark, onFocusMarker }: Props) => {
   return (
     <MarkerWeatherContainer>
       {data ? (
-        <div onClick={() => onFocusMarker(marker)}>
+        <div onClick={() => onFocusPlace(marker)}>
           <div className='bookmark' onClick={e => handleClickBookmark(e)}>
             {marker.isBookmarked ? (
               <img src='/icons/star-fill.svg' alt='star' width={24} />
@@ -77,6 +83,10 @@ const MarkerWeather = ({ marker, onClickBookmark, onFocusMarker }: Props) => {
               <img src='/icons/star.svg' alt='star' width={24} />
             )}
           </div>
+          <div className='delete' onClick={e => handleClickDelete(e)}>
+            <img src='/icons/x-lg.svg' alt='delete' width={24} />
+          </div>
+
           <div className='location'>
             {data.province} {data.city}
           </div>
@@ -106,7 +116,7 @@ const MarkerWeather = ({ marker, onClickBookmark, onFocusMarker }: Props) => {
   );
 };
 
-export default MarkerWeather;
+export default PlaceWeather;
 
 const MarkerWeatherContainer = styled.div`
   position: relative;
@@ -120,6 +130,13 @@ const MarkerWeatherContainer = styled.div`
   cursor: pointer;
 
   .bookmark {
+    position: absolute;
+    right: 40px;
+    display: flex;
+    align-items: start;
+  }
+
+  .delete {
     position: absolute;
     right: 10px;
     display: flex;

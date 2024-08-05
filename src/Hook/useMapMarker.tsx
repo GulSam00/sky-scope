@@ -11,7 +11,7 @@ const useMapMarker = ({ map }: Props) => {
   const [footerPlaces, setFooterPlaces] = useState<LocateDataType[]>([]);
   const [currentPlaces, setCurrentPlaces] = useState<KakaoSearchType[]>([]);
   const [bookmarkPlaces, setBookmarkPlaces] = useState<KakaoSearchType[]>([]);
-  const [onMapMarkers, setOnMapMarkers] = useState<KakaoMapMarkerType[]>([]);
+  const [mapMarkers, setMapMarkers] = useState<KakaoMapMarkerType[]>([]);
 
   const focusMap = (position: { lat: number; lng: number }) => {
     if (!map) return;
@@ -20,130 +20,10 @@ const useMapMarker = ({ map }: Props) => {
     map.panTo(kakaoPosition);
   };
 
-  const onFocusMarker = useCallback(
-    (marker: KakaoSearchType) => {
-      isSwapMarker(marker.placeId);
-      focusMap(marker.position);
-    },
-    [currentPlaces, bookmarkPlaces],
-  );
-
-  const changeOnMapMarkers = (dstOnMapMarkers: KakaoMapMarkerType[]) => {
-    // console.log('dstOnMapMarkers', dstOnMapMarkers);
-    // 이전의 pin 마커를 제거, onMapMarkers 대신 사용
-    const removePrevPinMarkers = onMapMarkers.filter((item: KakaoMapMarkerType) => item.status !== 'pin');
-
-    const filteredMarkers = dstOnMapMarkers.filter((item: KakaoMapMarkerType) => {
-      const findIndex = removePrevPinMarkers.findIndex(marker => marker.placeId === item.placeId);
-      // onMapMarkers에 없을 경우 추가
-      if (findIndex === -1) {
-        return item;
-      }
-      // onMapMarkers에 이미 존재하는 장소이지만 status가 pin일 경우 변경
-      // 리턴값이 없어야 하기에 따로 return을 하지 않음
-      else if (removePrevPinMarkers[findIndex].status === 'pin') {
-        removePrevPinMarkers[findIndex].status = item.status;
-      }
-    });
-    // onMapMarkers에 존재하지 않는 장소들을 추가
-    // else if 문에서 수정된 status를 반영
-    setOnMapMarkers([...filteredMarkers, ...removePrevPinMarkers]);
+  const onClickMarker = (marker: KakaoMapMarkerType) => {
+    focusMap(marker.position);
+    isSwapMarker(marker.placeId);
   };
-
-  const changeOnMapMarker = (dstOnMapMarker: LocateDataType, status: string) => {
-    const newOnMapMarker = { ...dstOnMapMarker } as KakaoMapMarkerType;
-
-    const imageSrc = status === 'bookmark' ? '/icons/star-fill.svg' : '/icons/search.svg';
-    const image = { src: imageSrc, size: { width: 36, height: 36 } };
-    newOnMapMarker.status = status as markerStatus;
-    newOnMapMarker.image = image;
-
-    const index = onMapMarkers.findIndex(item => item.placeId === newOnMapMarker.placeId);
-    if (index !== -1 && newOnMapMarker.status !== 'pin') {
-      onMapMarkers[index] = newOnMapMarker;
-      setOnMapMarkers([...onMapMarkers]);
-    } else {
-      setOnMapMarkers([newOnMapMarker, ...onMapMarkers]);
-    }
-  };
-
-  const isSwapMarker = (placeId: string) => {
-    const currentIndex = currentPlaces.findIndex(item => item.placeId === placeId);
-    const bookmarkIndex = bookmarkPlaces.findIndex(item => item.placeId === placeId);
-    if (currentIndex !== -1) {
-      const firstMarker = currentPlaces[currentIndex];
-      currentPlaces.splice(currentIndex, 1);
-      setCurrentPlaces([firstMarker, ...currentPlaces]);
-      return 1;
-    }
-    if (bookmarkIndex !== -1) {
-      const firstMarker = bookmarkPlaces[bookmarkIndex];
-      bookmarkPlaces.splice(bookmarkIndex, 1);
-      setBookmarkPlaces([firstMarker, ...bookmarkPlaces]);
-      return 2;
-    }
-    return 0;
-  };
-
-  const onClickMarkerFooter = useCallback(
-    async (marker: LocateDataType) => {
-      if (!map) return;
-      const newMarker = { ...marker } as KakaoSearchType;
-
-      const result = await transLocaleToCoord(marker.position);
-      if (!result) {
-        return;
-      }
-
-      const { nx, ny, province, city, localeCode } = result;
-      if (currentPlaces) {
-        if (isSwapMarker(marker.placeId) !== 0) return;
-      }
-
-      const apiLocalPosition = { lat: ny, lng: nx };
-      Object.assign(newMarker, { province, city, localeCode, apiLocalPosition, isBookmarked: false });
-      setCurrentPlaces([newMarker, ...currentPlaces]);
-
-      // console.log('LocateDataType');
-      changeOnMapMarker(marker, 'search');
-    },
-    [currentPlaces, bookmarkPlaces, onMapMarkers],
-  );
-
-  const onClickBookmark = useCallback(
-    (localeCode: string, isBookmarked: boolean) => {
-      if (isBookmarked === false) {
-        // 북마크 추가
-        const index = currentPlaces.findIndex(item => item.localeCode === localeCode);
-        const firstMarker = currentPlaces[index];
-        firstMarker.isBookmarked = true;
-        currentPlaces.splice(index, 1);
-        setCurrentPlaces([...currentPlaces]);
-        setBookmarkPlaces([firstMarker, ...bookmarkPlaces]);
-
-        const position = firstMarker.position;
-        // console.log('KakaoSearchType');
-        changeOnMapMarker(firstMarker, 'bookmark');
-        focusMap(position);
-        localStorage.setItem('bookmarks', JSON.stringify([firstMarker, ...bookmarkPlaces]));
-      } else {
-        // 북마크 해제
-        const index = bookmarkPlaces.findIndex(item => item.localeCode === localeCode);
-        const firstMarker = bookmarkPlaces[index];
-        firstMarker.isBookmarked = false;
-        bookmarkPlaces.splice(index, 1);
-        setBookmarkPlaces([...bookmarkPlaces]);
-        setCurrentPlaces([firstMarker, ...currentPlaces]);
-
-        const position = firstMarker.position;
-        // console.log('KakaoSearchType');
-        changeOnMapMarker(firstMarker, 'search');
-        focusMap(position);
-        localStorage.setItem('bookmarks', JSON.stringify([...bookmarkPlaces]));
-      }
-    },
-    [currentPlaces, bookmarkPlaces],
-  );
 
   const searchPlaces = (keyword: string, page: number, setMaxPage: React.Dispatch<React.SetStateAction<number>>) => {
     if (!map) return;
@@ -184,6 +64,147 @@ const useMapMarker = ({ map }: Props) => {
     );
   };
 
+  const onFocusPlace = useCallback(
+    (marker: KakaoSearchType) => {
+      isSwapMarker(marker.placeId);
+      focusMap(marker.position);
+    },
+    [currentPlaces, bookmarkPlaces],
+  );
+
+  const changeOnMapMarkers = (dstOnMapMarkers: KakaoMapMarkerType[]) => {
+    // console.log('dstOnMapMarkers', dstOnMapMarkers);
+    // 이전의 pin 마커를 제거, mapMarkers 대신 사용
+    const removePrevPinMarkers = mapMarkers.filter((item: KakaoMapMarkerType) => item.status !== 'pin');
+
+    const filteredMarkers = dstOnMapMarkers.filter((item: KakaoMapMarkerType) => {
+      const findIndex = removePrevPinMarkers.findIndex(marker => marker.placeId === item.placeId);
+      // onMapMarkers에 없을 경우 추가
+      if (findIndex === -1) {
+        return item;
+      }
+      // onMapMarkers에 이미 존재하는 장소이지만 status가 pin일 경우 변경
+      // 리턴값이 없어야 하기에 따로 return을 하지 않음
+      else if (removePrevPinMarkers[findIndex].status === 'pin') {
+        removePrevPinMarkers[findIndex].status = item.status;
+      }
+    });
+    // onMapMarkers에 존재하지 않는 장소들을 추가
+    // else if 문에서 수정된 status를 반영
+    setMapMarkers([...filteredMarkers, ...removePrevPinMarkers]);
+  };
+
+  const changeOnMapMarker = (dstOnMapMarker: LocateDataType, status: string) => {
+    const newOnMapMarker = { ...dstOnMapMarker } as KakaoMapMarkerType;
+
+    const imageSrc = status === 'bookmark' ? '/icons/star-fill.svg' : '/icons/search.svg';
+    const image = { src: imageSrc, size: { width: 36, height: 36 } };
+    newOnMapMarker.status = status as markerStatus;
+    newOnMapMarker.image = image;
+
+    const index = mapMarkers.findIndex(item => item.placeId === newOnMapMarker.placeId);
+    if (index !== -1 && newOnMapMarker.status !== 'pin') {
+      mapMarkers[index] = newOnMapMarker;
+      setMapMarkers([...mapMarkers]);
+    } else {
+      setMapMarkers([newOnMapMarker, ...mapMarkers]);
+    }
+  };
+
+  const isSwapMarker = (placeId: string) => {
+    const currentIndex = currentPlaces.findIndex(item => item.placeId === placeId);
+    const bookmarkIndex = bookmarkPlaces.findIndex(item => item.placeId === placeId);
+    if (currentIndex !== -1) {
+      const firstMarker = currentPlaces[currentIndex];
+      currentPlaces.splice(currentIndex, 1);
+      setCurrentPlaces([firstMarker, ...currentPlaces]);
+      return 1;
+    }
+    if (bookmarkIndex !== -1) {
+      const firstMarker = bookmarkPlaces[bookmarkIndex];
+      bookmarkPlaces.splice(bookmarkIndex, 1);
+      setBookmarkPlaces([firstMarker, ...bookmarkPlaces]);
+      return 2;
+    }
+    return 0;
+  };
+
+  const onClickPlace = useCallback(
+    (localeCode: string, isBookmarked: boolean) => {
+      if (isBookmarked === false) {
+        // 북마크 추가
+        const index = currentPlaces.findIndex(item => item.localeCode === localeCode);
+        const firstMarker = currentPlaces[index];
+        firstMarker.isBookmarked = true;
+        currentPlaces.splice(index, 1);
+        setCurrentPlaces([...currentPlaces]);
+        setBookmarkPlaces([firstMarker, ...bookmarkPlaces]);
+
+        const position = firstMarker.position;
+        // console.log('KakaoSearchType');
+        changeOnMapMarker(firstMarker, 'bookmark');
+        focusMap(position);
+        localStorage.setItem('bookmarks', JSON.stringify([firstMarker, ...bookmarkPlaces]));
+      } else {
+        // 북마크 해제
+        const index = bookmarkPlaces.findIndex(item => item.localeCode === localeCode);
+        const firstMarker = bookmarkPlaces[index];
+        firstMarker.isBookmarked = false;
+        bookmarkPlaces.splice(index, 1);
+        setBookmarkPlaces([...bookmarkPlaces]);
+        setCurrentPlaces([firstMarker, ...currentPlaces]);
+
+        const position = firstMarker.position;
+        // console.log('KakaoSearchType');
+        changeOnMapMarker(firstMarker, 'search');
+        focusMap(position);
+        localStorage.setItem('bookmarks', JSON.stringify([...bookmarkPlaces]));
+      }
+    },
+    [currentPlaces, bookmarkPlaces],
+  );
+
+  const onDeletePlace = useCallback(
+    (localeCode: string, isBookmarked: boolean) => {
+      if (isBookmarked === true) {
+        const index = bookmarkPlaces.findIndex(item => item.localeCode === localeCode);
+        bookmarkPlaces.splice(index, 1);
+        setBookmarkPlaces([...bookmarkPlaces]);
+        localStorage.setItem('bookmarks', JSON.stringify([...bookmarkPlaces]));
+      } else {
+        const index = currentPlaces.findIndex(item => item.localeCode === localeCode);
+        currentPlaces.splice(index, 1);
+        setCurrentPlaces([...currentPlaces]);
+      }
+    },
+    [currentPlaces, bookmarkPlaces],
+  );
+
+  const onClickFooterPlace = useCallback(
+    async (marker: LocateDataType) => {
+      if (!map) return;
+      const newMarker = { ...marker } as KakaoSearchType;
+
+      const result = await transLocaleToCoord(marker.position);
+      if (!result) {
+        return;
+      }
+
+      const { nx, ny, province, city, localeCode } = result;
+      if (currentPlaces) {
+        if (isSwapMarker(marker.placeId) !== 0) return;
+      }
+
+      const apiLocalPosition = { lat: ny, lng: nx };
+      Object.assign(newMarker, { province, city, localeCode, apiLocalPosition, isBookmarked: false });
+      setCurrentPlaces([newMarker, ...currentPlaces]);
+
+      // console.log('LocateDataType');
+      changeOnMapMarker(marker, 'search');
+    },
+    [currentPlaces, bookmarkPlaces, mapMarkers],
+  );
+
   useEffect(() => {
     const localBookmarks = localStorage.getItem('bookmarks');
     if (localBookmarks) {
@@ -214,11 +235,13 @@ const useMapMarker = ({ map }: Props) => {
     footerPlaces,
     currentPlaces,
     bookmarkPlaces,
-    onMapMarkers,
-    onFocusMarker,
-    onClickMarkerFooter,
-    onClickBookmark,
+    mapMarkers,
+    onClickMarker,
     searchPlaces,
+    onFocusPlace,
+    onClickPlace,
+    onDeletePlace,
+    onClickFooterPlace,
   };
 };
 
