@@ -84,12 +84,7 @@ const MapPage = () => {
         onClickPlace={onClickPlace}
         onDeletePlace={onDeletePlace}
         type='bookmark'
-      >
-        <div>
-          <img src='/icons/star-fill.svg' alt='북마크' width={24} />
-          북마크
-        </div>
-      </DynamicPlaces>
+      />
 
       <DynamicPlaces
         places={currentPlaces}
@@ -97,12 +92,7 @@ const MapPage = () => {
         onClickPlace={onClickPlace}
         onDeletePlace={onDeletePlace}
         type='current'
-      >
-        <div>
-          <img src='/icons/search.svg' alt='검색' width={24} />
-          조회
-        </div>
-      </DynamicPlaces>
+      />
 
       <FormContainer>
         <Form>

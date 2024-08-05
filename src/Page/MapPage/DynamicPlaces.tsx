@@ -9,15 +9,31 @@ interface Props {
   onClickPlace: (localeCode: string, isBookmarked: boolean) => void;
   onDeletePlace: (localeCode: string, isBookmarked: boolean) => void;
   type: string;
-  children: React.ReactNode;
 }
 
-const DynamicPlaces = ({ places, onFocusPlace, onClickPlace, onDeletePlace, type, children }: Props) => {
-  const memoizedChildren = useMemo(() => children, [children]);
+const DynamicPlaces = ({ places, onFocusPlace, onClickPlace, onDeletePlace, type }: Props) => {
+  const PlaceHeader = (type: string) => {
+    if (type === 'bookmark') {
+      return (
+        <div>
+          <img src='/icons/star-fill.svg' alt='북마크' width={24} />
+          북마크
+        </div>
+      );
+    }
+    if (type === 'current') {
+      return (
+        <div>
+          <img src='/icons/search.svg' alt='검색' width={24} />
+          조회
+        </div>
+      );
+    }
+  };
 
   return (
     <MarkerContiner>
-      {memoizedChildren}
+      {PlaceHeader(type)}
 
       {places.length !== 0 && (
         <Markers>
