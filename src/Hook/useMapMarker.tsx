@@ -95,8 +95,6 @@ const useMapMarker = ({ map }: Props) => {
   };
 
   const changeOnMapMarker = (dstOnMapMarker: LocateDataType, changingStatus: string) => {
-    // dstOnMapMarker가 아니라 바로 placeId를 받게 변경
-    // onDeletePlace에서도 호출
     if (changingStatus === 'delete') {
       const index = mapMarkers.findIndex(item => item.placeId === dstOnMapMarker.placeId);
       if (index !== -1) {

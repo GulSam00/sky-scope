@@ -6,6 +6,8 @@ import { useKakaoLoader, useMapMarker, useAutoSearch } from '@src/Hook';
 import { KakaoMapMarkerType } from '@src/Queries/useLiveDataQuery';
 
 import { Form, Button, ListGroup } from 'react-bootstrap';
+import { Crosshair } from 'react-bootstrap-icons';
+
 import styled from 'styled-components';
 
 import DynamicPlaces from './DynamicPlaces';
@@ -59,6 +61,17 @@ const MapPage = () => {
         onClickSearchButton(false);
       }
     });
+  };
+
+  const showWholeMarker = () => {
+    if (!map) return;
+
+    const bounds = new kakao.maps.LatLngBounds();
+    mapMarkers.forEach((marker: KakaoMapMarkerType) => {
+      const position = new kakao.maps.LatLng(marker.position.lat, marker.position.lng);
+      bounds.extend(position);
+    });
+    map.setBounds(bounds);
   };
 
   const handlePageMove = useCallback(
@@ -149,6 +162,9 @@ const MapPage = () => {
             </MapMarker>
           ))}
         </Map>
+        <WholeMap onClick={() => showWholeMarker()}>
+          <Crosshair />
+        </WholeMap>
       </KakaoMapContainer>
 
       <FooterPlaces
@@ -166,14 +182,6 @@ export default MapPage;
 const MapContainer = styled.div`
   overflow: auto;
   border-radius: 16px;
-`;
-
-const KakaoMapContainer = styled.div`
-  margin: 16px;
-  #kakao-map {
-    height: 70vh;
-    width: 100%;
-  }
 `;
 
 const FormContainer = styled.div`
@@ -206,6 +214,15 @@ const ListGroupContainer = styled.div`
   }
 `;
 
+const KakaoMapContainer = styled.div`
+  position: relative;
+  margin: 16px;
+  #kakao-map {
+    height: 70vh;
+    width: 100%;
+  }
+`;
+
 const MapMarkerContent = styled.div`
   display: flex;
   width: 150px;
@@ -222,4 +239,22 @@ const MapMarkerContent = styled.div`
     overflow: hidden;
     text-overflow: ellipsis;
   }
+`;
+
+const WholeMap = styled.div`
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 1000;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background-color: white;
+  height: 50px;
+  width: 50px;
+  border-radius: 50%;
+
+  cursor: pointer;
 `;
