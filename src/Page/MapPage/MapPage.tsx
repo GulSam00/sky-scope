@@ -6,7 +6,6 @@ import { useKakaoLoader, useMapMarker, useAutoSearch } from '@src/Hook';
 import { KakaoMapMarkerType } from '@src/Queries/useLiveDataQuery';
 
 import { Form, Button, ListGroup } from 'react-bootstrap';
-import { Crosshair } from 'react-bootstrap-icons';
 
 import styled from 'styled-components';
 
@@ -163,7 +162,7 @@ const MapPage = () => {
           ))}
         </Map>
         <WholeMap onClick={() => showWholeMarker()}>
-          <Crosshair />
+          <img src='/icons/crosshair.svg' alt='crosshair' />
         </WholeMap>
       </KakaoMapContainer>
 
@@ -243,8 +242,8 @@ const MapMarkerContent = styled.div`
 
 const WholeMap = styled.div`
   position: absolute;
-  top: 10px;
-  left: 10px;
+  top: 20px;
+  left: 20px;
   z-index: 1000;
 
   display: flex;
@@ -252,9 +251,14 @@ const WholeMap = styled.div`
   align-items: center;
 
   background-color: white;
-  height: 50px;
-  width: 50px;
+  height: 70px;
+  width: 70px;
   border-radius: 50%;
+  border: 1px solid #0d6efd;
 
   cursor: pointer;
+  img {
+    width: 30px;
+    height: 30px;
+  }
 `;
