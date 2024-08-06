@@ -6,12 +6,12 @@ import styled from 'styled-components';
 interface Props {
   places: KakaoSearchType[];
   onFocusPlace: (marker: KakaoSearchType) => void;
-  onClickPlace: (placeId: string, isBookmarked: boolean) => void;
+  onTogglePlace: (placeId: string, isBookmarked: boolean) => void;
   onDeletePlace: (placeId: string, isBookmarked: boolean) => void;
   type: string;
 }
 
-const DynamicPlaces = ({ places, onFocusPlace, onClickPlace, onDeletePlace, type }: Props) => {
+const DynamicPlaces = ({ places, onFocusPlace, onTogglePlace, onDeletePlace, type }: Props) => {
   const PlaceHeader = (type: string) => {
     if (type === 'bookmark') {
       return (
@@ -41,7 +41,7 @@ const DynamicPlaces = ({ places, onFocusPlace, onClickPlace, onDeletePlace, type
             <PlaceWeather
               key={type + marker.placeId + marker.placeName}
               marker={marker}
-              onClickPlace={onClickPlace}
+              onTogglePlace={onTogglePlace}
               onFocusPlace={onFocusPlace}
               onDeletePlace={onDeletePlace}
             />
