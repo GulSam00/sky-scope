@@ -23,10 +23,10 @@ import {
 interface Props {
   marker: KakaoSearchType;
   onFocusPlace: (marker: KakaoSearchType) => void;
-  onClickPlace: (placeId: string, isBookmarked: boolean) => void;
+  onTogglePlace: (placeId: string, isBookmarked: boolean) => void;
   onDeletePlace: (placeId: string, isBookmarked: boolean) => void;
 }
-const PlaceWeather = ({ marker, onFocusPlace, onClickPlace, onDeletePlace }: Props) => {
+const PlaceWeather = ({ marker, onFocusPlace, onTogglePlace, onDeletePlace }: Props) => {
   const { isLoading, data, error } = useLiveDataQuery(new Date(), marker);
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -52,7 +52,7 @@ const PlaceWeather = ({ marker, onFocusPlace, onClickPlace, onDeletePlace }: Pro
 
   const handleClickBookmark = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     e.stopPropagation();
-    onClickPlace(marker.placeId, marker.isBookmarked);
+    onTogglePlace(marker.placeId, marker.isBookmarked);
   };
 
   const handleClickDelete = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {

@@ -22,7 +22,7 @@ const MapPage = () => {
     onClickMarker,
     searchPlaces,
     onFocusPlace,
-    onClickPlace,
+    onTogglePlace,
     onDeletePlace,
     onClickFooterPlace,
   } = useMapMarker({ map });
@@ -63,7 +63,7 @@ const MapPage = () => {
   };
 
   const showWholeMarker = () => {
-    if (!map) return;
+    if (!map || !mapMarkers.length) return;
 
     const bounds = new kakao.maps.LatLngBounds();
     mapMarkers.forEach((marker: KakaoMapMarkerType) => {
@@ -83,7 +83,7 @@ const MapPage = () => {
       setCurPage(page);
       searchPlaces(lastSearchWord, page, setMaxPage);
     },
-    [map, curPage, maxPage],
+    [map, curPage, maxPage, mapMarkers],
   );
 
   return (
@@ -93,7 +93,7 @@ const MapPage = () => {
       <DynamicPlaces
         places={bookmarkPlaces}
         onFocusPlace={onFocusPlace}
-        onClickPlace={onClickPlace}
+        onTogglePlace={onTogglePlace}
         onDeletePlace={onDeletePlace}
         type='bookmark'
       />
@@ -101,7 +101,7 @@ const MapPage = () => {
       <DynamicPlaces
         places={currentPlaces}
         onFocusPlace={onFocusPlace}
-        onClickPlace={onClickPlace}
+        onTogglePlace={onTogglePlace}
         onDeletePlace={onDeletePlace}
         type='current'
       />
