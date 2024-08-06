@@ -85,12 +85,12 @@ const KaKaoMap = ({ handleChangeCoord }: IProps) => {
           const markers: LocateDataType[] = [];
           for (let i = 0; i < data.length; i++) {
             markers.push({
+              placeName: data[i].place_name,
+              placeId: data[i].id,
               position: {
                 lat: Number(data[i].y),
                 lng: Number(data[i].x),
               },
-              placeName: data[i].place_name,
-              placeId: data[i].id,
             });
             bounds.extend(new kakao.maps.LatLng(Number(data[i].y), Number(data[i].x)));
           }

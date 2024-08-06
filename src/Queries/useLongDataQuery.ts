@@ -6,7 +6,7 @@ const useLongDataQuery = (today: Date) => {
   const { data, isLoading, error } = useQuery<IParseObj | undefined>({
     queryKey: ['long'],
     queryFn: () => getWeatherLong(today),
-    retry: 2,
+    retry: 3,
     retryDelay: 1000,
   });
 

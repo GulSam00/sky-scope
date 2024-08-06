@@ -73,62 +73,62 @@ const useMapMarker = ({ map }: Props) => {
 
   const changeOnMapMarkers = (dstOnMapMarkers: KakaoMapMarkerType[]) => {
     console.log('changeOnMapMarkers');
-    console.log('mapMarkers', ...mapMarkers);
+    console.log('dstOnMapMarkers', dstOnMapMarkers);
+    console.log('mapMarkers', mapMarkers);
+
     const prevMarkers = mapMarkers.filter((item: KakaoMapMarkerType) => item.status !== 'pin');
 
     const filteredMarkers = dstOnMapMarkers.filter((dstMarker: KakaoMapMarkerType) => {
       const findIndex = prevMarkers.findIndex(marker => marker.placeId === dstMarker.placeId);
-      // prevMarkers에 존재하지 않음. 불리언 값을 리턴해 배열에 추가
-      return findIndex === -1;
+      // prevMarkers에 존재하지 않음. return해서 추가
+      if (findIndex === -1) {
+        return dstMarker;
+      }
     });
+
+    console.log('prevMarkers', prevMarkers);
+    console.log('filteredMarkers', filteredMarkers);
+
     // prevMarkers에 존재하지 않는 장소들을 추가
     setMapMarkers([...filteredMarkers, ...prevMarkers]);
   };
 
   const changeOnMapMarker = (locateTypeDstOnMapMarker: LocateDataType, status: string) => {
     const changingStatus = status as markerStatus;
+    console.log('changeOnMapMarker');
+    console.log('mapMarkers', mapMarkers);
 
-    // 삭제 할 때 로직
     if (changingStatus === ('delete' as typeof changingStatus)) {
       const dstOnMapMarker = { ...locateTypeDstOnMapMarker } as KakaoSearchType;
       const deleteIndex = mapMarkers.findIndex(item => item.placeId === dstOnMapMarker.placeId);
-      const pinStatus = 'pin' as markerStatus;
+      if (deleteIndex !== -1) {
+        if (footerPlaces.find((place: LocateDataType) => place.placeId === dstOnMapMarker.placeId)) {
+          const transPinMarker: KakaoMapMarkerType = mapMarkers.splice(deleteIndex, 1)[0];
+          transPinMarker.status = 'pin';
 
-      if (footerPlaces.find((place: LocateDataType) => place.placeId === dstOnMapMarker.placeId)) {
-        // 삭제하려는 마커가 footerPlaces에 있으면 status를 pin으로 변경
-        // 이미지 파일도 pin으로 변경
-        const newMapMarkers = mapMarkers.map((marker, i) =>
-          i === deleteIndex
-            ? { ...marker, status: pinStatus, image: { src: '/icons/geo-pin.svg', size: { width: 36, height: 36 } } }
-            : marker,
-        );
-        setMapMarkers(newMapMarkers);
-      } else {
-        const newMapMarkers = mapMarkers.filter((_, i) => i !== deleteIndex);
-        setMapMarkers(newMapMarkers);
+          setMapMarkers([...mapMarkers, transPinMarker]);
+        } else {
+          mapMarkers.splice(deleteIndex, 1);
+          setMapMarkers([...mapMarkers]);
+        }
       }
-      // 북마크, 조회할 때 로직
     } else {
       const dstOnMapMarker = { ...locateTypeDstOnMapMarker } as KakaoMapMarkerType;
+
       const imageSrc =
         changingStatus === ('bookmark' as typeof changingStatus) ? '/icons/star-fill.svg' : '/icons/search.svg';
-      const changingImage = { src: imageSrc, size: { width: 36, height: 36 } };
+      const image = { src: imageSrc, size: { width: 36, height: 36 } };
+      dstOnMapMarker.image = image;
       dstOnMapMarker.status = changingStatus;
-      dstOnMapMarker.image = changingImage;
-
-      console.log('dstOnMapMarker', dstOnMapMarker);
-      console.log('changingStatus', changingStatus);
 
       const dupIndex = mapMarkers.findIndex(item => item.placeId === dstOnMapMarker.placeId);
-
       if (dupIndex !== -1) {
         const newMapMarkers: KakaoMapMarkerType[] = mapMarkers.map((marker, i) => {
-          return i === dupIndex ? { ...marker, status: changingStatus, image: changingImage } : marker;
+          return i === dupIndex ? { ...marker, status: changingStatus } : marker;
         });
-        setMapMarkers(newMapMarkers);
-      } else {
-        setMapMarkers(prevMapMarkers => [dstOnMapMarker, ...prevMapMarkers]);
-      }
+        console.log('newMapMarkers', newMapMarkers);
+        setMapMarkers([...newMapMarkers]);
+      } else setMapMarkers([dstOnMapMarker, ...mapMarkers]);
     }
   };
 
@@ -137,14 +137,14 @@ const useMapMarker = ({ map }: Props) => {
     const bookmarkIndex = bookmarkPlaces.findIndex(item => item.placeId === placeId);
     if (currentIndex !== -1) {
       const firstMarker = currentPlaces[currentIndex];
-      const newCurrentPlaces = currentPlaces.filter((_, i) => i !== currentIndex);
-      setCurrentPlaces([firstMarker, ...newCurrentPlaces]);
+      currentPlaces.splice(currentIndex, 1);
+      setCurrentPlaces([firstMarker, ...currentPlaces]);
       return 1;
     }
     if (bookmarkIndex !== -1) {
       const firstMarker = bookmarkPlaces[bookmarkIndex];
-      const newBookmarkPlaces = bookmarkPlaces.filter((_, i) => i !== bookmarkIndex);
-      setBookmarkPlaces([firstMarker, ...newBookmarkPlaces]);
+      bookmarkPlaces.splice(bookmarkIndex, 1);
+      setBookmarkPlaces([firstMarker, ...bookmarkPlaces]);
       return 2;
     }
     return 0;
@@ -155,10 +155,11 @@ const useMapMarker = ({ map }: Props) => {
       if (isBookmarked === false) {
         // 북마크 추가
         const index = currentPlaces.findIndex(item => item.placeId === placeId);
-        const firstMarker = { ...currentPlaces[index], isBookmarked: true }; // Immutably change the bookmark state
-        const newCurrentPlaces = currentPlaces.filter((_, i) => i !== index);
-        setCurrentPlaces(newCurrentPlaces);
-        setBookmarkPlaces(prevBookmarkPlaces => [firstMarker, ...prevBookmarkPlaces]);
+        const firstMarker = currentPlaces[index];
+        firstMarker.isBookmarked = true;
+        currentPlaces.splice(index, 1);
+        setCurrentPlaces([...currentPlaces]);
+        setBookmarkPlaces([firstMarker, ...bookmarkPlaces]);
 
         const position = firstMarker.position;
         changeOnMapMarker(firstMarker, 'bookmark');
@@ -167,15 +168,16 @@ const useMapMarker = ({ map }: Props) => {
       } else {
         // 북마크 해제
         const index = bookmarkPlaces.findIndex(item => item.placeId === placeId);
-        const firstMarker = { ...bookmarkPlaces[index], isBookmarked: false }; // Immutably change the bookmark state
-        const newBookmarkPlaces = bookmarkPlaces.filter((_, i) => i !== index);
-        setBookmarkPlaces(newBookmarkPlaces);
-        setCurrentPlaces(prevCurrentPlaces => [firstMarker, ...prevCurrentPlaces]);
+        const firstMarker = bookmarkPlaces[index];
+        firstMarker.isBookmarked = false;
+        bookmarkPlaces.splice(index, 1);
+        setBookmarkPlaces([...bookmarkPlaces]);
+        setCurrentPlaces([firstMarker, ...currentPlaces]);
 
         const position = firstMarker.position;
         changeOnMapMarker(firstMarker, 'search');
         focusMap(position);
-        localStorage.setItem('bookmarks', JSON.stringify(newBookmarkPlaces));
+        localStorage.setItem('bookmarks', JSON.stringify([...bookmarkPlaces]));
       }
     },
     [currentPlaces, bookmarkPlaces, mapMarkers],
@@ -186,16 +188,16 @@ const useMapMarker = ({ map }: Props) => {
       if (isBookmarked === true) {
         const index = bookmarkPlaces.findIndex(item => item.placeId === placeId);
         const deleteMarker = bookmarkPlaces[index];
-        const newBookmarkPlaces = bookmarkPlaces.filter((_, i) => i !== index);
-        setBookmarkPlaces(newBookmarkPlaces);
+        bookmarkPlaces.splice(index, 1);
+        setBookmarkPlaces([...bookmarkPlaces]);
         changeOnMapMarker(deleteMarker, 'delete');
-        localStorage.setItem('bookmarks', JSON.stringify(newBookmarkPlaces));
+        localStorage.setItem('bookmarks', JSON.stringify([...bookmarkPlaces]));
       } else {
         const index = currentPlaces.findIndex(item => item.placeId === placeId);
         const deleteMarker = currentPlaces[index];
-        const newCurrentPlaces = currentPlaces.filter((_, i) => i !== index);
-        setCurrentPlaces(newCurrentPlaces);
+        currentPlaces.splice(index, 1);
         changeOnMapMarker(deleteMarker, 'delete');
+        setCurrentPlaces([...currentPlaces]);
       }
     },
     [currentPlaces, bookmarkPlaces, mapMarkers],
@@ -213,7 +215,7 @@ const useMapMarker = ({ map }: Props) => {
 
       const { nx, ny, province, city, localeCode } = result;
 
-      if (currentPlaces.length || bookmarkPlaces.length) {
+      if (currentPlaces.length) {
         // currentPlaces나 bookmarkPlaces에 이미 존재하면 순서를 바꾸고 종료
         // currentPlaces, mapMarkers에 추가하지 않는다.
         if (isSwapMarker(clickedFooterPlace.placeId) !== 0) return;
@@ -221,7 +223,10 @@ const useMapMarker = ({ map }: Props) => {
 
       const apiLocalPosition = { lat: ny, lng: nx };
       Object.assign(newPlace, { province, city, localeCode, apiLocalPosition, isBookmarked: false });
-      setCurrentPlaces(prevCurrentPlaces => [newPlace, ...prevCurrentPlaces]);
+      console.log('marker : ', clickedFooterPlace);
+      console.log('newPlace : ', newPlace);
+      setCurrentPlaces([newPlace, ...currentPlaces]);
+
       changeOnMapMarker(clickedFooterPlace, 'search');
     },
     [currentPlaces, bookmarkPlaces, mapMarkers],
@@ -237,7 +242,7 @@ const useMapMarker = ({ map }: Props) => {
         const image = { src: '/icons/star-fill.svg', size: { width: 36, height: 36 } };
         const { position, placeName, placeId } = bookmark;
         const status = 'bookmark';
-        return { placeName, placeId, position, status, image };
+        return { image, position, placeName, status, placeId };
       });
       changeOnMapMarkers(parsedOnMapMarkers);
 
@@ -252,13 +257,6 @@ const useMapMarker = ({ map }: Props) => {
       }
     }
   }, [map]);
-
-  useEffect(() => {
-    const show = mapMarkers.map(item => {
-      return { placeName: item.placeName, status: item.status };
-    });
-    console.log('mapMarkers changed', ...show);
-  }, [mapMarkers]);
 
   return {
     footerPlaces,

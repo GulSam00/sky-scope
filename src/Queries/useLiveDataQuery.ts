@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { getWeatherLive } from '@src/API';
 import { IParseObj, ICoord } from '@src/API/getWeatherLive';
 
+// FooterPlaces에서 사용하는 타입
 export interface LocateDataType {
   position: {
     lat: number;
@@ -14,6 +15,7 @@ export interface LocateDataType {
 
 export type markerStatus = 'bookmark' | 'search' | 'pin';
 
+// Marker에서 사용하는 타입
 export interface KakaoMapMarkerType extends LocateDataType {
   image: {
     src: string;
@@ -25,6 +27,7 @@ export interface KakaoMapMarkerType extends LocateDataType {
   status: markerStatus;
 }
 
+// Place에서 사용하는 타입
 export interface KakaoSearchType extends LocateDataType {
   apiLocalPosition: {
     lat: number;
@@ -60,7 +63,7 @@ const useLiveDataQuery = (today: Date, marker: KakaoSearchType) => {
       }
       return data;
     },
-    retry: 2,
+    retry: 3,
     retryDelay: 1000,
     enabled: marker !== null,
     staleTime: 1000 * 60, // 1분

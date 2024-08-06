@@ -22,7 +22,7 @@ const MapPage = () => {
     onClickMarker,
     searchPlaces,
     onFocusPlace,
-    onClickPlace,
+    onTogglePlace,
     onDeletePlace,
     onClickFooterPlace,
   } = useMapMarker({ map });
@@ -93,7 +93,7 @@ const MapPage = () => {
       <DynamicPlaces
         places={bookmarkPlaces}
         onFocusPlace={onFocusPlace}
-        onClickPlace={onClickPlace}
+        onTogglePlace={onTogglePlace}
         onDeletePlace={onDeletePlace}
         type='bookmark'
       />
@@ -101,7 +101,7 @@ const MapPage = () => {
       <DynamicPlaces
         places={currentPlaces}
         onFocusPlace={onFocusPlace}
-        onClickPlace={onClickPlace}
+        onTogglePlace={onTogglePlace}
         onDeletePlace={onDeletePlace}
         type='current'
       />
