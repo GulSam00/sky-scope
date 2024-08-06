@@ -72,8 +72,8 @@ const useMapMarker = ({ map }: Props) => {
   );
 
   const changeOnMapMarkers = (dstOnMapMarkers: KakaoMapMarkerType[]) => {
-    console.log('changeOnMapMarkers');
-    console.log('mapMarkers', ...mapMarkers);
+    // console.log('changeOnMapMarkers');
+    // console.log('prev MapMarkers', ...mapMarkers);
     const prevMarkers = mapMarkers.filter((item: KakaoMapMarkerType) => item.status !== 'pin');
 
     const filteredMarkers = dstOnMapMarkers.filter((dstMarker: KakaoMapMarkerType) => {
@@ -82,6 +82,9 @@ const useMapMarker = ({ map }: Props) => {
       return findIndex === -1;
     });
     // prevMarkers에 존재하지 않는 장소들을 추가
+    // console.log('prevMarkers', ...prevMarkers);
+    // console.log('prevMarkers.length', prevMarkers.length);
+    // console.log('filteredMarkers', ...filteredMarkers);
     setMapMarkers([...filteredMarkers, ...prevMarkers]);
   };
 
@@ -115,9 +118,6 @@ const useMapMarker = ({ map }: Props) => {
       const changingImage = { src: imageSrc, size: { width: 36, height: 36 } };
       dstOnMapMarker.status = changingStatus;
       dstOnMapMarker.image = changingImage;
-
-      console.log('dstOnMapMarker', dstOnMapMarker);
-      console.log('changingStatus', changingStatus);
 
       const dupIndex = mapMarkers.findIndex(item => item.placeId === dstOnMapMarker.placeId);
 
@@ -252,13 +252,6 @@ const useMapMarker = ({ map }: Props) => {
       }
     }
   }, [map]);
-
-  useEffect(() => {
-    const show = mapMarkers.map(item => {
-      return { placeName: item.placeName, status: item.status };
-    });
-    console.log('mapMarkers changed', ...show);
-  }, [mapMarkers]);
 
   return {
     footerPlaces,

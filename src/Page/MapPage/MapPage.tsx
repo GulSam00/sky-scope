@@ -83,7 +83,7 @@ const MapPage = () => {
       setCurPage(page);
       searchPlaces(lastSearchWord, page, setMaxPage);
     },
-    [map, curPage, maxPage],
+    [map, curPage, maxPage, mapMarkers],
   );
 
   return (
