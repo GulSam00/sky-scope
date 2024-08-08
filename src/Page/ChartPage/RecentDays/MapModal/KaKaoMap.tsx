@@ -19,7 +19,7 @@ interface IProps {
 
 const KaKaoMap = ({ handleChangeCoord }: IProps) => {
   const [map, setMap] = useState<kakao.maps.Map | null>(null);
-  const [markers, setMarkers] = useState<LocateDataType[]>([]);
+  const [places, setPlaces] = useState<LocateDataType[]>([]);
   const [tempSelectedIndex, setTempSelectedIndex] = useState<number>(-1);
 
   const [selectedMarker, setSelectedMarker] = useState<LocateDataType | null>(null);
@@ -82,9 +82,9 @@ const KaKaoMap = ({ handleChangeCoord }: IProps) => {
           // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
           // LatLngBounds 객체에 좌표를 추가합니다
           const bounds = new kakao.maps.LatLngBounds();
-          const markers: LocateDataType[] = [];
+          const places: LocateDataType[] = [];
           for (let i = 0; i < data.length; i++) {
-            markers.push({
+            places.push({
               placeName: data[i].place_name,
               placeId: data[i].id,
               position: {
@@ -94,11 +94,11 @@ const KaKaoMap = ({ handleChangeCoord }: IProps) => {
             });
             bounds.extend(new kakao.maps.LatLng(Number(data[i].y), Number(data[i].x)));
           }
-          setMarkers([...markers]);
+          setPlaces([...places]);
           map.setBounds(bounds);
         } else {
           alert('검색 결과가 없습니다.');
-          setMarkers([]);
+          setPlaces([]);
         }
       },
       { size: 5, page: page },
@@ -108,12 +108,12 @@ const KaKaoMap = ({ handleChangeCoord }: IProps) => {
   const handleHoverOut = () => {
     if (!map) return;
     if (tempSelectedIndex === -1) return;
-    overMarkerPos(markers[tempSelectedIndex]);
+    overMarkerPos(places[tempSelectedIndex]);
   };
 
   const handleClickMarker = (index: number) => {
     if (tempSelectedIndex === index) {
-      setSelectedMarker(markers[index]);
+      setSelectedMarker(places[index]);
     } else {
       setTempSelectedIndex(index);
     }
@@ -158,15 +158,15 @@ const KaKaoMap = ({ handleChangeCoord }: IProps) => {
         onCreate={setMap}
         id='kakao-map'
       >
-        {markers.map((marker: LocateDataType, index: number) => (
+        {places.map((marker: LocateDataType, index: number) => (
           <MapMarker position={marker.position} key={index} />
         ))}
       </Map>
 
-      {markers.length > 0 && (
+      {places.length > 0 && (
         <MarkersContainer>
           <ListGroup>
-            {markers.map((marker: LocateDataType, index: number) => (
+            {places.map((marker: LocateDataType, index: number) => (
               <ListGroup.Item
                 className={tempSelectedIndex === index ? 'selected' : ''}
                 key={index}
