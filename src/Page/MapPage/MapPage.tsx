@@ -202,7 +202,7 @@ const FormContainer = styled.div`
 
 const ListGroupContainer = styled.div`
   position: absolute;
-  z-index: 1000;
+  z-index: 2000;
   padding: 0 16px;
   width: 100%;
   cursor: pointer;
