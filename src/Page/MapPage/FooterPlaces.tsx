@@ -85,24 +85,27 @@ const MarkerGroup = styled.div`
   }
 
   > * {
-    cursor: pointer;
-    border-radius: 1rem;
     width: 64px;
     height: 128px;
-    text-align: center;
+    padding: 8px;
+
+    border: 1px solid;
+    border-radius: 1rem;
 
     background-color: white;
-    border: 1px solid;
+    cursor: pointer;
+    text-align: center;
   }
 
   > div {
     width: 128px;
     margin: 0 4px;
 
-    font-size: 1.5rem;
-    font-height: 64px;
+    font-size: 1.2rem;
     display: flex;
-    align-items: center;
     justify-content: center;
+    align-items: center;
+
+    overflow: hidden;
   }
 `;
