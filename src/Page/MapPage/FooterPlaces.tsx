@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect, memo } from 'react';
 
 import { LocateDataType } from '@src/Queries/useLiveDataQuery';
 
@@ -63,7 +63,7 @@ const FooterPlaces = ({ map, places, handlePageMove, onClickFooterPlace }: Props
   );
 };
 
-export default React.memo(FooterPlaces);
+export default memo(FooterPlaces);
 
 const MarkersContainer = styled.div`
   display: flex;

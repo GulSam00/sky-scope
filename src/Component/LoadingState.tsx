@@ -23,7 +23,7 @@ const EmptyGraphContainer = styled.div`
   height: 100%;
 
   background-color: rgba(0, 0, 0, 0.4);
-  z-index: 2000;
+  z-index: 10000;
 
   display: flex;
   flex-direction: column;
