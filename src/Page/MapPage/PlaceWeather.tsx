@@ -127,8 +127,10 @@ const MarkerWeatherContainer = styled.div`
   padding: 10px;
   border: 1px solid #0d6efd;
   border-radius: 5px;
-  font-size: 18px;
   cursor: pointer;
+
+  font-size: 1rem;
+  font-weight: 400;
 
   .bookmark {
     position: absolute;
@@ -144,12 +146,8 @@ const MarkerWeatherContainer = styled.div`
     align-items: start;
   }
 
-  .location {
-    font-size: 14px;
-    font-weight: 400;
-  }
   .place {
-    font-size: 18px;
+    font-size: 1.2rem;
     font-weight: 600;
 
     white-space: nowrap;
@@ -160,11 +158,13 @@ const MarkerWeatherContainer = styled.div`
   .content {
     display: flex;
     flex-direction: column;
+    font-weight: 600;
 
     > div {
       display: flex;
       align-items: center;
       justify-content: flex-start;
+      gap: 0.5rem;
     }
   }
 `;

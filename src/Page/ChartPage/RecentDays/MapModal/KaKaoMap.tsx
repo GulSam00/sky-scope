@@ -209,8 +209,9 @@ const MapModalContainer = styled.div`
   display: flex;
   flex-direction: column;
   white-space: pre-wrap;
+  padding: 1rem;
+  border-radius: 1rem;
 
-  padding: 30px;
   #kakao-map {
     display: flex;
 
@@ -231,7 +232,7 @@ const FormContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-bottom: 30px;
+  padding-bottom: 1rem;
 
   form {
     flex-grow: 1;
@@ -257,6 +258,9 @@ const MarkersContainer = styled.div`
     color: white;
     border: 1px solid white;
   }
+  .list-group-item {
+    font-size: 1rem;
+  }
 `;
 
 const ConfirmModal = styled.div`
@@ -267,7 +271,7 @@ const ConfirmModal = styled.div`
   height: 100%;
   background-color: rgba(0, 0, 0, 0.4);
 
-  z-index: 1100;
+  z-index: 2000;
 `;
 
 const ConfirmModalContent = styled.div`
@@ -290,7 +294,7 @@ const ConfirmModalContent = styled.div`
   background-color: white;
 
   .content {
-    font-size: 20px;
+    font-size: 1.5rem;
   }
 
   .button {

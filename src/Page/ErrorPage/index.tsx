@@ -42,7 +42,6 @@ const ErrorPageContainer = styled.div`
     align-items: center;
     justify-content: center;
 
-    font-size: 20px;
     font-family: Arial, sans-serif;
     text-align: center;
     color: #333;

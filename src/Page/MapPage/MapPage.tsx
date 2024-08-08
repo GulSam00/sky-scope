@@ -180,14 +180,14 @@ export default MapPage;
 
 const MapContainer = styled.div`
   overflow: auto;
-  border-radius: 16px;
+  border-radius: 1rem;
 `;
 
 const FormContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 0 16px;
+  margin: 0 1rem;
 
   form {
     flex-grow: 1;
@@ -203,7 +203,7 @@ const FormContainer = styled.div`
 const ListGroupContainer = styled.div`
   position: absolute;
   z-index: 2000;
-  padding: 0 16px;
+  padding: 0 1rem;
   width: 100%;
   cursor: pointer;
 
@@ -215,7 +215,7 @@ const ListGroupContainer = styled.div`
 
 const KakaoMapContainer = styled.div`
   position: relative;
-  margin: 16px;
+  margin: 1rem;
   #kakao-map {
     height: 70vh;
     width: 100%;
@@ -231,7 +231,7 @@ const MapMarkerContent = styled.div`
   align-items: center;
 
   .place {
-    font-size: 16px;
+    font-size: 1rem;
     font-weight: 500;
 
     white-space: nowrap;

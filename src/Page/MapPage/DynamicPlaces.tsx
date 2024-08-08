@@ -58,22 +58,21 @@ const MarkerContiner = styled.div`
   display: flex;
   flex-direction: column;
   min-height: 200px;
-  margin: 16px;
-  padding: 16px;
+  margin: 1rem;
+  padding: 1rem;
   border: 1px solid #0d6efd;
-  border-radius: 16px;
+  border-radius: 1rem;
 
   > div {
     display: flex;
     align-items: center;
     gap: 8px;
-    font-size: 24px;
     font-weight: 600;
   }
 `;
 
 const Markers = styled.div`
   display: flex;
-  gap: 16px;
+  gap: 1rem;
   overflow-x: auto;
 `;

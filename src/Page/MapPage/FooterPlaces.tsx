@@ -70,17 +70,14 @@ const MarkersContainer = styled.div`
   flex-direction: column;
   width: 100vw;
   position: fixed;
-  bottom: 16px;
-  z-index: 1;
+  bottom: 1rem;
+  z-index: 1500;
 `;
 
 const MarkerGroup = styled.div`
   display: flex;
   justify-content: center;
 
-  div {
-    background-color: white;
-  }
   .selected {
     background-color: #0d6efd;
     color: white;
@@ -89,18 +86,20 @@ const MarkerGroup = styled.div`
 
   > * {
     cursor: pointer;
-    border-radius: 16px;
+    border-radius: 1rem;
     width: 64px;
-    height: 64px;
+    height: 128px;
     text-align: center;
+
+    background-color: white;
+    border: 1px solid;
   }
 
   > div {
     width: 128px;
     margin: 0 4px;
-    border: 1px solid;
 
-    font-size: 14px;
+    font-size: 1.5rem;
     font-height: 64px;
     display: flex;
     align-items: center;
