@@ -27,8 +27,8 @@ interface Props {
   onTogglePlace: (placeId: string, isBookmarked: boolean) => void;
   onDeletePlace: (placeId: string, isBookmarked: boolean) => void;
   isFirstPlace: boolean;
-  hasBeenDeleted: boolean;
-  setHasBeenDeleted: (value: boolean) => void; // 삭제 이벤트 플래그 설정 함수
+  isIgnored: boolean;
+  setIsIgnored: (value: boolean) => void; // 삭제 이벤트 플래그 설정 함수
 }
 
 const PlaceWeather = ({
@@ -37,8 +37,8 @@ const PlaceWeather = ({
   onTogglePlace,
   onDeletePlace,
   isFirstPlace,
-  hasBeenDeleted,
-  setHasBeenDeleted,
+  isIgnored,
+  setIsIgnored,
 }: Props) => {
   const { isLoading, data, error } = useLiveDataQuery(new Date(), marker);
   const navigate = useNavigate();
@@ -80,12 +80,13 @@ const PlaceWeather = ({
   const handleClickBookmark = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     e.stopPropagation();
     onTogglePlace(marker.placeId, marker.isBookmarked);
+    setIsIgnored(true);
   };
 
   const handleClickDelete = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     e.stopPropagation();
     onDeletePlace(marker.placeId, marker.isBookmarked);
-    setHasBeenDeleted(true);
+    setIsIgnored(true);
   };
 
   useEffect(() => {
@@ -93,7 +94,7 @@ const PlaceWeather = ({
       dispatch(loadingData());
     } else {
       dispatch(loadedData());
-      if (isFirstPlace && !hasBeenDeleted) transFirstObject();
+      if (isFirstPlace && !isIgnored) transFirstObject();
     }
     if (error) {
       alert(error);

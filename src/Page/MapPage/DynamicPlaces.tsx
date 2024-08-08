@@ -13,7 +13,7 @@ interface Props {
 }
 
 const DynamicPlaces = ({ places, onFocusPlace, onTogglePlace, onDeletePlace, type }: Props) => {
-  const [hasBeenDeleted, setHasBeenDeleted] = useState(false); // 삭제 플래그 상태
+  const [isIgnored, setIsIgnored] = useState(false); // 삭제 플래그 상태
 
   const PlaceHeader = (type: string) => {
     if (type === 'bookmark') {
@@ -35,8 +35,9 @@ const DynamicPlaces = ({ places, onFocusPlace, onTogglePlace, onDeletePlace, typ
   };
 
   useEffect(() => {
-    if (hasBeenDeleted) {
-      setHasBeenDeleted(false);
+    console.log('DynamicPlaces useEffect places', places);
+    if (isIgnored) {
+      setIsIgnored(false);
     }
   }, [places]);
 
@@ -54,8 +55,8 @@ const DynamicPlaces = ({ places, onFocusPlace, onTogglePlace, onDeletePlace, typ
               onFocusPlace={onFocusPlace}
               onDeletePlace={onDeletePlace}
               isFirstPlace={i === 0}
-              hasBeenDeleted={hasBeenDeleted}
-              setHasBeenDeleted={setHasBeenDeleted}
+              isIgnored={isIgnored}
+              setIsIgnored={setIsIgnored}
             />
           ))}
         </Markers>
