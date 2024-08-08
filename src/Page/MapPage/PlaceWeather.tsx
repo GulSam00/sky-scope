@@ -1,6 +1,7 @@
-import { useEffect } from 'react';
+import { useEffect, useRef, memo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
+import { gsap } from 'gsap';
 
 import { useLiveDataQuery } from '@src/Queries';
 import { KakaoSearchType } from '@src/Queries/useLiveDataQuery';
@@ -25,11 +26,37 @@ interface Props {
   onFocusPlace: (marker: KakaoSearchType) => void;
   onTogglePlace: (placeId: string, isBookmarked: boolean) => void;
   onDeletePlace: (placeId: string, isBookmarked: boolean) => void;
+  isFirstPlace: boolean;
+  isIgnored: boolean;
+  setIsIgnored: (value: boolean) => void; // 삭제 이벤트 플래그 설정 함수
 }
-const PlaceWeather = ({ marker, onFocusPlace, onTogglePlace, onDeletePlace }: Props) => {
+
+const PlaceWeather = ({
+  marker,
+  onFocusPlace,
+  onTogglePlace,
+  onDeletePlace,
+  isFirstPlace,
+  isIgnored,
+  setIsIgnored,
+}: Props) => {
   const { isLoading, data, error } = useLiveDataQuery(new Date(), marker);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  const firstPlaceRef = useRef<HTMLDivElement>(null);
+
+  const transFirstObject = () => {
+    const ref = firstPlaceRef.current;
+
+    gsap.to(ref, {
+      backgroundColor: '#0d6efd',
+      duration: 0.25,
+      onComplete: () => {
+        gsap.to(ref, { backgroundColor: '#ffffff', duration: 0.25 });
+      },
+    });
+  };
 
   const transformSkyCode = (skyCode: string) => {
     switch (Number(skyCode)) {
@@ -53,11 +80,13 @@ const PlaceWeather = ({ marker, onFocusPlace, onTogglePlace, onDeletePlace }: Pr
   const handleClickBookmark = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     e.stopPropagation();
     onTogglePlace(marker.placeId, marker.isBookmarked);
+    setIsIgnored(true);
   };
 
   const handleClickDelete = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     e.stopPropagation();
     onDeletePlace(marker.placeId, marker.isBookmarked);
+    setIsIgnored(true);
   };
 
   useEffect(() => {
@@ -65,16 +94,17 @@ const PlaceWeather = ({ marker, onFocusPlace, onTogglePlace, onDeletePlace }: Pr
       dispatch(loadingData());
     } else {
       dispatch(loadedData());
+      if (isFirstPlace && !isIgnored) transFirstObject();
     }
     if (error) {
       alert(error);
       localStorage.removeItem('bookmarks');
       navigate('/error');
     }
-  }, [isLoading]);
+  }, [isLoading, isFirstPlace]);
 
   return (
-    <MarkerWeatherContainer>
+    <MarkerWeatherContainer ref={firstPlaceRef}>
       {data ? (
         <div onClick={() => onFocusPlace(marker)}>
           <div className='bookmark' onClick={e => handleClickBookmark(e)}>
@@ -117,7 +147,7 @@ const PlaceWeather = ({ marker, onFocusPlace, onTogglePlace, onDeletePlace }: Pr
   );
 };
 
-export default PlaceWeather;
+export default memo(PlaceWeather);
 
 const MarkerWeatherContainer = styled.div`
   position: relative;
@@ -127,8 +157,10 @@ const MarkerWeatherContainer = styled.div`
   padding: 10px;
   border: 1px solid #0d6efd;
   border-radius: 5px;
-  font-size: 18px;
   cursor: pointer;
+
+  font-size: 1rem;
+  font-weight: 400;
 
   .bookmark {
     position: absolute;
@@ -144,12 +176,8 @@ const MarkerWeatherContainer = styled.div`
     align-items: start;
   }
 
-  .location {
-    font-size: 14px;
-    font-weight: 400;
-  }
   .place {
-    font-size: 18px;
+    font-size: 1.2rem;
     font-weight: 600;
 
     white-space: nowrap;
@@ -160,11 +188,13 @@ const MarkerWeatherContainer = styled.div`
   .content {
     display: flex;
     flex-direction: column;
+    font-weight: 600;
 
     > div {
       display: flex;
       align-items: center;
       justify-content: flex-start;
+      gap: 0.5rem;
     }
   }
 `;

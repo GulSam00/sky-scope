@@ -8,7 +8,7 @@ interface IProps {
 const SearchResultPagination = ({ curPage, maxPage, handlePageMove }: IProps) => {
   return (
     <PaginationContainer>
-      <Pagination size='lg'>
+      <Pagination size='lg' className='pagination'>
         <Pagination.Prev onClick={() => handlePageMove(curPage - 1)} />
         {/* 5개 단위로 보여줌 */}
         {Array.from({ length: 5 }, (_, index) => {
@@ -40,5 +40,6 @@ const PaginationContainer = styled.div`
   justify-content: center;
   align-items: center;
 
-  margin-top: 15px;
+  padding: 1rem;
+  width: 100%;
 `;

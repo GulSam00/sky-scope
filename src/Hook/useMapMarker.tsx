@@ -13,6 +13,8 @@ const useMapMarker = ({ map }: Props) => {
   const [bookmarkPlaces, setBookmarkPlaces] = useState<KakaoSearchType[]>([]);
   const [mapMarkers, setMapMarkers] = useState<KakaoMapMarkerType[]>([]);
 
+  const [width, setWidth] = useState(window.innerWidth);
+
   const focusMap = (position: { lat: number; lng: number }) => {
     if (!map) return;
     const kakaoPosition = new kakao.maps.LatLng(position.lat, position.lng);
@@ -29,6 +31,10 @@ const useMapMarker = ({ map }: Props) => {
     if (!map) return;
 
     const ps = new kakao.maps.services.Places();
+
+    const contentWidth = 128;
+
+    const contentBerPage = Math.max(Math.min(Math.floor(width / contentWidth) - 1, 5), 1);
     ps.keywordSearch(
       keyword,
       (data, status, pagination) => {
@@ -59,7 +65,7 @@ const useMapMarker = ({ map }: Props) => {
           alert('검색 결과가 없습니다.');
         }
       },
-      { size: 5, page: page },
+      { size: contentBerPage, page: page },
     );
   };
 
@@ -252,6 +258,18 @@ const useMapMarker = ({ map }: Props) => {
       }
     }
   }, [map]);
+
+  const handleResize = () => {
+    setWidth(window.innerWidth);
+  };
+
+  useEffect(() => {
+    window.addEventListener('resize', handleResize);
+    return () => {
+      // cleanup
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
   return {
     footerPlaces,
