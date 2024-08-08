@@ -13,7 +13,7 @@ const ErrorPage = () => {
     <ErrorPageContainer>
       <div className='error-message'>
         <div>
-          <h1>500 Internal Server Error</h1>
+          <h2>500 Internal Server Error</h2>
         </div>
         <div>죄송합니다, 서버에 문제가 발생했습니다.</div>
       </div>
@@ -42,7 +42,7 @@ const ErrorPageContainer = styled.div`
     align-items: center;
     justify-content: center;
 
-    font-size: 24px;
+    font-size: 20px;
     font-family: Arial, sans-serif;
     text-align: center;
     color: #333;

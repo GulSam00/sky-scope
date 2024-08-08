@@ -281,8 +281,8 @@ const ConfirmModalContent = styled.div`
   left: 50%;
   transform: translate(-50%, -50%);
 
-  width: 80%;
-  height: 60%;
+  width: 80dvw;
+  height: 50dvh;
   padding: 20px;
 
   border: 1px solid black;
@@ -290,7 +290,7 @@ const ConfirmModalContent = styled.div`
   background-color: white;
 
   .content {
-    font-size: 1.5rem;
+    font-size: 20px;
   }
 
   .button {
