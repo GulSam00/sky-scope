@@ -1,4 +1,5 @@
-import React from 'react';
+import { useState, memo, useEffect } from 'react';
+
 import { KakaoSearchType } from '@src/Queries/useLiveDataQuery';
 import PlaceWeather from './PlaceWeather';
 import styled from 'styled-components';
@@ -12,6 +13,8 @@ interface Props {
 }
 
 const DynamicPlaces = ({ places, onFocusPlace, onTogglePlace, onDeletePlace, type }: Props) => {
+  const [isIgnored, setIsIgnored] = useState(false); // 삭제 플래그 상태
+
   const PlaceHeader = (type: string) => {
     if (type === 'bookmark') {
       return (
@@ -31,19 +34,28 @@ const DynamicPlaces = ({ places, onFocusPlace, onTogglePlace, onDeletePlace, typ
     }
   };
 
+  useEffect(() => {
+    if (isIgnored) {
+      setIsIgnored(false);
+    }
+  }, [places]);
+
   return (
     <MarkerContiner>
       {PlaceHeader(type)}
 
       {places.length !== 0 && (
         <Markers>
-          {places.map((marker: KakaoSearchType) => (
+          {places.map((marker: KakaoSearchType, i: number) => (
             <PlaceWeather
               key={type + marker.placeId + marker.placeName}
               marker={marker}
               onTogglePlace={onTogglePlace}
               onFocusPlace={onFocusPlace}
               onDeletePlace={onDeletePlace}
+              isFirstPlace={i === 0}
+              isIgnored={isIgnored}
+              setIsIgnored={setIsIgnored}
             />
           ))}
         </Markers>
@@ -52,28 +64,28 @@ const DynamicPlaces = ({ places, onFocusPlace, onTogglePlace, onDeletePlace, typ
   );
 };
 
-export default React.memo(DynamicPlaces);
+export default memo(DynamicPlaces);
 
 const MarkerContiner = styled.div`
   display: flex;
   flex-direction: column;
   min-height: 200px;
-  margin: 16px;
-  padding: 16px;
+  margin: 1rem;
+  padding: 1rem;
   border: 1px solid #0d6efd;
-  border-radius: 16px;
+  border-radius: 1rem;
+  gap: 8px;
 
   > div {
     display: flex;
     align-items: center;
     gap: 8px;
-    font-size: 24px;
     font-weight: 600;
   }
 `;
 
 const Markers = styled.div`
   display: flex;
-  gap: 16px;
+  gap: 1rem;
   overflow-x: auto;
 `;

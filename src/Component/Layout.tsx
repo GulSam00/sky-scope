@@ -53,11 +53,15 @@ const LayoutContainer = styled.div`
 `;
 const NavContainer = styled.div`
   position: fixed;
-  margin-left: 40px;
   z-index: 1000;
   width: 100%;
   top: 0;
   background-color: white;
+
+  nav {
+    display: flex;
+    flex-wrap: nowrap;
+  }
 `;
 
 const ContentContainer = styled.div``;

@@ -42,4 +42,5 @@ const MapModalBody = styled.div`
   height: 95%;
   background-color: white;
   overflow: auto;
+  border-radius: 1rem;
 `;

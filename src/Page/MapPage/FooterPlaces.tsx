@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect, memo } from 'react';
 
 import { LocateDataType } from '@src/Queries/useLiveDataQuery';
 
@@ -63,24 +63,21 @@ const FooterPlaces = ({ map, places, handlePageMove, onClickFooterPlace }: Props
   );
 };
 
-export default React.memo(FooterPlaces);
+export default memo(FooterPlaces);
 
 const MarkersContainer = styled.div`
   display: flex;
   flex-direction: column;
   width: 100vw;
   position: fixed;
-  bottom: 16px;
-  z-index: 1;
+  bottom: 1rem;
+  z-index: 1500;
 `;
 
 const MarkerGroup = styled.div`
   display: flex;
   justify-content: center;
 
-  div {
-    background-color: white;
-  }
   .selected {
     background-color: #0d6efd;
     color: white;
@@ -88,22 +85,27 @@ const MarkerGroup = styled.div`
   }
 
   > * {
-    cursor: pointer;
-    border-radius: 16px;
     width: 64px;
-    height: 64px;
+    height: 128px;
+    padding: 8px;
+
+    border: 1px solid;
+    border-radius: 1rem;
+
+    background-color: white;
+    cursor: pointer;
     text-align: center;
   }
 
   > div {
     width: 128px;
     margin: 0 4px;
-    border: 1px solid;
 
-    font-size: 14px;
-    font-height: 64px;
+    font-size: 1.2rem;
     display: flex;
-    align-items: center;
     justify-content: center;
+    align-items: center;
+
+    overflow: hidden;
   }
 `;
