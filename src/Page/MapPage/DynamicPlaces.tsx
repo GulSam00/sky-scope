@@ -35,7 +35,6 @@ const DynamicPlaces = ({ places, onFocusPlace, onTogglePlace, onDeletePlace, typ
   };
 
   useEffect(() => {
-    console.log('DynamicPlaces useEffect places', places);
     if (isIgnored) {
       setIsIgnored(false);
     }
