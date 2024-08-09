@@ -12,6 +12,7 @@ const useMapMarker = ({ map }: Props) => {
   const [currentPlaces, setCurrentPlaces] = useState<KakaoSearchType[]>([]);
   const [bookmarkPlaces, setBookmarkPlaces] = useState<KakaoSearchType[]>([]);
   const [mapMarkers, setMapMarkers] = useState<KakaoMapMarkerType[]>([]);
+  const [isBlinkPlaces, setIsBlinkPlaces] = useState<boolean[]>([true, true]); // bookmark : 0, current : 1
 
   const [width, setWidth] = useState(window.innerWidth);
 
@@ -70,9 +71,9 @@ const useMapMarker = ({ map }: Props) => {
   };
 
   const onFocusPlace = useCallback(
-    (marker: KakaoSearchType) => {
-      isSwapMarker(marker.placeId);
-      focusMap(marker.position);
+    (place: KakaoSearchType) => {
+      isSwapMarker(place.placeId);
+      focusMap(place.position);
     },
     [currentPlaces, bookmarkPlaces, mapMarkers],
   );
@@ -145,12 +146,14 @@ const useMapMarker = ({ map }: Props) => {
       const firstMarker = currentPlaces[currentIndex];
       const newCurrentPlaces = currentPlaces.filter((_, i) => i !== currentIndex);
       setCurrentPlaces([firstMarker, ...newCurrentPlaces]);
+      setIsBlinkPlaces([false, true]);
       return 1;
     }
     if (bookmarkIndex !== -1) {
       const firstMarker = bookmarkPlaces[bookmarkIndex];
       const newBookmarkPlaces = bookmarkPlaces.filter((_, i) => i !== bookmarkIndex);
       setBookmarkPlaces([firstMarker, ...newBookmarkPlaces]);
+      setIsBlinkPlaces([true, false]);
       return 2;
     }
     return 0;
@@ -276,12 +279,14 @@ const useMapMarker = ({ map }: Props) => {
     currentPlaces,
     bookmarkPlaces,
     mapMarkers,
+    isBlinkPlaces,
     onClickMarker,
     searchPlaces,
     onFocusPlace,
     onTogglePlace,
     onDeletePlace,
     onClickFooterPlace,
+    setIsBlinkPlaces,
   };
 };
 

@@ -18,6 +18,7 @@ const MapPage = () => {
     footerPlaces,
     currentPlaces,
     bookmarkPlaces,
+    isBlinkPlaces,
     mapMarkers,
     onClickMarker,
     searchPlaces,
@@ -25,6 +26,7 @@ const MapPage = () => {
     onTogglePlace,
     onDeletePlace,
     onClickFooterPlace,
+    setIsBlinkPlaces,
   } = useMapMarker({ map });
 
   const {
@@ -86,24 +88,32 @@ const MapPage = () => {
     [map, curPage, maxPage, mapMarkers],
   );
 
+  const handleBlinkPlace = useCallback(() => {
+    setIsBlinkPlaces([false, false]);
+  }, []);
+
   return (
     <MapContainer>
       {kakaoLoading && <LoadingState />}
 
       <DynamicPlaces
+        type='bookmark'
         places={bookmarkPlaces}
+        isBlinkPlace={isBlinkPlaces[0]}
+        onBlinkPlace={handleBlinkPlace}
         onFocusPlace={onFocusPlace}
         onTogglePlace={onTogglePlace}
         onDeletePlace={onDeletePlace}
-        type='bookmark'
       />
 
       <DynamicPlaces
+        type='current'
         places={currentPlaces}
+        isBlinkPlace={isBlinkPlaces[1]}
+        onBlinkPlace={handleBlinkPlace}
         onFocusPlace={onFocusPlace}
         onTogglePlace={onTogglePlace}
         onDeletePlace={onDeletePlace}
-        type='current'
       />
 
       <FormContainer>
