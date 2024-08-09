@@ -86,12 +86,12 @@ const MarkerContiner = styled.div`
   padding: 1rem;
   border: 1px solid #0d6efd;
   border-radius: 1rem;
-  gap: 8px;
+  gap: 0.5rem;
 
   > div {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 0.5rem;
     font-weight: 600;
   }
 `;

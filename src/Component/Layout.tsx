@@ -49,7 +49,7 @@ export default Layout;
 const LayoutContainer = styled.div`
   position: relative;
   width: 100%;
-  margin-top: 64px;
+  margin-top: 4rem;
 `;
 const NavContainer = styled.div`
   position: fixed;

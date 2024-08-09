@@ -85,9 +85,9 @@ const MarkerGroup = styled.div`
   }
 
   > * {
-    width: 64px;
-    height: 128px;
-    padding: 8px;
+    width: 4rem;
+    height: 8rem;
+    padding: 0.5rem;
 
     border: 1px solid;
     border-radius: 1rem;
@@ -98,7 +98,7 @@ const MarkerGroup = styled.div`
   }
 
   > div {
-    width: 128px;
+    width: 8rem;
     margin: 0 4px;
 
     font-size: 1.2rem;

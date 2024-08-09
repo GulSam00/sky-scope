@@ -218,5 +218,5 @@ const SpinnerContainer = styled.div`
   align-items: center;
   height: 100%;
   width: 100%;
-  font-size: 18px;
+  font-size: 1rem;
 `;

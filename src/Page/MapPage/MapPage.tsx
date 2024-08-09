@@ -236,7 +236,7 @@ const MapMarkerContent = styled.div`
   display: flex;
   width: 150px;
   height: 36px;
-  padding: 8px;
+  padding: 0.5rem;
 
   align-items: center;
 
