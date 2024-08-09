@@ -1,19 +1,24 @@
 import { useState, useRef, useCallback } from 'react';
+import { useDispatch } from 'react-redux';
 import { Map, MapMarker } from 'react-kakao-maps-sdk';
 
 import { LoadingState } from '@src/Component';
 import { useKakaoLoader, useMapInfo, useAutoSearch } from '@src/Hook';
 import { KakaoMapMarkerType } from '@src/Queries/useLiveDataQuery';
 
+import { errorAccured } from '@src/Store/RequestStatusSlice';
+
 import { Form, Button, ListGroup } from 'react-bootstrap';
-
-import styled from 'styled-components';
-
 import DynamicPlaces from './DynamicPlaces';
 import FooterPlaces from './FooterPlaces';
 
+import styled from 'styled-components';
+
 const MapPage = () => {
   const [map, setMap] = useState<kakao.maps.Map | null>(null);
+  const [curPage, setCurPage] = useState<number>(1);
+  const [maxPage, setMaxPage] = useState<number>(1);
+
   const {
     footerPlaces,
     currentPlaces,
@@ -41,12 +46,10 @@ const MapPage = () => {
     onClickAutoGroup,
   } = useAutoSearch();
 
-  const mapRef = useRef<kakao.maps.Map>(null);
-
-  const [curPage, setCurPage] = useState<number>(1);
-  const [maxPage, setMaxPage] = useState<number>(1);
-
   const { kakaoLoading, kakaoError } = useKakaoLoader();
+
+  const mapRef = useRef<kakao.maps.Map>(null);
+  const dispatch = useDispatch();
 
   const insertAddress = () => {
     // searchWord가 변경되는 도중 호출하는 이슈
@@ -58,7 +61,7 @@ const MapPage = () => {
         searchPlaces(searchWord, 1, setMaxPage);
         onClickSearchButton(true);
       } else {
-        alert('검색 결과가 없습니다.');
+        dispatch(errorAccured('검색 결과가 없습니다.'));
         onClickSearchButton(false);
       }
     });

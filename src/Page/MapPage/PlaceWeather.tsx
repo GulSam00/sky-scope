@@ -5,7 +5,7 @@ import { gsap } from 'gsap';
 
 import { useLiveDataQuery } from '@src/Queries';
 import { KakaoSearchType } from '@src/Queries/useLiveDataQuery';
-import { loadingData, loadedData } from '@src/Store/loadingStateSlice';
+import { loadingData, loadedData, errorAccured } from '@src/Store/RequestStatusSlice';
 
 import { Spinner } from 'react-bootstrap';
 import { styled } from 'styled-components';
@@ -110,7 +110,7 @@ const PlaceWeather = ({
       }
     }
     if (error) {
-      alert(error);
+      dispatch(errorAccured(error.message));
       localStorage.removeItem('bookmarks');
       navigate('/error');
     }

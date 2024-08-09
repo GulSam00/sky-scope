@@ -3,13 +3,17 @@ import { useDispatch } from 'react-redux';
 import { Map, MapMarker } from 'react-kakao-maps-sdk';
 
 import { useKakaoLoader } from '@src/Hook';
-import { transLocaleToCoord } from '@src/Util';
-import { ICoord } from '@src/API/getWeatherShort';
-import { setCity, setProvince } from '@src/Store/locationDataSlice';
-import { close } from '@src/Store/kakaoModalSlice';
-import { LocateDataType } from '@src/Queries/useLiveDataQuery';
-import SearchResultPagination from './SearchResultPagination';
 
+import { ICoord } from '@src/API/getWeatherShort';
+import { LocateDataType } from '@src/Queries/useLiveDataQuery';
+
+import { errorAccured } from '@src/Store/RequestStatusSlice';
+import { close } from '@src/Store/kakaoModalSlice';
+import { setCity, setProvince } from '@src/Store/locationDataSlice';
+
+import { transLocaleToCoord } from '@src/Util';
+
+import SearchResultPagination from './SearchResultPagination';
 import { Form, Button, ListGroup } from 'react-bootstrap';
 import styled from 'styled-components';
 
@@ -97,7 +101,7 @@ const KaKaoMap = ({ handleChangeCoord }: IProps) => {
           setPlaces([...places]);
           map.setBounds(bounds);
         } else {
-          alert('검색 결과가 없습니다.');
+          dispatch(errorAccured('검색 결과가 없습니다.'));
           setPlaces([]);
         }
       },
