@@ -28,7 +28,7 @@ const Layout = () => {
       {isLoading && <LoadingState />}
 
       <NavContainer isPhone={isPhone}>
-        <Nav variant='tabs'>
+        <Nav>
           <Nav.Item>
             <Nav.Link href='/' disabled={location.pathname === '/'}>
               실시간 날씨
@@ -77,20 +77,20 @@ const GlobalLayoutContainer = styled.div<Props>`
   position: relative;
   margin-top: 4rem;
 `;
+
 const NavContainer = styled.div<Props>`
   position: fixed;
   z-index: 1000;
   top: 0;
+
   // 임의로 400px, 375px면 화면 넘어감(wrap)
-  width: ${props => (props.isPhone ? '400px' : '100%')};
-  margin: 0 auto;
-
-  background-color: white;
-
-  nav {
-    display: flex;
-    flex-wrap: nowrap;
+  @media (min-width: 640px) {
+    width: ${props => (props.isPhone ? '400px' : '100%')};
   }
+  width: 100%;
+
+  margin: 0 auto;
+  border-bottom: 1px solid #dfe2e5;
 `;
 
 const ContentContainer = styled.div``;
