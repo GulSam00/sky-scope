@@ -50,7 +50,7 @@ const PlaceWeather = ({
 
   const firstPlaceRef = useRef<HTMLDivElement>(null);
 
-  const transFirstObject = () => {
+  const BlinkPlace = () => {
     const ref = firstPlaceRef.current;
 
     gsap.to(ref, {
@@ -90,7 +90,7 @@ const PlaceWeather = ({
   };
 
   const handleClickPlace = (place: KakaoSearchType) => {
-    transFirstObject();
+    BlinkPlace();
     onFocusPlace(place);
   };
 
@@ -106,7 +106,7 @@ const PlaceWeather = ({
     } else {
       dispatch(loadedData());
       if (isFirstPlace && !isIgnored) {
-        transFirstObject();
+        BlinkPlace();
       }
     }
     if (error) {

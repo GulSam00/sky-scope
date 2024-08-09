@@ -2,7 +2,7 @@ import { useState, useRef, useCallback } from 'react';
 import { Map, MapMarker } from 'react-kakao-maps-sdk';
 
 import { LoadingState } from '@src/Component';
-import { useKakaoLoader, useMapMarker, useAutoSearch } from '@src/Hook';
+import { useKakaoLoader, useMapInfo, useAutoSearch } from '@src/Hook';
 import { KakaoMapMarkerType } from '@src/Queries/useLiveDataQuery';
 
 import { Form, Button, ListGroup } from 'react-bootstrap';
@@ -27,7 +27,7 @@ const MapPage = () => {
     onDeletePlace,
     onClickFooterPlace,
     setIsBlinkPlaces,
-  } = useMapMarker({ map });
+  } = useMapInfo({ map });
 
   const {
     isAutoSearch,

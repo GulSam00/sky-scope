@@ -7,7 +7,7 @@ interface Props {
   map: kakao.maps.Map | null;
 }
 
-const useMapMarker = ({ map }: Props) => {
+const useMapInfo = ({ map }: Props) => {
   const [footerPlaces, setFooterPlaces] = useState<LocateDataType[]>([]);
   const [currentPlaces, setCurrentPlaces] = useState<KakaoSearchType[]>([]);
   const [bookmarkPlaces, setBookmarkPlaces] = useState<KakaoSearchType[]>([]);
@@ -25,7 +25,7 @@ const useMapMarker = ({ map }: Props) => {
 
   const onClickMarker = (marker: KakaoMapMarkerType) => {
     focusMap(marker.position);
-    isSwapMarker(marker.placeId);
+    isSwapPlace(marker.placeId);
   };
 
   const searchPlaces = (keyword: string, page: number, setMaxPage: React.Dispatch<React.SetStateAction<number>>) => {
@@ -72,7 +72,7 @@ const useMapMarker = ({ map }: Props) => {
 
   const onFocusPlace = useCallback(
     (place: KakaoSearchType) => {
-      isSwapMarker(place.placeId);
+      isSwapPlace(place.placeId);
       focusMap(place.position);
     },
     [currentPlaces, bookmarkPlaces, mapMarkers],
@@ -139,7 +139,7 @@ const useMapMarker = ({ map }: Props) => {
     }
   };
 
-  const isSwapMarker = (placeId: string) => {
+  const isSwapPlace = (placeId: string) => {
     const currentIndex = currentPlaces.findIndex(item => item.placeId === placeId);
     const bookmarkIndex = bookmarkPlaces.findIndex(item => item.placeId === placeId);
     if (currentIndex !== -1) {
@@ -225,7 +225,7 @@ const useMapMarker = ({ map }: Props) => {
       if (currentPlaces.length || bookmarkPlaces.length) {
         // currentPlaces나 bookmarkPlaces에 이미 존재하면 순서를 바꾸고 종료
         // currentPlaces, mapMarkers에 추가하지 않는다.
-        if (isSwapMarker(clickedFooterPlace.placeId) !== 0) return;
+        if (isSwapPlace(clickedFooterPlace.placeId) !== 0) return;
       }
 
       const apiLocalPosition = { lat: ny, lng: nx };
@@ -290,4 +290,4 @@ const useMapMarker = ({ map }: Props) => {
   };
 };
 
-export default useMapMarker;
+export default useMapInfo;
