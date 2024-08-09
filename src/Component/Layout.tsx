@@ -17,16 +17,14 @@ const Layout = () => {
 
   const switchPhone = () => {
     if (!isPhone) {
-      document.body.style.width = '375px';
       setIsPhone(true);
     } else {
-      document.body.style.width = '100%';
       setIsPhone(false);
     }
   };
 
   return (
-    <LayoutContainer>
+    <GlobalLayoutContainer isPhone={isPhone}>
       {isLoading && <LoadingState />}
 
       <NavContainer isPhone={isPhone}>
@@ -57,23 +55,29 @@ const Layout = () => {
       <ContentContainer>
         <Outlet />
       </ContentContainer>
-    </LayoutContainer>
+    </GlobalLayoutContainer>
   );
 };
 
 export default Layout;
 
-interface NavContainerProps {
+interface Props {
   isPhone: boolean;
 }
 
-const LayoutContainer = styled.div`
+const GlobalLayoutContainer = styled.div<Props>`
+  margin-left: auto;
+  margin-right: auto;
+
+  @media (min-width: 640px) {
+    width: ${props => (props.isPhone ? '375px' : '100%')};
+  }
+  height: 100dvh;
+
   position: relative;
-  width: 100%;
-  height: 100vh;
   margin-top: 4rem;
 `;
-const NavContainer = styled.div<NavContainerProps>`
+const NavContainer = styled.div<Props>`
   position: fixed;
   z-index: 1000;
   top: 0;
