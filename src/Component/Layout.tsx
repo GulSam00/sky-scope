@@ -72,7 +72,7 @@ const GlobalLayoutContainer = styled.div<Props>`
   margin-right: auto;
 
   @media (min-width: 640px) {
-    width: ${props => (props.isPhone ? '375px' : '100%')};
+    width: ${props => (props.isPhone ? '400px' : '100%')};
   }
   height: 100dvh;
 
