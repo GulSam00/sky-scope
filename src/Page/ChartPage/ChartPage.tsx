@@ -30,5 +30,5 @@ const DayContainer = styled.div`
   flex-direction: column;
   justify-content: space-between;
 
-  margin-top: 2rem;
+  margin-top: 3rem;
 `;

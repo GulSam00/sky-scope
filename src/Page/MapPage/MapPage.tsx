@@ -194,7 +194,7 @@ export default MapPage;
 const MapContainer = styled.div`
   overflow: auto;
   border-radius: 1rem;
-  margin-top: 2rem;
+  margin-top: 3rem;
 `;
 
 const FormContainer = styled.div`
