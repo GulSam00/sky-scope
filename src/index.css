@@ -23,9 +23,14 @@
 }
 
 body {
-  width: 100%;
-  height: 100%;
-  
+  @media (min-width: 640px) {
+       
+    width: var(--curWidth);
+  }
+  height: 100dvh; 
+  margin-left: auto;
+  margin-right: auto;  
+
   -ms-overflow-style:none; /* IE and Edge */
   scrollbar-width:none; /* Firefox */
 

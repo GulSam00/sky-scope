@@ -252,8 +252,8 @@ const MapMarkerContent = styled.div`
 
 const WholeMap = styled.div`
   position: absolute;
-  top: 20px;
-  left: 20px;
+  top: 1rem;
+  left: 1rem;
   z-index: 1000;
 
   display: flex;
@@ -261,14 +261,14 @@ const WholeMap = styled.div`
   align-items: center;
 
   background-color: white;
-  height: 70px;
-  width: 70px;
+  height: 4rem;
+  width: 4rem;
   border-radius: 50%;
   border: 1px solid #0d6efd;
 
   cursor: pointer;
   img {
-    width: 30px;
-    height: 30px;
+    width: 2rem;
+    height: 2rem;
   }
 `;
