@@ -5,7 +5,7 @@ import TempertureLineGraph from './TempertureLineGraph';
 import RainLineGraph from './RainLineGraph';
 
 import { getDayOfWeek } from '@src/Util';
-import { loadedData } from '@src/Store/loadingStateSlice';
+import { loadedData } from '@src/Store/RequestStatusSlice';
 import { IDateData } from '@src/API/getWeatherShort';
 
 import { Button } from 'react-bootstrap';

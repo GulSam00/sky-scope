@@ -1,7 +1,9 @@
 import { useState, useEffect, useCallback } from 'react';
-import { transLocaleToCoord } from '@src/Util';
+import { useDispatch } from 'react-redux';
 
+import { errorAccured } from '@src/Store/RequestStatusSlice';
 import { LocateDataType, KakaoSearchType, KakaoMapMarkerType, markerStatus } from '@src/Queries/useLiveDataQuery';
+import { transLocaleToCoord } from '@src/Util';
 
 interface Props {
   map: kakao.maps.Map | null;
@@ -15,6 +17,8 @@ const useMapInfo = ({ map }: Props) => {
   const [isBlinkPlaces, setIsBlinkPlaces] = useState<boolean[]>([true, true]); // bookmark : 0, current : 1
 
   const [viewportWidth, setViewportWidth] = useState(window.innerWidth);
+
+  const dispatch = useDispatch();
 
   const focusMap = (position: { lat: number; lng: number }) => {
     if (!map) return;
@@ -63,7 +67,7 @@ const useMapInfo = ({ map }: Props) => {
           setFooterPlaces([...kakaoSearchMarkers]);
           map.setBounds(bounds);
         } else {
-          alert('검색 결과가 없습니다.');
+          dispatch(errorAccured('검색 결과가 없습니다.'));
         }
       },
       { size: contentBerPage, page: page },

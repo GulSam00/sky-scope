@@ -1,18 +1,22 @@
 import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { ICoord } from '@src/API/getWeatherShort';
 import { useGeolocation } from '@src/Hook';
 import { locationType } from '@src/Hook/useGeolocation';
+import { ICoord } from '@src/API/getWeatherShort';
+
 import { RootState } from '@src/Store/store';
 import { open } from '@src/Store/kakaoModalSlice';
+import { errorAccured } from '@src/Store/RequestStatusSlice';
 import { setCity, setProvince, initLocation } from '@src/Store/locationDataSlice';
+
 import { transLocaleToCoord, setLocalCoordInfo } from '@src/Util';
 
 import { Form, Button } from 'react-bootstrap';
 import styled from 'styled-components';
 
 import _short_local from '@src/JSON/short_api_locals.json';
+
 const short_local = _short_local as ICoordJson;
 
 interface ICoordJson {
@@ -63,7 +67,7 @@ const LocationHeader = ({ handleChangeCoord }: IProps) => {
       lat = Number(lat.toFixed(7));
 
       if (prevLng === lng && prevLat === lat) {
-        alert('이미 현재 위치 정보입니다.');
+        dispatch(errorAccured('이미 현재 위치 정보입니다.'));
         return;
       }
       localStorage.setItem('Geolng', lng.toString());
@@ -78,6 +82,7 @@ const LocationHeader = ({ handleChangeCoord }: IProps) => {
       }
     } else {
       alert('현재 위치 정보를 가져올 수 없습니다.');
+      dispatch(errorAccured('현재 위치 정보를 가져올 수 없습니다.'));
     }
   };
 

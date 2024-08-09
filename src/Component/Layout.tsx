@@ -3,16 +3,17 @@ import { Outlet, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 import { RootState } from '@src/Store/store';
-import { LoadingState } from '@src/Component';
 
+import { LoadingState, Toast } from '@src/Component';
+import { Nav } from 'react-bootstrap';
 import { Github, Phone, PhoneFill } from 'react-bootstrap-icons';
-import Nav from 'react-bootstrap/Nav';
+
 import { styled } from 'styled-components';
 
 const Layout = () => {
   const [isPhone, setIsPhone] = useState(false);
 
-  const { isLoading } = useSelector((state: RootState) => state.loadingStateSliceReducer);
+  const { isLoading, errorMessage } = useSelector((state: RootState) => state.RequestStatusSliceReducer);
   const location = useLocation();
 
   const switchPhone = () => {
@@ -26,6 +27,7 @@ const Layout = () => {
   return (
     <GlobalLayoutContainer isPhone={isPhone}>
       {isLoading && <LoadingState />}
+      {errorMessage && <Toast content={errorMessage} />}
 
       <NavContainer isPhone={isPhone}>
         <Nav>
@@ -70,7 +72,7 @@ const GlobalLayoutContainer = styled.div<Props>`
   margin-right: auto;
 
   @media (min-width: 640px) {
-    width: ${props => (props.isPhone ? '375px' : '100%')};
+    width: ${props => (props.isPhone ? '400px' : '100%')};
   }
   height: 100dvh;
 
@@ -91,6 +93,7 @@ const NavContainer = styled.div<Props>`
 
   margin: 0 auto;
   border-bottom: 1px solid #dfe2e5;
+  background-color: white;
 `;
 
 const ContentContainer = styled.div``;
