@@ -1,23 +1,29 @@
 import { useState, useRef, useCallback } from 'react';
+import { useDispatch } from 'react-redux';
 import { Map, MapMarker } from 'react-kakao-maps-sdk';
 
 import { LoadingState } from '@src/Component';
-import { useKakaoLoader, useMapMarker, useAutoSearch } from '@src/Hook';
+import { useKakaoLoader, useMapInfo, useAutoSearch } from '@src/Hook';
 import { KakaoMapMarkerType } from '@src/Queries/useLiveDataQuery';
 
+import { errorAccured } from '@src/Store/RequestStatusSlice';
+
 import { Form, Button, ListGroup } from 'react-bootstrap';
-
-import styled from 'styled-components';
-
 import DynamicPlaces from './DynamicPlaces';
 import FooterPlaces from './FooterPlaces';
 
+import styled from 'styled-components';
+
 const MapPage = () => {
   const [map, setMap] = useState<kakao.maps.Map | null>(null);
+  const [curPage, setCurPage] = useState<number>(1);
+  const [maxPage, setMaxPage] = useState<number>(1);
+
   const {
     footerPlaces,
     currentPlaces,
     bookmarkPlaces,
+    isBlinkPlaces,
     mapMarkers,
     onClickMarker,
     searchPlaces,
@@ -25,7 +31,8 @@ const MapPage = () => {
     onTogglePlace,
     onDeletePlace,
     onClickFooterPlace,
-  } = useMapMarker({ map });
+    setIsBlinkPlaces,
+  } = useMapInfo({ map });
 
   const {
     isAutoSearch,
@@ -39,12 +46,10 @@ const MapPage = () => {
     onClickAutoGroup,
   } = useAutoSearch();
 
-  const mapRef = useRef<kakao.maps.Map>(null);
-
-  const [curPage, setCurPage] = useState<number>(1);
-  const [maxPage, setMaxPage] = useState<number>(1);
-
   const { kakaoLoading, kakaoError } = useKakaoLoader();
+
+  const mapRef = useRef<kakao.maps.Map>(null);
+  const dispatch = useDispatch();
 
   const insertAddress = () => {
     // searchWord가 변경되는 도중 호출하는 이슈
@@ -56,7 +61,7 @@ const MapPage = () => {
         searchPlaces(searchWord, 1, setMaxPage);
         onClickSearchButton(true);
       } else {
-        alert('검색 결과가 없습니다.');
+        dispatch(errorAccured('검색 결과가 없습니다.'));
         onClickSearchButton(false);
       }
     });
@@ -86,24 +91,32 @@ const MapPage = () => {
     [map, curPage, maxPage, mapMarkers],
   );
 
+  const handleBlinkPlace = useCallback(() => {
+    setIsBlinkPlaces([false, false]);
+  }, []);
+
   return (
     <MapContainer>
       {kakaoLoading && <LoadingState />}
 
       <DynamicPlaces
+        type='bookmark'
         places={bookmarkPlaces}
+        isBlinkPlace={isBlinkPlaces[0]}
+        onBlinkPlace={handleBlinkPlace}
         onFocusPlace={onFocusPlace}
         onTogglePlace={onTogglePlace}
         onDeletePlace={onDeletePlace}
-        type='bookmark'
       />
 
       <DynamicPlaces
+        type='current'
         places={currentPlaces}
+        isBlinkPlace={isBlinkPlaces[1]}
+        onBlinkPlace={handleBlinkPlace}
         onFocusPlace={onFocusPlace}
         onTogglePlace={onTogglePlace}
         onDeletePlace={onDeletePlace}
-        type='current'
       />
 
       <FormContainer>
@@ -226,7 +239,7 @@ const MapMarkerContent = styled.div`
   display: flex;
   width: 150px;
   height: 36px;
-  padding: 8px;
+  padding: 0.5rem;
 
   align-items: center;
 
@@ -242,8 +255,8 @@ const MapMarkerContent = styled.div`
 
 const WholeMap = styled.div`
   position: absolute;
-  top: 20px;
-  left: 20px;
+  top: 1rem;
+  left: 1rem;
   z-index: 1000;
 
   display: flex;
@@ -251,14 +264,14 @@ const WholeMap = styled.div`
   align-items: center;
 
   background-color: white;
-  height: 70px;
-  width: 70px;
+  height: 4rem;
+  width: 4rem;
   border-radius: 50%;
   border: 1px solid #0d6efd;
 
   cursor: pointer;
   img {
-    width: 30px;
-    height: 30px;
+    width: 2rem;
+    height: 2rem;
   }
 `;

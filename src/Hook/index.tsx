@@ -1,6 +1,6 @@
 import useGeolocation from './useGeolocation';
 import useKakaoLoader from './useKakaoLoader';
-import useMapMarker from './useMapMarker';
+import useMapInfo from './useMapInfo';
 import useAutoSearch from './useAutoSearch';
 
-export { useGeolocation, useKakaoLoader, useMapMarker, useAutoSearch };
+export { useGeolocation, useKakaoLoader, useMapInfo, useAutoSearch };

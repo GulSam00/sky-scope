@@ -8,12 +8,13 @@ import MapModal from './MapModal';
 import EmptyGraph from './EmptyGraph';
 import RecentDay from './RecentDay';
 
-import { RootState } from '@src/Store/store';
+import { ICoord } from '@src/API/getWeatherShort';
 import { useShortDataQuery } from '@src/Queries';
 
-import { ICoord } from '@src/API/getWeatherShort';
+import { RootState } from '@src/Store/store';
 import { setCoord } from '@src/Store/shortDataSlice';
-import { loadingData } from '@src/Store/loadingStateSlice';
+import { loadingData } from '@src/Store/RequestStatusSlice';
+import { errorAccured } from '@src/Store/RequestStatusSlice';
 
 import { addDays } from 'date-fns';
 import { styled } from 'styled-components';
@@ -46,7 +47,7 @@ const RecentDays = () => {
       initCoord();
     }
     if (error) {
-      alert(error);
+      dispatch(errorAccured(error.message));
       navigate('/error');
     }
   }, [error]);

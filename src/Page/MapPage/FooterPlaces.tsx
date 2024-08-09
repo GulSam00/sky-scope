@@ -68,15 +68,21 @@ export default memo(FooterPlaces);
 const MarkersContainer = styled.div`
   display: flex;
   flex-direction: column;
-  width: 100vw;
   position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+
+  margin: 0 auto;
   bottom: 1rem;
   z-index: 1500;
 `;
 
 const MarkerGroup = styled.div`
   display: flex;
+
   justify-content: center;
+  padding: 0 0.5rem;
 
   .selected {
     background-color: #0d6efd;
@@ -85,9 +91,9 @@ const MarkerGroup = styled.div`
   }
 
   > * {
-    width: 64px;
-    height: 128px;
-    padding: 8px;
+    width: 4rem;
+    height: 5rem;
+    padding: 0.5rem;
 
     border: 1px solid;
     border-radius: 1rem;
@@ -98,7 +104,7 @@ const MarkerGroup = styled.div`
   }
 
   > div {
-    width: 128px;
+    width: 6rem;
     margin: 0 4px;
 
     font-size: 1.2rem;
