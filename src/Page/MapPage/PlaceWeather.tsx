@@ -22,31 +22,35 @@ import {
 } from 'react-bootstrap-icons';
 
 interface Props {
-  marker: KakaoSearchType;
-  onFocusPlace: (marker: KakaoSearchType) => void;
+  place: KakaoSearchType;
+  onFocusPlace: (place: KakaoSearchType) => void;
   onTogglePlace: (placeId: string, isBookmarked: boolean) => void;
   onDeletePlace: (placeId: string, isBookmarked: boolean) => void;
   isFirstPlace: boolean;
+  isBlinkPlace: boolean;
+  onBlinkPlace: () => void;
   isIgnored: boolean;
   setIsIgnored: (value: boolean) => void; // 삭제 이벤트 플래그 설정 함수
 }
 
 const PlaceWeather = ({
-  marker,
+  place,
   onFocusPlace,
   onTogglePlace,
   onDeletePlace,
   isFirstPlace,
+  isBlinkPlace,
+  onBlinkPlace,
   isIgnored,
   setIsIgnored,
 }: Props) => {
-  const { isLoading, data, error } = useLiveDataQuery(new Date(), marker);
+  const { isLoading, data, error } = useLiveDataQuery(new Date(), place);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const firstPlaceRef = useRef<HTMLDivElement>(null);
 
-  const transFirstObject = () => {
+  const BlinkPlace = () => {
     const ref = firstPlaceRef.current;
 
     gsap.to(ref, {
@@ -56,6 +60,8 @@ const PlaceWeather = ({
         gsap.to(ref, { backgroundColor: '#ffffff', duration: 0.25 });
       },
     });
+    ref?.scrollIntoView({ behavior: 'instant', block: 'center', inline: 'center' });
+    onBlinkPlace();
   };
 
   const transformSkyCode = (skyCode: string) => {
@@ -79,13 +85,18 @@ const PlaceWeather = ({
 
   const handleClickBookmark = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     e.stopPropagation();
-    onTogglePlace(marker.placeId, marker.isBookmarked);
+    onTogglePlace(place.placeId, place.isBookmarked);
     setIsIgnored(true);
+  };
+
+  const handleClickPlace = (place: KakaoSearchType) => {
+    BlinkPlace();
+    onFocusPlace(place);
   };
 
   const handleClickDelete = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     e.stopPropagation();
-    onDeletePlace(marker.placeId, marker.isBookmarked);
+    onDeletePlace(place.placeId, place.isBookmarked);
     setIsIgnored(true);
   };
 
@@ -94,21 +105,23 @@ const PlaceWeather = ({
       dispatch(loadingData());
     } else {
       dispatch(loadedData());
-      if (isFirstPlace && !isIgnored) transFirstObject();
+      if (isFirstPlace && !isIgnored) {
+        BlinkPlace();
+      }
     }
     if (error) {
       alert(error);
       localStorage.removeItem('bookmarks');
       navigate('/error');
     }
-  }, [isLoading, isFirstPlace]);
+  }, [isLoading, isFirstPlace, isBlinkPlace]);
 
   return (
     <MarkerWeatherContainer ref={firstPlaceRef}>
       {data ? (
-        <div onClick={() => onFocusPlace(marker)}>
+        <div onClick={() => handleClickPlace(place)}>
           <div className='bookmark' onClick={e => handleClickBookmark(e)}>
-            {marker.isBookmarked ? (
+            {place.isBookmarked ? (
               <img src='/icons/star-fill.svg' alt='star' width={24} />
             ) : (
               <img src='/icons/star.svg' alt='star' width={24} />
@@ -205,5 +218,5 @@ const SpinnerContainer = styled.div`
   align-items: center;
   height: 100%;
   width: 100%;
-  font-size: 18px;
+  font-size: 1rem;
 `;

@@ -6,7 +6,7 @@ const serviceKey: string = import.meta.env.VITE_API_SERVICE_KEY;
 
 const instance: AxiosInstance = axios.create({
   baseURL: url,
-  timeout: 2000,
+  timeout: 3000,
   headers: {
     'Content-Type': 'application/json',
   },

@@ -1,24 +1,34 @@
+import { useState, useEffect } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 import { RootState } from '@src/Store/store';
 import { LoadingState } from '@src/Component';
 
-import { Github } from 'react-bootstrap-icons';
+import { Github, Phone, PhoneFill } from 'react-bootstrap-icons';
 import Nav from 'react-bootstrap/Nav';
 import { styled } from 'styled-components';
 
 const Layout = () => {
-  const { isLoading } = useSelector((state: RootState) => state.loadingStateSliceReducer);
+  const [isPhone, setIsPhone] = useState(false);
 
+  const { isLoading } = useSelector((state: RootState) => state.loadingStateSliceReducer);
   const location = useLocation();
 
+  const switchPhone = () => {
+    if (!isPhone) {
+      setIsPhone(true);
+    } else {
+      setIsPhone(false);
+    }
+  };
+
   return (
-    <LayoutContainer>
+    <GlobalLayoutContainer isPhone={isPhone}>
       {isLoading && <LoadingState />}
 
-      <NavContainer>
-        <Nav variant='tabs'>
+      <NavContainer isPhone={isPhone}>
+        <Nav>
           <Nav.Item>
             <Nav.Link href='/' disabled={location.pathname === '/'}>
               실시간 날씨
@@ -30,9 +40,14 @@ const Layout = () => {
             </Nav.Link>
           </Nav.Item>
           <Nav.Item>
-            <GithubContainer>
+            <IconContainer>
               <Github onClick={() => window.open('https://github.com/GulSam00/sky-scope')} />
-            </GithubContainer>
+            </IconContainer>
+          </Nav.Item>
+          <Nav.Item>
+            <IconContainer>
+              {!isPhone ? <Phone onClick={switchPhone} /> : <PhoneFill onClick={switchPhone} />}
+            </IconContainer>
           </Nav.Item>
         </Nav>
       </NavContainer>
@@ -40,33 +55,47 @@ const Layout = () => {
       <ContentContainer>
         <Outlet />
       </ContentContainer>
-    </LayoutContainer>
+    </GlobalLayoutContainer>
   );
 };
 
 export default Layout;
 
-const LayoutContainer = styled.div`
+interface Props {
+  isPhone: boolean;
+}
+
+const GlobalLayoutContainer = styled.div<Props>`
+  margin-left: auto;
+  margin-right: auto;
+
+  @media (min-width: 640px) {
+    width: ${props => (props.isPhone ? '375px' : '100%')};
+  }
+  height: 100dvh;
+
   position: relative;
-  width: 100%;
-  margin-top: 64px;
+  margin-top: 4rem;
 `;
-const NavContainer = styled.div`
+
+const NavContainer = styled.div<Props>`
   position: fixed;
   z-index: 1000;
-  width: 100%;
   top: 0;
-  background-color: white;
 
-  nav {
-    display: flex;
-    flex-wrap: nowrap;
+  // 임의로 400px, 375px면 화면 넘어감(wrap)
+  @media (min-width: 640px) {
+    width: ${props => (props.isPhone ? '400px' : '100%')};
   }
+  width: 100%;
+
+  margin: 0 auto;
+  border-bottom: 1px solid #dfe2e5;
 `;
 
 const ContentContainer = styled.div``;
 
-const GithubContainer = styled.div`
+const IconContainer = styled.div`
   display: flex;
   align-items: center;
 
