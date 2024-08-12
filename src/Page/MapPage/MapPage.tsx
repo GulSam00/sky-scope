@@ -134,26 +134,27 @@ const MapPage = () => {
   return (
     <MapContainer>
       {kakaoLoading && <LoadingState />}
+      <PlacesContainer>
+        <DynamicPlaces
+          type='bookmark'
+          places={bookmarkPlaces}
+          isBlinkPlace={isBlinkPlaces[0]}
+          onBlinkPlace={handleBlinkPlace}
+          onFocusPlace={onFocusPlace}
+          onTogglePlace={onTogglePlace}
+          onDeletePlace={onDeletePlace}
+        />
 
-      <DynamicPlaces
-        type='bookmark'
-        places={bookmarkPlaces}
-        isBlinkPlace={isBlinkPlaces[0]}
-        onBlinkPlace={handleBlinkPlace}
-        onFocusPlace={onFocusPlace}
-        onTogglePlace={onTogglePlace}
-        onDeletePlace={onDeletePlace}
-      />
-
-      <DynamicPlaces
-        type='current'
-        places={currentPlaces}
-        isBlinkPlace={isBlinkPlaces[1]}
-        onBlinkPlace={handleBlinkPlace}
-        onFocusPlace={onFocusPlace}
-        onTogglePlace={onTogglePlace}
-        onDeletePlace={onDeletePlace}
-      />
+        <DynamicPlaces
+          type='current'
+          places={currentPlaces}
+          isBlinkPlace={isBlinkPlaces[1]}
+          onBlinkPlace={handleBlinkPlace}
+          onFocusPlace={onFocusPlace}
+          onTogglePlace={onTogglePlace}
+          onDeletePlace={onDeletePlace}
+        />
+      </PlacesContainer>
 
       <FormContainer>
         <Form>
@@ -231,10 +232,13 @@ const MapPage = () => {
 export default MapPage;
 
 const MapContainer = styled.div`
-  overflow: auto;
   border-radius: 1rem;
+  overflow: hidden;
 `;
 
+const PlacesContainer = styled.div`
+  display: flex;
+`;
 const FormContainer = styled.div`
   display: flex;
   justify-content: space-between;
@@ -269,7 +273,7 @@ const KakaoMapContainer = styled.div`
   position: relative;
   margin: 1rem;
   #kakao-map {
-    height: 70vh;
+    height: 63vh;
     width: 100%;
   }
 `;

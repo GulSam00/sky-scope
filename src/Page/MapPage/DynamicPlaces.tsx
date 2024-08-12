@@ -51,11 +51,11 @@ const DynamicPlaces = ({
   }, [places]);
 
   return (
-    <MarkerContiner>
+    <DynamicPlacesContainer type={type}>
       {PlaceHeader(type)}
 
       {places.length !== 0 && (
-        <Markers>
+        <Places>
           {places.map((place: KakaoSearchType, i: number) => (
             <PlaceWeather
               key={type + place.placeId + place.placeName}
@@ -70,23 +70,30 @@ const DynamicPlaces = ({
               setIsIgnored={setIsIgnored}
             />
           ))}
-        </Markers>
+        </Places>
       )}
-    </MarkerContiner>
+    </DynamicPlacesContainer>
   );
 };
 
 export default memo(DynamicPlaces);
 
-const MarkerContiner = styled.div`
+interface StyleProps {
+  type: string;
+}
+
+const DynamicPlacesContainer = styled.div<StyleProps>`
   display: flex;
   flex-direction: column;
-  min-height: 200px;
-  margin: 1rem;
-  padding: 1rem;
-  border: 1px solid #0d6efd;
-  border-radius: 1rem;
-  gap: 0.5rem;
+  min-height: 10rem;
+
+  // margin: 0.5rem;
+  // padding: 0.5rem;
+  // border: 1px solid;
+  // border-radius: 1rem;
+
+  // z-index: 3000;
+  min-width: 50%;
 
   > div {
     display: flex;
@@ -96,8 +103,14 @@ const MarkerContiner = styled.div`
   }
 `;
 
-const Markers = styled.div`
+const Places = styled.div`
   display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+
+  height: 10rem;
+
   gap: 1rem;
-  overflow-x: auto;
+  overflow-x: hidden;
+  overflow-y: auto;
 `;

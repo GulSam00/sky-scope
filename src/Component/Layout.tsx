@@ -77,11 +77,10 @@ const GlobalLayoutContainer = styled.div<Props>`
   height: 100dvh;
 
   position: relative;
-  margin-top: 4rem;
 `;
 
 const NavContainer = styled.div<Props>`
-  position: fixed;
+  position: sticky;
   z-index: 1000;
   top: 0;
 
