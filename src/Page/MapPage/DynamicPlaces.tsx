@@ -106,11 +106,9 @@ const DynamicPlacesContainer = styled.div<StyleProps>`
 const Places = styled.div`
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
 
-  height: 10rem;
+  max-height: 10rem;
 
-  gap: 1rem;
   overflow-x: hidden;
   overflow-y: auto;
 `;
