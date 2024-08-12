@@ -22,6 +22,7 @@ const useMapInfo = ({ map }: Props) => {
 
   const focusMap = (position: { lat: number; lng: number }) => {
     if (!map) return;
+    // focus가 반영되지 않는 이슈
     const kakaoPosition = new kakao.maps.LatLng(position.lat, position.lng);
     map.setLevel(2);
     map.panTo(kakaoPosition);
@@ -29,7 +30,8 @@ const useMapInfo = ({ map }: Props) => {
 
   const onClickMarker = (marker: KakaoMapMarkerType) => {
     focusMap(marker.position);
-    isSwapPlace(marker.placeId);
+    // onClickFooterPlace에서 isSwapPlace를 호출하므로 주석처리
+    // isSwapPlace(marker.placeId);
     onClickFooterPlace(marker);
   };
 
@@ -63,7 +65,6 @@ const useMapInfo = ({ map }: Props) => {
             parsedOnMapMarkers.push({ placeName, placeId, position, status, image });
             bounds.extend(new kakao.maps.LatLng(position.lat, position.lng));
           });
-
           changeOnMapMarkers(parsedOnMapMarkers);
           setFooterPlaces([...kakaoSearchMarkers]);
           map.setBounds(bounds);
