@@ -4,26 +4,26 @@ import { useDispatch } from 'react-redux';
 import { loadedData } from '@src/Store/RequestStatusSlice';
 import { styled } from 'styled-components';
 
-const ErrorPage = () => {
+const NotFoundPage = () => {
   const dispatch = useDispatch();
 
   dispatch(loadedData());
 
   return (
-    <ErrorPageContainer>
+    <NotFoundPageContainer>
       <div className='error-message'>
         <div>
-          <h2>500 Internal Server Error</h2>
+          <h2>404 Not Found</h2>
         </div>
-        <div>죄송합니다, 서버에 문제가 발생했습니다.</div>
+        <div>존재하지 않는 페이지입니다.</div>
       </div>
-    </ErrorPageContainer>
+    </NotFoundPageContainer>
   );
 };
 
-export default ErrorPage;
+export default NotFoundPage;
 
-const ErrorPageContainer = styled.div`
+const NotFoundPageContainer = styled.div`
   position: relative;
   width: 100%;
   height: 100dvh;

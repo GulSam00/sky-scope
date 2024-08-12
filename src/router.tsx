@@ -7,6 +7,7 @@ import { Layout } from '@src/Component';
 const MapPage = lazy(() => import('@src/Page/MapPage'));
 const ChartPage = lazy(() => import('@src/Page/ChartPage'));
 const ErrorPage = lazy(() => import('@src/Page/ErrorPage'));
+const NotFoundPage = lazy(() => import('@src/Page/NotFoundPage'));
 
 const LazyComponent = ({ children }: { children: React.ReactNode }) => {
   return <Suspense fallback={<LoadingState />}>{children}</Suspense>;
@@ -39,6 +40,14 @@ const BrowserRouter = createBrowserRouter([
         element: (
           <LazyComponent>
             <ErrorPage />
+          </LazyComponent>
+        ),
+      },
+      {
+        path: '*',
+        element: (
+          <LazyComponent>
+            <NotFoundPage />
           </LazyComponent>
         ),
       },

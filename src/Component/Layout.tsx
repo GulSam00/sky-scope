@@ -77,7 +77,6 @@ const GlobalLayoutContainer = styled.div<Props>`
   height: 100dvh;
 
   position: relative;
-  margin-top: 4rem;
 `;
 
 const NavContainer = styled.div<Props>`
