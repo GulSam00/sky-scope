@@ -80,7 +80,7 @@ const GlobalLayoutContainer = styled.div<Props>`
 `;
 
 const NavContainer = styled.div<Props>`
-  position: fixed;
+  position: sticky;
   z-index: 1000;
   top: 0;
 

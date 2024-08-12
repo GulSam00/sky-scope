@@ -53,11 +53,9 @@ const KaKaoMap = ({ handleChangeCoord }: IProps) => {
   const overMarkerPos = (marker: LocateDataType) => {
     if (!map) return;
     // 마우스로 hover된 마커의 위치를 기준으로 지도 범위를 재설정
-
     const position = marker.position;
     map.setLevel(2);
     setMapLevel(map.getLevel());
-
     map.panTo(new kakao.maps.LatLng(position.lat, position.lng));
   };
 
