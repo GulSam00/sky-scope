@@ -243,7 +243,7 @@ const FormContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 0 1rem;
+  margin: 1rem;
 
   form {
     flex-grow: 1;

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Outlet, useLocation } from 'react-router-dom';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 import { RootState } from '@src/Store/store';
@@ -15,6 +15,7 @@ const Layout = () => {
 
   const { isLoading, errorMessage } = useSelector((state: RootState) => state.RequestStatusSliceReducer);
   const location = useLocation();
+  const navigate = useNavigate();
 
   const switchPhone = () => {
     if (!isPhone) {
@@ -30,7 +31,7 @@ const Layout = () => {
       {errorMessage && <Toast content={errorMessage} />}
 
       <NavContainer isPhone={isPhone}>
-        <Nav>
+        {/* <Nav>
           <Nav.Item>
             <Nav.Link href='/' disabled={location.pathname === '/'}>
               실시간 날씨
@@ -51,7 +52,18 @@ const Layout = () => {
               {!isPhone ? <Phone onClick={switchPhone} /> : <PhoneFill onClick={switchPhone} />}
             </IconContainer>
           </Nav.Item>
-        </Nav>
+        </Nav> */}
+        <Title onClick={() => navigate('/')}>
+          <img src='/scope.png' alt='logo' />
+          <div>Skyscope</div>
+        </Title>
+
+        <IconContainer>
+          <div>
+            <Github onClick={() => window.open('https://github.com/GulSam00/sky-scope')} />
+          </div>
+          <div>{!isPhone ? <Phone onClick={switchPhone} /> : <PhoneFill onClick={switchPhone} />}</div>
+        </IconContainer>
       </NavContainer>
 
       <ContentContainer>
@@ -77,9 +89,13 @@ const GlobalLayoutContainer = styled.div<Props>`
   height: 100dvh;
 
   position: relative;
+  overflow: hidden;
 `;
 
 const NavContainer = styled.div<Props>`
+  display: flex;
+  justify-content: space-between;
+
   position: sticky;
   z-index: 1000;
   top: 0;
@@ -89,6 +105,7 @@ const NavContainer = styled.div<Props>`
     width: ${props => (props.isPhone ? '400px' : '100%')};
   }
   width: 100%;
+  height: 3rem;
 
   margin: 0 auto;
   border-bottom: 1px solid #dfe2e5;
@@ -97,11 +114,28 @@ const NavContainer = styled.div<Props>`
 
 const ContentContainer = styled.div``;
 
-const IconContainer = styled.div`
+const Title = styled.div`
+  position: relative;
   display: flex;
   align-items: center;
-
-  padding: 0 10px;
-  height: 100%;
+  gap: 0.5rem;
   cursor: pointer;
+
+  img {
+    width: 2rem;
+    height: 2rem;
+  }
+`;
+
+const IconContainer = styled.div`
+  display: flex;
+
+  div {
+    display: flex;
+    align-items: center;
+
+    padding: 0 10px;
+    height: 100%;
+    cursor: pointer;
+  }
 `;

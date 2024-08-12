@@ -26,14 +26,14 @@ const BrowserRouter = createBrowserRouter([
           </LazyComponent>
         ),
       },
-      {
-        path: '/chart',
-        element: (
-          <LazyComponent>
-            <ChartPage />
-          </LazyComponent>
-        ),
-      },
+      // {
+      //   path: '/chart',
+      //   element: (
+      //     <LazyComponent>
+      //       <ChartPage />
+      //     </LazyComponent>
+      //   ),
+      // },
 
       {
         path: '/error',
