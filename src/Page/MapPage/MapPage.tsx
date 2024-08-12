@@ -1,10 +1,10 @@
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { Map, MapMarker } from 'react-kakao-maps-sdk';
 
 import { LoadingState } from '@src/Component';
 import { useKakaoLoader, useMapInfo, useAutoSearch } from '@src/Hook';
-import { KakaoMapMarkerType } from '@src/Queries/useLiveDataQuery';
+import { KakaoMapMarkerType, LocateDataType } from '@src/Queries/useLiveDataQuery';
 
 import { errorAccured } from '@src/Store/RequestStatusSlice';
 
@@ -18,6 +18,8 @@ const MapPage = () => {
   const [map, setMap] = useState<kakao.maps.Map | null>(null);
   const [curPage, setCurPage] = useState<number>(1);
   const [maxPage, setMaxPage] = useState<number>(1);
+  const [originPos, setOriginPos] = useState<kakao.maps.LatLng | null>(null);
+  const [originLevel, setOriginLevel] = useState<number>(0);
 
   const {
     footerPlaces,
@@ -76,48 +78,83 @@ const MapPage = () => {
       bounds.extend(position);
     });
     map.setBounds(bounds);
+    setOriginPos(map.getCenter());
+    setOriginLevel(map.getLevel());
   };
 
   const handlePageMove = useCallback(
     (weight: number) => {
-      if (!map) return;
-
       const page = curPage + weight;
-      if (page < 1 || page > maxPage) return;
-
       setCurPage(page);
       searchPlaces(lastSearchWord, page, setMaxPage);
     },
-    [map, curPage, maxPage, mapMarkers],
+    [curPage, maxPage, mapMarkers],
   );
 
   const handleBlinkPlace = useCallback(() => {
     setIsBlinkPlaces([false, false]);
   }, []);
 
+  const handleClickFooterPlace = useCallback(
+    (place: LocateDataType) => {
+      onClickFooterPlace(place);
+      if (!map) return;
+      const position = place.position;
+
+      map.panTo(new kakao.maps.LatLng(position.lat, position.lng));
+      map.setLevel(2);
+      setOriginPos(map.getCenter());
+      setOriginLevel(map.getLevel());
+    },
+    [map, footerPlaces, currentPlaces, bookmarkPlaces, originPos],
+  );
+
+  const onHoverPlace = useCallback(
+    (position: { lat: number; lng: number }) => {
+      if (!map) return;
+      map.setLevel(2);
+      map.panTo(new kakao.maps.LatLng(position.lat, position.lng));
+    },
+    [map, footerPlaces, originPos],
+  );
+
+  const onHoverOutPlace = useCallback(() => {
+    if (!map || !originPos) return;
+    map.setLevel(originLevel);
+    map.panTo(originPos);
+  }, [map, footerPlaces, originPos]);
+
+  useEffect(() => {
+    if (!map) return;
+    const center = map.getCenter();
+    setOriginPos(center);
+    setOriginLevel(map.getLevel());
+  }, [footerPlaces]);
+
   return (
     <MapContainer>
       {kakaoLoading && <LoadingState />}
+      <PlacesContainer>
+        <DynamicPlaces
+          type='bookmark'
+          places={bookmarkPlaces}
+          isBlinkPlace={isBlinkPlaces[0]}
+          onBlinkPlace={handleBlinkPlace}
+          onFocusPlace={onFocusPlace}
+          onTogglePlace={onTogglePlace}
+          onDeletePlace={onDeletePlace}
+        />
 
-      <DynamicPlaces
-        type='bookmark'
-        places={bookmarkPlaces}
-        isBlinkPlace={isBlinkPlaces[0]}
-        onBlinkPlace={handleBlinkPlace}
-        onFocusPlace={onFocusPlace}
-        onTogglePlace={onTogglePlace}
-        onDeletePlace={onDeletePlace}
-      />
-
-      <DynamicPlaces
-        type='current'
-        places={currentPlaces}
-        isBlinkPlace={isBlinkPlaces[1]}
-        onBlinkPlace={handleBlinkPlace}
-        onFocusPlace={onFocusPlace}
-        onTogglePlace={onTogglePlace}
-        onDeletePlace={onDeletePlace}
-      />
+        <DynamicPlaces
+          type='current'
+          places={currentPlaces}
+          isBlinkPlace={isBlinkPlaces[1]}
+          onBlinkPlace={handleBlinkPlace}
+          onFocusPlace={onFocusPlace}
+          onTogglePlace={onTogglePlace}
+          onDeletePlace={onDeletePlace}
+        />
+      </PlacesContainer>
 
       <FormContainer>
         <Form>
@@ -180,10 +217,13 @@ const MapPage = () => {
       </KakaoMapContainer>
 
       <FooterPlaces
-        map={map}
+        curPage={curPage}
+        maxPage={maxPage}
         places={footerPlaces}
         handlePageMove={handlePageMove}
-        onClickFooterPlace={onClickFooterPlace}
+        onClickFooterPlace={handleClickFooterPlace}
+        onHoverPlace={onHoverPlace}
+        onHoverOutPlace={onHoverOutPlace}
       />
     </MapContainer>
   );
@@ -192,10 +232,13 @@ const MapPage = () => {
 export default MapPage;
 
 const MapContainer = styled.div`
-  overflow: auto;
   border-radius: 1rem;
+  overflow: hidden;
 `;
 
+const PlacesContainer = styled.div`
+  display: flex;
+`;
 const FormContainer = styled.div`
   display: flex;
   justify-content: space-between;
@@ -230,7 +273,7 @@ const KakaoMapContainer = styled.div`
   position: relative;
   margin: 1rem;
   #kakao-map {
-    height: 70vh;
+    height: 63vh;
     width: 100%;
   }
 `;

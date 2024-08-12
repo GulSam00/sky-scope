@@ -60,8 +60,8 @@ const PlaceWeather = ({
         gsap.to(ref, { backgroundColor: '#ffffff', duration: 0.25 });
       },
     });
-    ref?.scrollIntoView({ behavior: 'instant', block: 'center', inline: 'center' });
     onBlinkPlace();
+    ref?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
   };
 
   const transformSkyCode = (skyCode: string) => {
@@ -117,7 +117,7 @@ const PlaceWeather = ({
   }, [isLoading, isFirstPlace, isBlinkPlace]);
 
   return (
-    <MarkerWeatherContainer ref={firstPlaceRef}>
+    <PlaceWeatherContainer ref={firstPlaceRef}>
       {data ? (
         <div onClick={() => handleClickPlace(place)}>
           <div className='bookmark' onClick={e => handleClickBookmark(e)}>
@@ -156,19 +156,19 @@ const PlaceWeather = ({
           </Spinner>
         </SpinnerContainer>
       )}
-    </MarkerWeatherContainer>
+    </PlaceWeatherContainer>
   );
 };
 
 export default memo(PlaceWeather);
 
-const MarkerWeatherContainer = styled.div`
+const PlaceWeatherContainer = styled.div`
   position: relative;
-  min-width: 250px;
-  max-width: 250px;
+  min-width: 11rem;
+  max-width: 11rem;
   height: 120px;
   padding: 10px;
-  border: 1px solid #0d6efd;
+  border: 1px solid;
   border-radius: 5px;
   cursor: pointer;
 
@@ -177,6 +177,7 @@ const MarkerWeatherContainer = styled.div`
 
   .bookmark {
     position: absolute;
+    bottom: 10px;
     right: 40px;
     display: flex;
     align-items: start;
@@ -184,9 +185,16 @@ const MarkerWeatherContainer = styled.div`
 
   .delete {
     position: absolute;
+    bottom: 10px;
     right: 10px;
     display: flex;
     align-items: start;
+  }
+
+  .location {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .place {
@@ -200,7 +208,7 @@ const MarkerWeatherContainer = styled.div`
 
   .content {
     display: flex;
-    flex-direction: column;
+
     font-weight: 600;
 
     > div {
