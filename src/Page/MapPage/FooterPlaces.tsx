@@ -1,4 +1,4 @@
-import { useState, useEffect, memo } from 'react';
+import { memo } from 'react';
 
 import { LocateDataType } from '@src/Queries/useLiveDataQuery';
 
@@ -6,54 +6,43 @@ import styled from 'styled-components';
 import { CaretLeft, CaretRight } from 'react-bootstrap-icons';
 
 interface Props {
-  map: kakao.maps.Map | null;
   places: LocateDataType[];
   handlePageMove: (page: number) => void;
-  onClickFooterPlace: (marker: LocateDataType) => void;
+  onHoverPlace: (position: { lat: number; lng: number }) => void;
+  onHoverOutPlace: () => void;
+  onClickFooterPlace: (place: LocateDataType) => void;
 }
-const FooterPlaces = ({ map, places, handlePageMove, onClickFooterPlace }: Props) => {
-  const [tempSelectedIndex, setTempSelectedIndex] = useState<number>(-1);
-
-  const overMarkerPos = (marker: LocateDataType) => {
-    if (!map || !marker) return;
-    const position = marker.position;
-    map.setLevel(2);
-    map.panTo(new kakao.maps.LatLng(position.lat, position.lng));
+const FooterPlaces = ({ places, handlePageMove, onClickFooterPlace, onHoverPlace, onHoverOutPlace }: Props) => {
+  const overMarkerPos = (place: LocateDataType) => {
+    const position = place.position;
+    onHoverPlace(position);
   };
 
   const handleHoverOut = () => {
-    if (!map) return;
-    overMarkerPos(places[tempSelectedIndex]);
+    onHoverOutPlace();
   };
 
   const handleClickMarker = (index: number) => {
     onClickFooterPlace(places[index]);
-    setTempSelectedIndex(index);
   };
 
   const handleClickMovePage = (page: number) => {
     handlePageMove(page);
-    setTempSelectedIndex(-1);
   };
-
-  useEffect(() => {
-    setTempSelectedIndex(-1);
-  }, [places]);
 
   return (
     <MarkersContainer>
       {places.length > 0 && (
         <MarkerGroup>
           <CaretLeft key='leftBtn' onClick={() => handleClickMovePage(-1)} />
-          {places.map((marker: LocateDataType, index: number) => (
+          {places.map((place: LocateDataType, index: number) => (
             <div
-              className={tempSelectedIndex === index ? 'selected' : ''}
-              key={'marker' + index}
-              onMouseOver={() => overMarkerPos(marker)}
+              key={'place' + index}
+              onMouseOver={() => overMarkerPos(place)}
               onMouseOut={handleHoverOut}
               onClick={() => handleClickMarker(index)}
             >
-              {marker.placeName}
+              {place.placeName}
             </div>
           ))}
           <CaretRight key='rightBtn' onClick={() => handleClickMovePage(1)} />
@@ -83,12 +72,6 @@ const MarkerGroup = styled.div`
 
   justify-content: center;
   padding: 0 0.5rem;
-
-  .selected {
-    background-color: #0d6efd;
-    color: white;
-    border: 1px solid white;
-  }
 
   > * {
     width: 4rem;

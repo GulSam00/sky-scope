@@ -60,7 +60,6 @@ const PlaceWeather = ({
         gsap.to(ref, { backgroundColor: '#ffffff', duration: 0.25 });
       },
     });
-    ref?.scrollIntoView({ behavior: 'instant', block: 'center', inline: 'center' });
     onBlinkPlace();
   };
 

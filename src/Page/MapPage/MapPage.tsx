@@ -1,10 +1,10 @@
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { Map, MapMarker } from 'react-kakao-maps-sdk';
 
 import { LoadingState } from '@src/Component';
 import { useKakaoLoader, useMapInfo, useAutoSearch } from '@src/Hook';
-import { KakaoMapMarkerType } from '@src/Queries/useLiveDataQuery';
+import { KakaoMapMarkerType, LocateDataType } from '@src/Queries/useLiveDataQuery';
 
 import { errorAccured } from '@src/Store/RequestStatusSlice';
 
@@ -13,11 +13,14 @@ import DynamicPlaces from './DynamicPlaces';
 import FooterPlaces from './FooterPlaces';
 
 import styled from 'styled-components';
+import { set } from 'date-fns';
 
 const MapPage = () => {
   const [map, setMap] = useState<kakao.maps.Map | null>(null);
   const [curPage, setCurPage] = useState<number>(1);
   const [maxPage, setMaxPage] = useState<number>(1);
+  const [originPos, setOriginPos] = useState<kakao.maps.LatLng | null>(null);
+  const [originLevel, setOriginLevel] = useState<number>(0);
 
   const {
     footerPlaces,
@@ -76,6 +79,8 @@ const MapPage = () => {
       bounds.extend(position);
     });
     map.setBounds(bounds);
+    setOriginPos(map.getCenter());
+    setOriginLevel(map.getLevel());
   };
 
   const handlePageMove = useCallback(
@@ -94,6 +99,42 @@ const MapPage = () => {
   const handleBlinkPlace = useCallback(() => {
     setIsBlinkPlaces([false, false]);
   }, []);
+
+  const handleClickFooterPlace = useCallback(
+    (place: LocateDataType) => {
+      onClickFooterPlace(place);
+      if (!map) return;
+      const position = place.position;
+
+      map.panTo(new kakao.maps.LatLng(position.lat, position.lng));
+      map.setLevel(2);
+      setOriginPos(map.getCenter());
+      setOriginLevel(map.getLevel());
+    },
+    [map, footerPlaces, originPos],
+  );
+
+  const onHoverPlace = useCallback(
+    (position: { lat: number; lng: number }) => {
+      if (!map) return;
+      map.setLevel(2);
+      map.panTo(new kakao.maps.LatLng(position.lat, position.lng));
+    },
+    [map, footerPlaces, originPos],
+  );
+
+  const onHoverOutPlace = useCallback(() => {
+    if (!map || !originPos) return;
+    map.setLevel(originLevel);
+    map.panTo(originPos);
+  }, [map, footerPlaces, originPos]);
+
+  useEffect(() => {
+    if (!map) return;
+    const center = map.getCenter();
+    setOriginPos(center);
+    setOriginLevel(map.getLevel());
+  }, [footerPlaces]);
 
   return (
     <MapContainer>
@@ -180,10 +221,11 @@ const MapPage = () => {
       </KakaoMapContainer>
 
       <FooterPlaces
-        map={map}
         places={footerPlaces}
         handlePageMove={handlePageMove}
-        onClickFooterPlace={onClickFooterPlace}
+        onClickFooterPlace={handleClickFooterPlace}
+        onHoverPlace={onHoverPlace}
+        onHoverOutPlace={onHoverOutPlace}
       />
     </MapContainer>
   );

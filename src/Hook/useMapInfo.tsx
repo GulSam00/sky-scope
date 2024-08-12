@@ -30,6 +30,7 @@ const useMapInfo = ({ map }: Props) => {
   const onClickMarker = (marker: KakaoMapMarkerType) => {
     focusMap(marker.position);
     isSwapPlace(marker.placeId);
+    onClickFooterPlace(marker);
   };
 
   const searchPlaces = (keyword: string, page: number, setMaxPage: React.Dispatch<React.SetStateAction<number>>) => {
