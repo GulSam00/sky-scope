@@ -6,13 +6,23 @@ import styled from 'styled-components';
 import { CaretLeft, CaretRight } from 'react-bootstrap-icons';
 
 interface Props {
+  curPage: number;
+  maxPage: number;
   places: LocateDataType[];
   handlePageMove: (page: number) => void;
   onHoverPlace: (position: { lat: number; lng: number }) => void;
   onHoverOutPlace: () => void;
   onClickFooterPlace: (place: LocateDataType) => void;
 }
-const FooterPlaces = ({ places, handlePageMove, onClickFooterPlace, onHoverPlace, onHoverOutPlace }: Props) => {
+const FooterPlaces = ({
+  curPage,
+  maxPage,
+  places,
+  handlePageMove,
+  onClickFooterPlace,
+  onHoverPlace,
+  onHoverOutPlace,
+}: Props) => {
   const overMarkerPos = (place: LocateDataType) => {
     const position = place.position;
     onHoverPlace(position);
@@ -31,10 +41,11 @@ const FooterPlaces = ({ places, handlePageMove, onClickFooterPlace, onHoverPlace
   };
 
   return (
-    <MarkersContainer>
+    <PlacesContainer>
       {places.length > 0 && (
         <MarkerGroup>
-          <CaretLeft key='leftBtn' onClick={() => handleClickMovePage(-1)} />
+          {curPage > 1 && <CaretLeft key='leftBtn' onClick={() => handleClickMovePage(-1)} />}
+
           {places.map((place: LocateDataType, index: number) => (
             <div
               key={'place' + index}
@@ -45,16 +56,16 @@ const FooterPlaces = ({ places, handlePageMove, onClickFooterPlace, onHoverPlace
               {place.placeName}
             </div>
           ))}
-          <CaretRight key='rightBtn' onClick={() => handleClickMovePage(1)} />
+          {curPage < maxPage && <CaretRight key='rightBtn' onClick={() => handleClickMovePage(1)} />}
         </MarkerGroup>
       )}
-    </MarkersContainer>
+    </PlacesContainer>
   );
 };
 
 export default memo(FooterPlaces);
 
-const MarkersContainer = styled.div`
+const PlacesContainer = styled.div`
   display: flex;
   flex-direction: column;
   position: fixed;
@@ -84,6 +95,10 @@ const MarkerGroup = styled.div`
     background-color: white;
     cursor: pointer;
     text-align: center;
+  }
+
+  *:active {
+    background-color: #dfe2e5;
   }
 
   > div {

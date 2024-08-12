@@ -13,7 +13,6 @@ import DynamicPlaces from './DynamicPlaces';
 import FooterPlaces from './FooterPlaces';
 
 import styled from 'styled-components';
-import { set } from 'date-fns';
 
 const MapPage = () => {
   const [map, setMap] = useState<kakao.maps.Map | null>(null);
@@ -85,15 +84,11 @@ const MapPage = () => {
 
   const handlePageMove = useCallback(
     (weight: number) => {
-      if (!map) return;
-
       const page = curPage + weight;
-      if (page < 1 || page > maxPage) return;
-
       setCurPage(page);
       searchPlaces(lastSearchWord, page, setMaxPage);
     },
-    [map, curPage, maxPage, mapMarkers],
+    [curPage, maxPage, mapMarkers],
   );
 
   const handleBlinkPlace = useCallback(() => {
@@ -111,7 +106,7 @@ const MapPage = () => {
       setOriginPos(map.getCenter());
       setOriginLevel(map.getLevel());
     },
-    [map, footerPlaces, originPos],
+    [map, footerPlaces, currentPlaces, bookmarkPlaces, originPos],
   );
 
   const onHoverPlace = useCallback(
@@ -221,6 +216,8 @@ const MapPage = () => {
       </KakaoMapContainer>
 
       <FooterPlaces
+        curPage={curPage}
+        maxPage={maxPage}
         places={footerPlaces}
         handlePageMove={handlePageMove}
         onClickFooterPlace={handleClickFooterPlace}
