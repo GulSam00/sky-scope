@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 
 import { RootState } from '@src/Store/store';
+import { setResize } from '@src/Store/kakaoModalSlice';
 
 import { LoadingState, Toast } from '@src/Component';
 import { Nav } from 'react-bootstrap';
@@ -14,16 +15,26 @@ const Layout = () => {
   const [isPhone, setIsPhone] = useState(false);
 
   const { isLoading, errorMessage } = useSelector((state: RootState) => state.RequestStatusSliceReducer);
+  const dispatch = useDispatch();
+
   const location = useLocation();
   const navigate = useNavigate();
 
   const switchPhone = () => {
     if (!isPhone) {
       setIsPhone(true);
+      localStorage.setItem('isPhone', 'true');
     } else {
       setIsPhone(false);
+      localStorage.setItem('isPhone', 'false');
     }
+    dispatch(setResize());
   };
+
+  useEffect(() => {
+    const isPhone = localStorage.getItem('isPhone');
+    setIsPhone(isPhone === 'true');
+  }, []);
 
   return (
     <GlobalLayoutContainer isPhone={isPhone}>
@@ -112,7 +123,9 @@ const NavContainer = styled.div<Props>`
   background-color: white;
 `;
 
-const ContentContainer = styled.div``;
+const ContentContainer = styled.div`
+  width: 100%;
+`;
 
 const Title = styled.div`
   position: relative;

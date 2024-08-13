@@ -1,11 +1,13 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Map, MapMarker } from 'react-kakao-maps-sdk';
 
 import { LoadingState } from '@src/Component';
 import { useKakaoLoader, useMapInfo, useAutoSearch } from '@src/Hook';
 import { KakaoMapMarkerType, LocateDataType } from '@src/Queries/useLiveDataQuery';
 
+import { RootState } from '@src/Store/store';
+import { handleResize } from '@src/Store/kakaoModalSlice';
 import { errorAccured } from '@src/Store/RequestStatusSlice';
 
 import { Form, Button, ListGroup } from 'react-bootstrap';
@@ -49,8 +51,9 @@ const MapPage = () => {
   } = useAutoSearch();
 
   const { kakaoLoading, kakaoError } = useKakaoLoader();
+  const { isResized } = useSelector((state: RootState) => state.kakaoModalSliceReducer);
 
-  const mapRef = useRef<kakao.maps.Map>(null);
+  // const mapRef = useRef<kakao.maps.Map>(null);
   const dispatch = useDispatch();
 
   const insertAddress = () => {
@@ -131,6 +134,15 @@ const MapPage = () => {
     setOriginLevel(map.getLevel());
   }, [footerPlaces]);
 
+  useEffect(() => {
+    if (isResized) {
+      if (!map) return;
+
+      dispatch(handleResize());
+      map.relayout();
+    }
+  }, [isResized]);
+
   return (
     <MapContainer>
       {kakaoLoading && <LoadingState />}
@@ -192,7 +204,7 @@ const MapPage = () => {
             lat: 37.566826,
             lng: 126.9786567,
           }}
-          ref={mapRef}
+          // ref={mapRef}
           onCreate={setMap}
           id='kakao-map'
         >
@@ -232,8 +244,8 @@ const MapPage = () => {
 export default MapPage;
 
 const MapContainer = styled.div`
-  border-radius: 1rem;
   overflow: hidden;
+  width: 100%;
 `;
 
 const PlacesContainer = styled.div`
@@ -272,8 +284,10 @@ const ListGroupContainer = styled.div`
 const KakaoMapContainer = styled.div`
   position: relative;
   margin: 1rem;
+  width: 100%;
+
   #kakao-map {
-    height: 63vh;
+    height: 70vh;
     width: 100%;
   }
 `;
