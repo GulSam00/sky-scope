@@ -4,6 +4,7 @@ export const kakaoModalSlice = createSlice({
   name: 'kakaoModal',
   initialState: {
     isOpen: false,
+    isResized: false,
   },
   reducers: {
     open: state => {
@@ -12,9 +13,15 @@ export const kakaoModalSlice = createSlice({
     close: state => {
       state.isOpen = false;
     },
+    setResize: state => {
+      state.isResized = true;
+    },
+    handleResize: state => {
+      state.isResized = false;
+    },
   },
 });
 
-export const { open, close } = kakaoModalSlice.actions;
+export const { open, close, setResize, handleResize } = kakaoModalSlice.actions;
 
 export default kakaoModalSlice.reducer;
