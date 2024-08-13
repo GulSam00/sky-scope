@@ -44,7 +44,8 @@
 # 주요 기능
 
 ## 카카오 지도 상에서 검색한 장소 날씨 제공 & 북마크 기능
-https://github.com/user-attachments/assets/45cc0578-1787-4845-a43c-f69b5aab6ff6
+
+https://github.com/user-attachments/assets/b080192e-c021-49f9-acfb-e729f1f4bd1b
 
 <div align="left">
 
