@@ -144,6 +144,13 @@ const PlaceWeather = ({
 
           <div className='content'>
             <div>
+              <img width='16' src='icons/humidity.svg' alt='humidity' />
+              <div>{data.REH}%</div>
+            </div>
+          </div>
+
+          <div className='content'>
+            <div>
               <div>{transformSkyCode(data.PTY)}</div>
               <div>{data.RN1}mm</div>
             </div>
@@ -166,7 +173,7 @@ const PlaceWeatherContainer = styled.div`
   position: relative;
   min-width: 11rem;
   max-width: 11rem;
-  height: 120px;
+  height: 150px;
   padding: 10px;
   border: 1px solid;
   border-radius: 5px;
