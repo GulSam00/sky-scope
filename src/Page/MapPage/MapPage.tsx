@@ -114,7 +114,6 @@ const MapPage = () => {
 
   const onHoverPlace = useCallback(
     (position: { lat: number; lng: number }) => {
-      console.log('position', position);
       if (!map) return;
       map.setLevel(2);
       map.setCenter(new kakao.maps.LatLng(position.lat, position.lng));
