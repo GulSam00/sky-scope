@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { RootState } from '@src/Store/store';
 import { setResize } from '@src/Store/kakaoModalSlice';
+import { phoneModeSwitch } from '@src/Store/globalDataSlice';
 
 import { LoadingState, Toast } from '@src/Component';
 import { Nav } from 'react-bootstrap';
@@ -12,36 +12,28 @@ import { Github, Phone, PhoneFill } from 'react-bootstrap-icons';
 import { styled } from 'styled-components';
 
 const Layout = () => {
-  const [isPhone, setIsPhone] = useState(false);
-
   const { isLoading, errorMessage } = useSelector((state: RootState) => state.RequestStatusSliceReducer);
-  const dispatch = useDispatch();
+  const { isPhone } = useSelector((state: RootState) => state.globalDataSliceReducer);
 
+  const dispatch = useDispatch();
   const location = useLocation();
   const navigate = useNavigate();
 
   const switchPhone = () => {
     if (!isPhone) {
-      setIsPhone(true);
-      localStorage.setItem('isPhone', 'true');
+      dispatch(phoneModeSwitch());
     } else {
-      setIsPhone(false);
-      localStorage.setItem('isPhone', 'false');
+      dispatch(phoneModeSwitch());
     }
     dispatch(setResize());
   };
 
-  useEffect(() => {
-    const isPhone = localStorage.getItem('isPhone');
-    setIsPhone(isPhone === 'true');
-  }, []);
-
   return (
-    <GlobalLayoutContainer isPhone={isPhone}>
+    <GlobalLayoutContainer phone={isPhone}>
       {isLoading && <LoadingState />}
       {errorMessage && <Toast content={errorMessage} />}
 
-      <NavContainer isPhone={isPhone}>
+      <NavContainer phone={isPhone}>
         {/* <Nav>
           <Nav.Item>
             <Nav.Link href='/' disabled={location.pathname === '/'}>
@@ -87,7 +79,7 @@ const Layout = () => {
 export default Layout;
 
 interface Props {
-  isPhone: boolean;
+  phone: boolean;
 }
 
 const GlobalLayoutContainer = styled.div<Props>`
@@ -95,7 +87,7 @@ const GlobalLayoutContainer = styled.div<Props>`
   margin-right: auto;
 
   @media (min-width: 640px) {
-    width: ${props => (props.isPhone ? '400px' : '100%')};
+    width: ${props => (props.phone ? '400px' : '100%')};
   }
   height: 100dvh;
 
@@ -113,7 +105,7 @@ const NavContainer = styled.div<Props>`
 
   // 임의로 400px, 375px면 화면 넘어감(wrap)
   @media (min-width: 640px) {
-    width: ${props => (props.isPhone ? '400px' : '100%')};
+    width: ${props => (props.phone ? '400px' : '100%')};
   }
   width: 100%;
   height: 3rem;

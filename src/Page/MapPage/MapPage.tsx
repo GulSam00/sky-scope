@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Map, MapMarker } from 'react-kakao-maps-sdk';
 
@@ -53,7 +53,6 @@ const MapPage = () => {
   const { kakaoLoading, kakaoError } = useKakaoLoader();
   const { isResized } = useSelector((state: RootState) => state.kakaoModalSliceReducer);
 
-  // const mapRef = useRef<kakao.maps.Map>(null);
   const dispatch = useDispatch();
 
   const insertAddress = () => {

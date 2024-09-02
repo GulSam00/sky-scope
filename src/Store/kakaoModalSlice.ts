@@ -3,15 +3,15 @@ import { createSlice } from '@reduxjs/toolkit';
 export const kakaoModalSlice = createSlice({
   name: 'kakaoModal',
   initialState: {
-    isOpen: false,
+    isOpenModal: false,
     isResized: false,
   },
   reducers: {
     open: state => {
-      state.isOpen = true;
+      state.isOpenModal = true;
     },
     close: state => {
-      state.isOpen = false;
+      state.isOpenModal = false;
     },
     setResize: state => {
       state.isResized = true;
