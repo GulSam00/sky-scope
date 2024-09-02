@@ -56,6 +56,7 @@ const PlaceWeather = ({
 
   const BlinkPlace = () => {
     const ref = firstPlaceRef.current;
+    if (!ref) return;
 
     gsap.to(ref, {
       backgroundColor: '#0d6efd',
@@ -65,7 +66,6 @@ const PlaceWeather = ({
       },
     });
     onBlinkPlace();
-    ref?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
   };
 
   const transformSkyCode = (skyCode: string) => {
