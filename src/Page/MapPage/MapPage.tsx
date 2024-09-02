@@ -53,7 +53,6 @@ const MapPage = () => {
   const { kakaoLoading, kakaoError } = useKakaoLoader();
   const { isResized } = useSelector((state: RootState) => state.kakaoModalSliceReducer);
 
-  // const mapRef = useRef<kakao.maps.Map>(null);
   const dispatch = useDispatch();
 
   const insertAddress = () => {

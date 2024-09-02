@@ -86,19 +86,12 @@ const DynamicPlacesContainer = styled.div<StyleProps>`
   display: flex;
   flex-direction: column;
   min-height: 10rem;
-
-  // margin: 0.5rem;
-  // padding: 0.5rem;
-  // border: 1px solid;
-  // border-radius: 1rem;
-
-  // z-index: 3000;
   min-width: 50%;
+  max-width: 50%;
 
   > div {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
     font-weight: 600;
   }
 `;
@@ -107,8 +100,9 @@ const Places = styled.div`
   display: flex;
   flex-wrap: wrap;
 
-  max-height: 10rem;
+  height: 9.5rem;
 
-  overflow-x: hidden;
   overflow-y: auto;
+
+  scroll-snap-type: y mandatory;
 `;
