@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Map, MapMarker } from 'react-kakao-maps-sdk';
 
@@ -21,7 +21,7 @@ const MapPage = () => {
   const [curPage, setCurPage] = useState<number>(1);
   const [maxPage, setMaxPage] = useState<number>(1);
   const [originPos, setOriginPos] = useState<kakao.maps.LatLng | null>(null);
-  const [originLevel, setOriginLevel] = useState<number>(0);
+  const [originLevel, setOriginLevel] = useState<number>(4);
 
   const {
     footerPlaces,
@@ -53,7 +53,6 @@ const MapPage = () => {
   const { kakaoLoading, kakaoError } = useKakaoLoader();
   const { isResized } = useSelector((state: RootState) => state.kakaoModalSliceReducer);
 
-  // const mapRef = useRef<kakao.maps.Map>(null);
   const dispatch = useDispatch();
 
   const insertAddress = () => {
@@ -104,7 +103,7 @@ const MapPage = () => {
       if (!map) return;
       const position = place.position;
 
-      map.panTo(new kakao.maps.LatLng(position.lat, position.lng));
+      map.setCenter(new kakao.maps.LatLng(position.lat, position.lng));
       map.setLevel(2);
       setOriginPos(map.getCenter());
       setOriginLevel(map.getLevel());
@@ -116,7 +115,7 @@ const MapPage = () => {
     (position: { lat: number; lng: number }) => {
       if (!map) return;
       map.setLevel(2);
-      map.panTo(new kakao.maps.LatLng(position.lat, position.lng));
+      map.setCenter(new kakao.maps.LatLng(position.lat, position.lng));
     },
     [map, footerPlaces, originPos],
   );
@@ -124,15 +123,8 @@ const MapPage = () => {
   const onHoverOutPlace = useCallback(() => {
     if (!map || !originPos) return;
     map.setLevel(originLevel);
-    map.panTo(originPos);
+    map.setCenter(originPos);
   }, [map, footerPlaces, originPos]);
-
-  useEffect(() => {
-    if (!map) return;
-    const center = map.getCenter();
-    setOriginPos(center);
-    setOriginLevel(map.getLevel());
-  }, [footerPlaces]);
 
   useEffect(() => {
     if (isResized) {
@@ -206,6 +198,7 @@ const MapPage = () => {
           }}
           // ref={mapRef}
           onCreate={setMap}
+          level={originLevel}
           id='kakao-map'
         >
           {mapMarkers.map((marker: KakaoMapMarkerType, index: number) => (

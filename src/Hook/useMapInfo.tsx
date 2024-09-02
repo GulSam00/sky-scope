@@ -22,16 +22,13 @@ const useMapInfo = ({ map }: Props) => {
 
   const focusMap = (position: { lat: number; lng: number }) => {
     if (!map) return;
-    // focus가 반영되지 않는 이슈
     const kakaoPosition = new kakao.maps.LatLng(position.lat, position.lng);
     map.setLevel(2);
-    map.panTo(kakaoPosition);
+    map.setCenter(kakaoPosition);
   };
 
   const onClickMarker = (marker: KakaoMapMarkerType) => {
     focusMap(marker.position);
-    // onClickFooterPlace에서 isSwapPlace를 호출하므로 주석처리
-    // isSwapPlace(marker.placeId);
     onClickFooterPlace(marker);
   };
 
@@ -85,19 +82,13 @@ const useMapInfo = ({ map }: Props) => {
   );
 
   const changeOnMapMarkers = (dstOnMapMarkers: KakaoMapMarkerType[]) => {
-    // console.log('changeOnMapMarkers');
-    // console.log('prev MapMarkers', ...mapMarkers);
     const prevMarkers = mapMarkers.filter((item: KakaoMapMarkerType) => item.status !== 'pin');
-
     const filteredMarkers = dstOnMapMarkers.filter((dstMarker: KakaoMapMarkerType) => {
       const findIndex = prevMarkers.findIndex(marker => marker.placeId === dstMarker.placeId);
       // prevMarkers에 존재하지 않음. 불리언 값을 리턴해 배열에 추가
       return findIndex === -1;
     });
     // prevMarkers에 존재하지 않는 장소들을 추가
-    // console.log('prevMarkers', ...prevMarkers);
-    // console.log('prevMarkers.length', prevMarkers.length);
-    // console.log('filteredMarkers', ...filteredMarkers);
     setMapMarkers([...filteredMarkers, ...prevMarkers]);
   };
 

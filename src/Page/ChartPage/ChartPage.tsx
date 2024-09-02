@@ -6,15 +6,15 @@ import { RootState } from '@src/Store/store';
 import { styled } from 'styled-components';
 
 const ChartPage = () => {
-  const { isOpen } = useSelector((state: RootState) => state.kakaoModalSliceReducer);
+  const { isOpenModal } = useSelector((state: RootState) => state.kakaoModalSliceReducer);
 
   useEffect(() => {
-    if (isOpen) {
+    if (isOpenModal) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = 'auto';
     }
-  }, [isOpen]);
+  }, [isOpenModal]);
 
   return (
     <DayContainer>

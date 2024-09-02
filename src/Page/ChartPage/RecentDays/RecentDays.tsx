@@ -25,8 +25,8 @@ const RecentDays = () => {
   const queryClient = useQueryClient();
   const dispatch = useDispatch();
 
-  const isMapModal = useSelector((state: RootState) => state.kakaoModalSliceReducer.isOpen);
-  const coord = useSelector((state: RootState) => state.shortDataSliceReducer.coord);
+  const { isOpenModal } = useSelector((state: RootState) => state.kakaoModalSliceReducer);
+  const { coord } = useSelector((state: RootState) => state.shortDataSliceReducer);
 
   const { data, date, error } = useShortDataQuery(today, coord);
 
@@ -54,7 +54,7 @@ const RecentDays = () => {
 
   return (
     <RecentDayContainer>
-      {isMapModal && <MapModal handleChangeCoord={handleChangeCoord} />}
+      {isOpenModal && <MapModal handleChangeCoord={handleChangeCoord} />}
 
       <LocationHeader handleChangeCoord={handleChangeCoord} />
 

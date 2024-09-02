@@ -1,10 +1,11 @@
 import { useEffect, useRef, memo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { gsap } from 'gsap';
 
 import { useLiveDataQuery } from '@src/Queries';
 import { KakaoSearchType } from '@src/Queries/useLiveDataQuery';
+import { RootState } from '@src/Store/store';
 import { loadingData, loadedData, errorAccured } from '@src/Store/RequestStatusSlice';
 
 import { Spinner } from 'react-bootstrap';
@@ -45,6 +46,9 @@ const PlaceWeather = ({
   setIsIgnored,
 }: Props) => {
   const { isLoading, data, error } = useLiveDataQuery(new Date(), place);
+
+  const { isPhone } = useSelector((state: RootState) => state.globalDataSliceReducer);
+  console.log('phone', isPhone);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -117,7 +121,7 @@ const PlaceWeather = ({
   }, [isLoading, isFirstPlace, isBlinkPlace]);
 
   return (
-    <PlaceWeatherContainer ref={firstPlaceRef}>
+    <PlaceWeatherContainer ref={firstPlaceRef} phone={isPhone}>
       {data ? (
         <div onClick={() => handleClickPlace(place)}>
           <div className='bookmark' onClick={e => handleClickBookmark(e)}>
@@ -135,10 +139,18 @@ const PlaceWeather = ({
             {data.province} {data.city}
           </div>
           <div className='place'>{data.content}</div>
+
           <div className='content'>
             <div>
               <ThermometerHigh />
               <div>{data.T1H}°C</div>
+            </div>
+          </div>
+
+          <div className='content'>
+            <div>
+              <img width='16' src='icons/humidity.svg' alt='humidity' />
+              <div>{data.REH}%</div>
             </div>
           </div>
 
@@ -162,15 +174,25 @@ const PlaceWeather = ({
 
 export default memo(PlaceWeather);
 
-const PlaceWeatherContainer = styled.div`
+interface StyleProps {
+  phone: boolean;
+}
+
+const PlaceWeatherContainer = styled.div<StyleProps>`
   position: relative;
-  min-width: 11rem;
-  max-width: 11rem;
-  height: 120px;
+
+  @media (min-width: 640px) {
+    width: ${props => (props.phone ? '99%' : '49%')};
+  }
+  width: 99%;
+  margin: 0.5%;
+
+  min-height: 9rem;
   padding: 10px;
   border: 1px solid;
   border-radius: 5px;
   cursor: pointer;
+  scroll-snap-align: center;
 
   font-size: 1rem;
   font-weight: 400;
@@ -224,7 +246,9 @@ const SpinnerContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100%;
-  width: 100%;
-  font-size: 1rem;
+
+  min-height: 9rem;
+  max-height: 9rem;
+  min-width: 99%;
+  max-width: 99%;
 `;
