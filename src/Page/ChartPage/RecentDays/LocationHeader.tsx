@@ -15,7 +15,7 @@ import { transLocaleToCoord, setLocalCoordInfo } from '@src/Util';
 import { Form, Button } from 'react-bootstrap';
 import styled from 'styled-components';
 
-import _short_local from '@src/JSON/short_api_locals.json';
+import _short_local from '@src/Assets/short_api_locals.json';
 
 const short_local = _short_local as ICoordJson;
 
