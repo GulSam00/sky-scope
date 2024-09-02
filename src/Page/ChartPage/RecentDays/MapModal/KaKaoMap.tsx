@@ -56,7 +56,7 @@ const KaKaoMap = ({ handleChangeCoord }: IProps) => {
     const position = marker.position;
     map.setLevel(2);
     setMapLevel(map.getLevel());
-    map.panTo(new kakao.maps.LatLng(position.lat, position.lng));
+    map.setCenter(new kakao.maps.LatLng(position.lat, position.lng));
   };
 
   const onClickMarker = async (marker: LocateDataType) => {

@@ -50,21 +50,22 @@ const transLocaleToCoord = async (position: ICoord) => {
   const city = result.region_2depth_name.replace(' ', '') || province;
   const address = result.address_name;
   const localeCode = result.code;
+  let nx, ny: number;
+
   const correctItem = code_local.find(item => item.code === Number(localeCode));
-  let x, y: number;
   if (correctItem) {
-    x = correctItem.x;
-    y = correctItem.y;
+    nx = correctItem.x;
+    ny = correctItem.y;
   } else {
     const local = short_local[province][city];
-    x = local.x;
-    y = local.y;
+    nx = local.x;
+    ny = local.y;
   }
 
   // 로컬 스토러지에 좌표 정보 저장
   // 만약 이미 로컬에 저장한 좌표, 지역이면 null 반환
-  if (setLocalCoordInfo({ nx: x, ny: y, province, city })) {
-    return { nx: x, ny: y, province, city, address, localeCode };
+  if (setLocalCoordInfo({ nx, ny, province, city })) {
+    return { nx, ny, province, city, address, localeCode };
   } else return null;
 };
 

@@ -25,7 +25,7 @@ const useMapInfo = ({ map }: Props) => {
     // focus가 반영되지 않는 이슈
     const kakaoPosition = new kakao.maps.LatLng(position.lat, position.lng);
     map.setLevel(2);
-    map.panTo(kakaoPosition);
+    map.setCenter(kakaoPosition);
   };
 
   const onClickMarker = (marker: KakaoMapMarkerType) => {
