@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { RootState } from '@src/Store/store';
 import { setResize } from '@src/Store/kakaoModalSlice';
+import { phoneModeSwitch } from '@src/Store/globalDataSlice';
 
 import { LoadingState, Toast } from '@src/Component';
 import { Nav } from 'react-bootstrap';
@@ -12,29 +12,21 @@ import { Github, Phone, PhoneFill } from 'react-bootstrap-icons';
 import { styled } from 'styled-components';
 
 const Layout = () => {
-  const [isPhone, setIsPhone] = useState(false);
-
   const { isLoading, errorMessage } = useSelector((state: RootState) => state.RequestStatusSliceReducer);
-  const dispatch = useDispatch();
+  const { isPhone } = useSelector((state: RootState) => state.globalDataSliceReducer);
 
+  const dispatch = useDispatch();
   const location = useLocation();
   const navigate = useNavigate();
 
   const switchPhone = () => {
     if (!isPhone) {
-      setIsPhone(true);
-      localStorage.setItem('isPhone', 'true');
+      dispatch(phoneModeSwitch());
     } else {
-      setIsPhone(false);
-      localStorage.setItem('isPhone', 'false');
+      dispatch(phoneModeSwitch());
     }
     dispatch(setResize());
   };
-
-  useEffect(() => {
-    const isPhone = localStorage.getItem('isPhone');
-    setIsPhone(isPhone === 'true');
-  }, []);
 
   return (
     <GlobalLayoutContainer phone={isPhone}>

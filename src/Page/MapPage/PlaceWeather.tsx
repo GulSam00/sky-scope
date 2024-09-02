@@ -1,10 +1,11 @@
 import { useEffect, useRef, memo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { gsap } from 'gsap';
 
 import { useLiveDataQuery } from '@src/Queries';
 import { KakaoSearchType } from '@src/Queries/useLiveDataQuery';
+import { RootState } from '@src/Store/store';
 import { loadingData, loadedData, errorAccured } from '@src/Store/RequestStatusSlice';
 
 import { Spinner } from 'react-bootstrap';
@@ -45,6 +46,9 @@ const PlaceWeather = ({
   setIsIgnored,
 }: Props) => {
   const { isLoading, data, error } = useLiveDataQuery(new Date(), place);
+
+  const { isPhone } = useSelector((state: RootState) => state.globalDataSliceReducer);
+  console.log('phone', isPhone);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -117,7 +121,7 @@ const PlaceWeather = ({
   }, [isLoading, isFirstPlace, isBlinkPlace]);
 
   return (
-    <PlaceWeatherContainer ref={firstPlaceRef}>
+    <PlaceWeatherContainer ref={firstPlaceRef} phone={isPhone}>
       {data ? (
         <div onClick={() => handleClickPlace(place)}>
           <div className='bookmark' onClick={e => handleClickBookmark(e)}>
@@ -170,16 +174,17 @@ const PlaceWeather = ({
 
 export default memo(PlaceWeather);
 
-const PlaceWeatherContainer = styled.div`
+interface StyleProps {
+  phone: boolean;
+}
+
+const PlaceWeatherContainer = styled.div<StyleProps>`
   position: relative;
 
   @media (min-width: 640px) {
-    min-width: 49%;
-    max-width: 49%;
+    width: ${props => (props.phone ? '99%' : '49%')};
   }
-
-  min-width: 99%;
-  max-width: 99%;
+  width: 99%;
   margin: 0.5%;
 
   min-height: 9rem;
