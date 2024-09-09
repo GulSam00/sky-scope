@@ -1,4 +1,4 @@
-import { useState, memo, useEffect } from 'react';
+import { useState, memo, useEffect, useRef } from 'react';
 
 import { KakaoSearchType } from '@src/Queries/useLiveDataQuery';
 import PlaceWeather from './PlaceWeather';
@@ -24,6 +24,7 @@ const DynamicPlaces = ({
   onDeletePlace,
 }: Props) => {
   const [isIgnored, setIsIgnored] = useState(false); // 삭제 플래그 상태
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   const PlaceHeader = (type: string) => {
     if (type === 'bookmark') {
@@ -44,6 +45,11 @@ const DynamicPlaces = ({
     }
   };
 
+  const handleBlinkPlace = () => {
+    onBlinkPlace();
+    scrollRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   useEffect(() => {
     if (isIgnored) {
       setIsIgnored(false);
@@ -55,7 +61,7 @@ const DynamicPlaces = ({
       {PlaceHeader(type)}
 
       {places.length !== 0 && (
-        <Places>
+        <Places ref={scrollRef}>
           {places.map((place: KakaoSearchType, i: number) => (
             <PlaceWeather
               key={type + place.placeId + place.placeName}
@@ -65,7 +71,7 @@ const DynamicPlaces = ({
               onDeletePlace={onDeletePlace}
               isFirstPlace={i === 0}
               isBlinkPlace={isBlinkPlace}
-              onBlinkPlace={onBlinkPlace}
+              onBlinkPlace={handleBlinkPlace}
               isIgnored={isIgnored}
               setIsIgnored={setIsIgnored}
             />
