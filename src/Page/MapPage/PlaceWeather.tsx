@@ -48,7 +48,6 @@ const PlaceWeather = ({
   const { isLoading, data, error } = useLiveDataQuery(new Date(), place);
 
   const { isPhone } = useSelector((state: RootState) => state.globalDataSliceReducer);
-  console.log('phone', isPhone);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 

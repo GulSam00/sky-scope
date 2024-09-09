@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState } from 'react';
 
 const useAutoSearch = () => {
   const [isAutoSearch, setIsAutoSearch] = useState<boolean>(false);
@@ -27,28 +27,6 @@ const useAutoSearch = () => {
     } else setIsAutoSearch(false);
   };
 
-  const handleChangeFocus = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'ArrowDown') {
-      const index = (focusIndex + 1) % searchAutoList.length;
-      setFocusIndex(index);
-    } else if (e.key === 'ArrowUp') {
-      const index = (focusIndex - 1 + searchAutoList.length) % searchAutoList.length;
-      setFocusIndex(index);
-    } else if (e.key === 'Enter') {
-      e.preventDefault();
-      if (!isAutoSearch) return;
-      if (focusIndex !== -1) setSearchWord(searchAutoList[focusIndex]);
-
-      setIsAutoSearch(false);
-    }
-  };
-
-  const onClickAutoGroup = (place: string) => {
-    setIsAutoSearch(false);
-    setSearchWord(place);
-    setSearchAutoList([]);
-  };
-
   const onClickSearchButton = (isSuccess: boolean) => {
     setIsAutoSearch(false);
     setSearchWord('');
@@ -63,10 +41,9 @@ const useAutoSearch = () => {
     lastSearchWord,
     searchAutoList,
     focusIndex,
+    setFocusIndex,
     handleChangeInput,
-    handleChangeFocus,
     onClickSearchButton,
-    onClickAutoGroup,
   };
 };
 

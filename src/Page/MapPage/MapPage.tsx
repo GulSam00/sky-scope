@@ -15,6 +15,7 @@ import DynamicPlaces from './DynamicPlaces';
 import FooterPlaces from './FooterPlaces';
 
 import styled from 'styled-components';
+import { setISOWeekYear } from 'date-fns';
 
 const MapPage = () => {
   const [map, setMap] = useState<kakao.maps.Map | null>(null);
@@ -44,10 +45,9 @@ const MapPage = () => {
     lastSearchWord,
     searchAutoList,
     focusIndex,
+    setFocusIndex,
     handleChangeInput,
-    handleChangeFocus,
     onClickSearchButton,
-    onClickAutoGroup,
   } = useAutoSearch();
 
   const { kakaoLoading, kakaoError } = useKakaoLoader();
@@ -55,20 +55,36 @@ const MapPage = () => {
 
   const dispatch = useDispatch();
 
-  const insertAddress = () => {
+  const insertAddress = (target?: string) => {
     // searchWord가 변경되는 도중 호출하는 이슈
+
+    const address = target || searchWord;
     if (!map || !searchWord) return;
     setCurPage(1);
     const ps = new kakao.maps.services.Places();
-    ps.keywordSearch(searchWord, (data, status, pagination) => {
+    ps.keywordSearch(address, (data, status, pagination) => {
       if (status === kakao.maps.services.Status.OK) {
-        searchPlaces(searchWord, 1, setMaxPage);
+        searchPlaces(address, 1, setMaxPage);
         onClickSearchButton(true);
       } else {
         dispatch(errorAccured('검색 결과가 없습니다.'));
         onClickSearchButton(false);
       }
     });
+  };
+
+  const handleChangeFocus = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'ArrowDown') {
+      const index = (focusIndex + 1) % searchAutoList.length;
+      setFocusIndex(index);
+    } else if (e.key === 'ArrowUp') {
+      const index = (focusIndex - 1 + searchAutoList.length) % searchAutoList.length;
+      setFocusIndex(index);
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      insertAddress(searchAutoList[focusIndex]);
+      onClickSearchButton(true);
+    }
   };
 
   const showWholeMarker = () => {
@@ -171,7 +187,7 @@ const MapPage = () => {
             onKeyDown={handleChangeFocus}
           />
         </Form>
-        <Button onClick={insertAddress}>확인</Button>
+        <Button onClick={() => insertAddress()}>확인</Button>
       </FormContainer>
 
       {isAutoSearch && (
@@ -181,7 +197,7 @@ const MapPage = () => {
               <ListGroup.Item
                 className={`${focusIndex === index && 'focus'}`}
                 key={'searchAutoList' + index}
-                onClick={() => onClickAutoGroup(item)}
+                onClick={() => insertAddress(item)}
               >
                 {item}
               </ListGroup.Item>
