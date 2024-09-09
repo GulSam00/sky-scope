@@ -48,7 +48,6 @@ const PlaceWeather = ({
   const { isLoading, data, error } = useLiveDataQuery(new Date(), place);
 
   const { isPhone } = useSelector((state: RootState) => state.globalDataSliceReducer);
-  console.log('phone', isPhone);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -56,6 +55,7 @@ const PlaceWeather = ({
 
   const BlinkPlace = () => {
     const ref = firstPlaceRef.current;
+    if (!ref) return;
 
     gsap.to(ref, {
       backgroundColor: '#0d6efd',
@@ -65,7 +65,6 @@ const PlaceWeather = ({
       },
     });
     onBlinkPlace();
-    ref?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
   };
 
   const transformSkyCode = (skyCode: string) => {
@@ -164,7 +163,7 @@ const PlaceWeather = ({
       ) : (
         <SpinnerContainer>
           <Spinner animation='border' role='status'>
-            <span className='visually-hidden'>Loading</span>
+            <span className='visually-hidden'>Loading...</span>
           </Spinner>
         </SpinnerContainer>
       )}
@@ -182,11 +181,10 @@ const PlaceWeatherContainer = styled.div<StyleProps>`
   position: relative;
 
   @media (min-width: 640px) {
-    width: ${props => (props.phone ? '99%' : '49%')};
+    width: ${props => (props.phone ? '99%' : '32%')};
   }
   width: 99%;
   margin: 0.5%;
-
   min-height: 9rem;
   padding: 10px;
   border: 1px solid;
@@ -243,12 +241,8 @@ const PlaceWeatherContainer = styled.div<StyleProps>`
 `;
 
 const SpinnerContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  min-height: 9rem;
-  max-height: 9rem;
-  min-width: 99%;
-  max-width: 99%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 `;
