@@ -14,7 +14,7 @@ interface Props {
   onHoverOutPlace: () => void;
   onClickFooterPlace: (place: LocateDataType) => void;
 }
-const FooterPlaces = ({
+const SearchedPlaces = ({
   curPage,
   maxPage,
   places,
@@ -63,7 +63,7 @@ const FooterPlaces = ({
   );
 };
 
-export default memo(FooterPlaces);
+export default memo(SearchedPlaces);
 
 const PlacesContainer = styled.div`
   display: flex;

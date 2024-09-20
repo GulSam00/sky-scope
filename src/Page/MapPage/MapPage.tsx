@@ -12,10 +12,9 @@ import { errorAccured } from '@src/Store/RequestStatusSlice';
 
 import { Form, Button, ListGroup } from 'react-bootstrap';
 import DynamicPlaces from './DynamicPlaces';
-import FooterPlaces from './FooterPlaces';
+import SearchedPlaces from './SearchedPlaces';
 
 import styled from 'styled-components';
-import { setISOWeekYear } from 'date-fns';
 
 const MapPage = () => {
   const [map, setMap] = useState<kakao.maps.Map | null>(null);
@@ -23,15 +22,16 @@ const MapPage = () => {
   const [maxPage, setMaxPage] = useState<number>(1);
   const [originPos, setOriginPos] = useState<kakao.maps.LatLng | null>(null);
   const [originLevel, setOriginLevel] = useState<number>(4);
+  const [footerState, setFooterState] = useState<number>(0);
 
   const {
-    footerPlaces,
+    searchPlaces,
     currentPlaces,
     bookmarkPlaces,
     isBlinkPlaces,
     mapMarkers,
     onClickMarker,
-    searchPlaces,
+    onSearchPlace,
     onFocusPlace,
     onTogglePlace,
     onDeletePlace,
@@ -64,7 +64,7 @@ const MapPage = () => {
     const ps = new kakao.maps.services.Places();
     ps.keywordSearch(address, (data, status, pagination) => {
       if (status === kakao.maps.services.Status.OK) {
-        searchPlaces(address, 1, setMaxPage);
+        onSearchPlace(address, 1, setMaxPage);
         onClickSearchButton(true);
       } else {
         dispatch(errorAccured('검색 결과가 없습니다.'));
@@ -104,7 +104,7 @@ const MapPage = () => {
     (weight: number) => {
       const page = curPage + weight;
       setCurPage(page);
-      searchPlaces(lastSearchWord, page, setMaxPage);
+      onSearchPlace(lastSearchWord, page, setMaxPage);
     },
     [curPage, maxPage, mapMarkers],
   );
@@ -124,7 +124,7 @@ const MapPage = () => {
       setOriginPos(map.getCenter());
       setOriginLevel(map.getLevel());
     },
-    [map, footerPlaces, currentPlaces, bookmarkPlaces, originPos],
+    [map, searchPlaces, currentPlaces, bookmarkPlaces, originPos],
   );
 
   const onHoverPlace = useCallback(
@@ -133,14 +133,14 @@ const MapPage = () => {
       map.setLevel(2);
       map.setCenter(new kakao.maps.LatLng(position.lat, position.lng));
     },
-    [map, footerPlaces, originPos],
+    [map, searchPlaces, originPos],
   );
 
   const onHoverOutPlace = useCallback(() => {
     if (!map || !originPos) return;
     map.setLevel(originLevel);
     map.setCenter(originPos);
-  }, [map, footerPlaces, originPos]);
+  }, [map, searchPlaces, originPos]);
 
   useEffect(() => {
     if (isResized) {
@@ -154,7 +154,7 @@ const MapPage = () => {
   return (
     <MapContainer>
       {kakaoLoading && <LoadingState />}
-      <PlacesContainer>
+      {/* <PlacesContainer>
         <DynamicPlaces
           type='bookmark'
           places={bookmarkPlaces}
@@ -174,7 +174,7 @@ const MapPage = () => {
           onTogglePlace={onTogglePlace}
           onDeletePlace={onDeletePlace}
         />
-      </PlacesContainer>
+      </PlacesContainer> */}
 
       <FormContainer>
         <Form>
@@ -237,10 +237,10 @@ const MapPage = () => {
         </WholeMap>
       </KakaoMapContainer>
 
-      <FooterPlaces
+      <SearchedPlaces
         curPage={curPage}
         maxPage={maxPage}
-        places={footerPlaces}
+        places={searchPlaces}
         handlePageMove={handlePageMove}
         onClickFooterPlace={handleClickFooterPlace}
         onHoverPlace={onHoverPlace}

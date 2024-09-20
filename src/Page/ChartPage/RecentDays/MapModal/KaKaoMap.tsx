@@ -45,7 +45,7 @@ const KaKaoMap = ({ handleChangeCoord }: IProps) => {
 
   const insertAddress = () => {
     setCurPage(1);
-    searchPlaces(searchWord, 1);
+    onSearchPlace(searchWord, 1);
     searchRef.current = searchWord;
     setSearchWord('');
   };
@@ -72,7 +72,7 @@ const KaKaoMap = ({ handleChangeCoord }: IProps) => {
     }
   };
 
-  const searchPlaces = (keyword: string, page: number) => {
+  const onSearchPlace = (keyword: string, page: number) => {
     if (!map) return;
     const ps = new kakao.maps.services.Places();
 
@@ -124,7 +124,7 @@ const KaKaoMap = ({ handleChangeCoord }: IProps) => {
   const handlePageMove = (page: number) => {
     if (page < 1 || page > maxPage) return;
     setCurPage(page);
-    searchPlaces(searchRef.current, page);
+    onSearchPlace(searchRef.current, page);
     setTempSelectedIndex(-1);
   };
 
