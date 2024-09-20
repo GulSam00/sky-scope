@@ -187,7 +187,7 @@ const PlaceWeatherContainer = styled.div<StyleProps>`
   margin: 0.5%;
   min-height: 9rem;
   padding: 10px;
-  border: 1px solid;
+  border: 1px solid #dfe2e5;
   border-radius: 5px;
   cursor: pointer;
   scroll-snap-align: center;

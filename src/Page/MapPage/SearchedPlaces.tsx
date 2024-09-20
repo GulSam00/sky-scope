@@ -87,7 +87,7 @@ const MarkerGroup = styled.div`
     height: 5rem;
     padding: 0.5rem;
 
-    border: 1px solid;
+    border: 1px solid #dfe2e5;
     border-radius: 1rem;
 
     background-color: white;

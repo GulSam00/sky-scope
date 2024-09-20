@@ -57,7 +57,7 @@ const DynamicPlaces = ({
           ))}
         </Places>
       ) : (
-        <div>검색 결과가 없습니다.</div>
+        <div className='no-data'>검색 결과가 없습니다.</div>
       )}
     </DynamicPlacesContainer>
   );
@@ -78,6 +78,13 @@ const DynamicPlacesContainer = styled.div<StyleProps>`
     display: flex;
     align-items: center;
     font-weight: 600;
+  }
+
+  .no-data {
+    display: flex;
+    height: 9.5rem;
+    justify-content: center;
+    align-items: center;
   }
 `;
 
