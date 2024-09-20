@@ -68,12 +68,10 @@ export default memo(SearchedPlaces);
 const PlacesContainer = styled.div`
   display: flex;
   flex-direction: column;
-  position: fixed;
-  bottom: 0;
-  left: 0;
+
   width: 100%;
 
-  margin: 0 auto;
+  margin: 0.5rem;
   bottom: 1rem;
   z-index: 1500;
 `;

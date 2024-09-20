@@ -26,25 +26,6 @@ const DynamicPlaces = ({
   const [isIgnored, setIsIgnored] = useState(false); // 삭제 플래그 상태
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  const PlaceHeader = (type: string) => {
-    if (type === 'bookmark') {
-      return (
-        <div>
-          <img src='/icons/star-fill.svg' alt='북마크' width={24} />
-          북마크
-        </div>
-      );
-    }
-    if (type === 'current') {
-      return (
-        <div>
-          <img src='/icons/search.svg' alt='검색' width={24} />
-          조회
-        </div>
-      );
-    }
-  };
-
   const handleBlinkPlace = () => {
     onBlinkPlace();
     scrollRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
@@ -58,9 +39,7 @@ const DynamicPlaces = ({
 
   return (
     <DynamicPlacesContainer type={type}>
-      {PlaceHeader(type)}
-
-      {places.length !== 0 && (
+      {places.length !== 0 ? (
         <Places ref={scrollRef}>
           {places.map((place: KakaoSearchType, i: number) => (
             <PlaceWeather
@@ -77,6 +56,8 @@ const DynamicPlaces = ({
             />
           ))}
         </Places>
+      ) : (
+        <div>검색 결과가 없습니다.</div>
       )}
     </DynamicPlacesContainer>
   );
@@ -92,8 +73,6 @@ const DynamicPlacesContainer = styled.div<StyleProps>`
   display: flex;
   flex-direction: column;
   min-height: 10rem;
-  min-width: 50%;
-  max-width: 50%;
 
   > div {
     display: flex;

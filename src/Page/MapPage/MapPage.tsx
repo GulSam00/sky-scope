@@ -11,7 +11,7 @@ import { handleResize } from '@src/Store/kakaoModalSlice';
 import { errorAccured } from '@src/Store/RequestStatusSlice';
 
 import { Form, Button, ListGroup } from 'react-bootstrap';
-import DynamicPlaces from './DynamicPlaces';
+import FooterPlaces from './FooterPlaces';
 import SearchedPlaces from './SearchedPlaces';
 
 import styled from 'styled-components';
@@ -22,7 +22,6 @@ const MapPage = () => {
   const [maxPage, setMaxPage] = useState<number>(1);
   const [originPos, setOriginPos] = useState<kakao.maps.LatLng | null>(null);
   const [originLevel, setOriginLevel] = useState<number>(4);
-  const [footerState, setFooterState] = useState<number>(0);
 
   const {
     searchPlaces,
@@ -237,15 +236,27 @@ const MapPage = () => {
         </WholeMap>
       </KakaoMapContainer>
 
-      <SearchedPlaces
-        curPage={curPage}
-        maxPage={maxPage}
-        places={searchPlaces}
-        handlePageMove={handlePageMove}
-        onClickFooterPlace={handleClickFooterPlace}
-        onHoverPlace={onHoverPlace}
-        onHoverOutPlace={onHoverOutPlace}
-      />
+      <FixedContainer>
+        <SearchedPlaces
+          curPage={curPage}
+          maxPage={maxPage}
+          places={searchPlaces}
+          handlePageMove={handlePageMove}
+          onClickFooterPlace={handleClickFooterPlace}
+          onHoverPlace={onHoverPlace}
+          onHoverOutPlace={onHoverOutPlace}
+        />
+
+        <FooterPlaces
+          currentPlaces={currentPlaces}
+          bookmarkPlaces={bookmarkPlaces}
+          isBlinkPlace={isBlinkPlaces}
+          onBlinkPlace={handleBlinkPlace}
+          onFocusPlace={onFocusPlace}
+          onTogglePlace={onTogglePlace}
+          onDeletePlace={onDeletePlace}
+        />
+      </FixedContainer>
     </MapContainer>
   );
 };
@@ -257,9 +268,6 @@ const MapContainer = styled.div`
   width: 100%;
 `;
 
-const PlacesContainer = styled.div`
-  display: flex;
-`;
 const FormContainer = styled.div`
   display: flex;
   justify-content: space-between;
@@ -296,7 +304,7 @@ const KakaoMapContainer = styled.div`
   width: 100%;
 
   #kakao-map {
-    height: 70vh;
+    height: 80vh;
     width: 100%;
   }
 `;
@@ -340,4 +348,16 @@ const WholeMap = styled.div`
     width: 2rem;
     height: 2rem;
   }
+`;
+
+const FixedContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+
+  z-index: 1500;
 `;
