@@ -1,5 +1,6 @@
-import { useState, memo } from 'react';
+import { useState, useRef, memo } from 'react';
 
+import { BlinkComponent } from '@src/Util';
 import { KakaoSearchType } from '@src/Queries/useLiveDataQuery';
 import DynamicPlaces from './DynamicPlaces';
 import styled from 'styled-components';
@@ -24,19 +25,26 @@ const FooterPlaces = ({
   onDeletePlace,
 }: IProps) => {
   const [footerState, setFooterState] = useState<number>(0);
+  const bookmarkRef = useRef<HTMLDivElement>(null);
+  const currentRef = useRef<HTMLDivElement>(null);
 
   const onClickFooter = (state: number) => {
     if (footerState === state) setFooterState(0);
-    else setFooterState(state);
+    else {
+      setFooterState(state);
+      if (!bookmarkRef.current || !currentRef.current) return;
+      state === 1 ? BlinkComponent({ targetRef: bookmarkRef }) : BlinkComponent({ targetRef: currentRef });
+    }
   };
+
   return (
     <FooterPlacesContainer>
       <FooterButtons>
-        <div onClick={() => onClickFooter(1)}>
+        <div ref={bookmarkRef} onClick={() => onClickFooter(1)}>
           <img src='/icons/star-fill.svg' alt='북마크' width={24} />
           북마크
         </div>
-        <div onClick={() => onClickFooter(2)}>
+        <div ref={currentRef} onClick={() => onClickFooter(2)}>
           <img src='/icons/search.svg' alt='검색' width={24} />
           조회
         </div>

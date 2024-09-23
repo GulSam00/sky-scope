@@ -1,12 +1,12 @@
 import { useEffect, useRef, memo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { gsap } from 'gsap';
 
 import { useLiveDataQuery } from '@src/Queries';
 import { KakaoSearchType } from '@src/Queries/useLiveDataQuery';
 import { RootState } from '@src/Store/store';
 import { loadingData, loadedData, errorAccured } from '@src/Store/RequestStatusSlice';
+import { BlinkComponent } from '@src/Util';
 
 import { Spinner } from 'react-bootstrap';
 import { styled } from 'styled-components';
@@ -54,16 +54,9 @@ const PlaceWeather = ({
   const firstPlaceRef = useRef<HTMLDivElement>(null);
 
   const BlinkPlace = () => {
-    const ref = firstPlaceRef.current;
-    if (!ref) return;
+    if (!firstPlaceRef) return;
+    BlinkComponent({ targetRef: firstPlaceRef });
 
-    gsap.to(ref, {
-      backgroundColor: '#0d6efd',
-      duration: 0.25,
-      onComplete: () => {
-        gsap.to(ref, { backgroundColor: '#ffffff', duration: 0.25 });
-      },
-    });
     onBlinkPlace();
   };
 
