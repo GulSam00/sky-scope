@@ -11,12 +11,12 @@ import { IDateData } from '@src/API/getWeatherShort';
 import { Button } from 'react-bootstrap';
 import { styled } from 'styled-components';
 
-interface IProps {
+interface Props {
   recentData: IDateData;
   keyDate: string;
   baseDate: Date;
 }
-const RecentDay = ({ recentData, keyDate, baseDate }: IProps) => {
+const RecentDay = ({ recentData, keyDate, baseDate }: Props) => {
   const dispatch = useDispatch();
   const [tab, setTab] = useState<string>('temperture');
 

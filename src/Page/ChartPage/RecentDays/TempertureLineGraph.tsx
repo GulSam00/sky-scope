@@ -5,7 +5,7 @@ import { IDateData } from '@src/API/getWeatherShort';
 
 import { styled } from 'styled-components';
 
-interface IProps {
+interface Props {
   recentData: IDateData;
   callbackLoadedData: () => void;
 }
@@ -16,7 +16,7 @@ interface tempertureDataTypes {
 }
 // 탭을 만들어서 전환??
 
-const TempertureLineGraph = ({ recentData, callbackLoadedData }: IProps) => {
+const TempertureLineGraph = ({ recentData, callbackLoadedData }: Props) => {
   const [tempertureData, setTempertureData] = useState<tempertureDataTypes[]>([]);
 
   const data = [

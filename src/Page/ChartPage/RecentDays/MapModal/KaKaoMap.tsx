@@ -17,11 +17,11 @@ import SearchResultPagination from './SearchResultPagination';
 import { Form, Button, ListGroup } from 'react-bootstrap';
 import styled from 'styled-components';
 
-interface IProps {
+interface Props {
   handleChangeCoord: (coord: ICoord) => void;
 }
 
-const KaKaoMap = ({ handleChangeCoord }: IProps) => {
+const KaKaoMap = ({ handleChangeCoord }: Props) => {
   const [map, setMap] = useState<kakao.maps.Map | null>(null);
   const [places, setPlaces] = useState<LocateDataType[]>([]);
   const [tempSelectedIndex, setTempSelectedIndex] = useState<number>(-1);

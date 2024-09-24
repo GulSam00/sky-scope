@@ -7,7 +7,7 @@ import styled from 'styled-components';
 
 import { gsap } from 'gsap';
 
-interface IProps {
+interface Props {
   currentPlaces: KakaoSearchType[];
   bookmarkPlaces: KakaoSearchType[];
   isBlinkPlace: boolean[];
@@ -25,7 +25,7 @@ const FooterPlaces = ({
   onFocusPlace,
   onTogglePlace,
   onDeletePlace,
-}: IProps) => {
+}: Props) => {
   const [footerState, setFooterState] = useState<number>(0);
   const prevCurrentPlaces = useRef<number>(0);
   const prevBookmarkPlaces = useRef<number>(0);

@@ -28,11 +28,11 @@ interface ICoordJson {
   };
 }
 
-interface IProps {
+interface Props {
   handleChangeCoord: (coord: ICoord) => void;
 }
 
-const LocationHeader = ({ handleChangeCoord }: IProps) => {
+const LocationHeader = ({ handleChangeCoord }: Props) => {
   const dispatch = useDispatch();
   const location: locationType = useGeolocation();
   const { province, city } = useSelector((state: RootState) => state.locationDataSliceReducer);
