@@ -9,10 +9,12 @@ import { KakaoMapMarkerType, LocateDataType } from '@src/Queries/useLiveDataQuer
 import { RootState } from '@src/Store/store';
 import { handleResize } from '@src/Store/kakaoModalSlice';
 import { errorAccured } from '@src/Store/requestStatusSlice';
+import { addToast } from '@src/Store/toastWeatherSlice';
 
 import { Form, Button, ListGroup } from 'react-bootstrap';
 import FooterPlaces from './FooterPlaces';
 import SearchedPlaces from './SearchedPlaces';
+import ToastLists from './ToastLists';
 
 import styled from 'styled-components';
 
@@ -116,6 +118,8 @@ const MapPage = () => {
   const handleClickFooterPlace = useCallback(
     (place: LocateDataType) => {
       onClickFooterPlace(place);
+      dispatch(addToast(place));
+
       if (!map) return;
       const position = place.position;
 
@@ -154,27 +158,6 @@ const MapPage = () => {
   return (
     <MapContainer>
       {kakaoLoading && <LoadingState />}
-      {/* <PlacesContainer>
-        <DynamicPlaces
-          type='bookmark'
-          places={bookmarkPlaces}
-          isBlinkPlace={isBlinkPlaces[0]}
-          onBlinkPlace={handleBlinkPlace}
-          onFocusPlace={onFocusPlace}
-          onTogglePlace={onTogglePlace}
-          onDeletePlace={onDeletePlace}
-        />
-
-        <DynamicPlaces
-          type='current'
-          places={currentPlaces}
-          isBlinkPlace={isBlinkPlaces[1]}
-          onBlinkPlace={handleBlinkPlace}
-          onFocusPlace={onFocusPlace}
-          onTogglePlace={onTogglePlace}
-          onDeletePlace={onDeletePlace}
-        />
-      </PlacesContainer> */}
 
       <FormContainer>
         <Form>
@@ -235,6 +218,8 @@ const MapPage = () => {
         <WholeMap onClick={() => showWholeMarker()}>
           <img src='/icons/crosshair.svg' alt='crosshair' />
         </WholeMap>
+
+        <ToastLists />
       </KakaoMapContainer>
 
       <FixedContainer phone={isPhone}>
@@ -365,6 +350,7 @@ const FixedContainer = styled.div<Props>`
   @media (min-width: 640px) {
     width: ${props => (props.phone ? '400px' : '100%')};
   }
+  width: 100%;
 
   z-index: 1500;
 `;

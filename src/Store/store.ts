@@ -4,6 +4,7 @@ import shortDataSliceReducer from '@src/Store/shortDataSlice';
 import locationDataSliceReducer from '@src/Store/locationDataSlice';
 import requestStatusSliceReducer from '@src/Store/requestStatusSlice';
 import globalDataSliceReducer from '@src/Store/globalDataSlice';
+import toastWeatherSliceReducer from '@src/Store/toastWeatherSlice';
 
 export const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ export const store = configureStore({
     locationDataSliceReducer,
     requestStatusSliceReducer,
     globalDataSliceReducer,
+    toastWeatherSliceReducer,
   },
 });
 
