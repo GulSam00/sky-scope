@@ -86,11 +86,9 @@ const FooterPlaces = ({
       <FooterLists>
         <div ref={bookmarkRef} onClick={() => onClickFooter(1)}>
           <img src='/icons/star-fill.svg' alt='북마크' width={24} />
-          북마크
         </div>
         <div ref={currentRef} onClick={() => onClickFooter(2)}>
           <img src='/icons/search.svg' alt='검색' width={24} />
-          조회
         </div>
       </FooterLists>
 
