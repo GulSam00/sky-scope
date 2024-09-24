@@ -71,12 +71,12 @@ const FooterPlaces = ({
         gsap.to(bookmarkRef.current, { width: '50%', duration: 0.5 });
         break;
       case 1:
-        gsap.to(bookmarkRef.current, { width: '80%', duration: 0.5 });
-        gsap.to(currentRef.current, { width: '20%', duration: 0.5 });
+        gsap.to(bookmarkRef.current, { width: '75%', duration: 0.5 });
+        gsap.to(currentRef.current, { width: '25%', duration: 0.5 });
         break;
       case 2:
-        gsap.to(currentRef.current, { width: '80%', duration: 0.5 });
-        gsap.to(bookmarkRef.current, { width: '20%', duration: 0.5 });
+        gsap.to(currentRef.current, { width: '75%', duration: 0.5 });
+        gsap.to(bookmarkRef.current, { width: '25%', duration: 0.5 });
         break;
     }
   }, [footerState]);

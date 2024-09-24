@@ -51,6 +51,7 @@ const MapPage = () => {
 
   const { kakaoLoading, kakaoError } = useKakaoLoader();
   const { isResized } = useSelector((state: RootState) => state.kakaoModalSliceReducer);
+  const { isPhone } = useSelector((state: RootState) => state.globalDataSliceReducer);
 
   const dispatch = useDispatch();
 
@@ -236,7 +237,7 @@ const MapPage = () => {
         </WholeMap>
       </KakaoMapContainer>
 
-      <FixedContainer>
+      <FixedContainer phone={isPhone}>
         <SearchedPlaces
           curPage={curPage}
           maxPage={maxPage}
@@ -262,6 +263,10 @@ const MapPage = () => {
 };
 
 export default MapPage;
+
+interface Props {
+  phone: boolean;
+}
 
 const MapContainer = styled.div`
   overflow: hidden;
@@ -350,14 +355,16 @@ const WholeMap = styled.div`
   }
 `;
 
-const FixedContainer = styled.div`
+const FixedContainer = styled.div<Props>`
   display: flex;
   flex-direction: column;
 
   position: fixed;
   bottom: 0;
-  left: 0;
-  width: 100%;
+
+  @media (min-width: 640px) {
+    width: ${props => (props.phone ? '400px' : '100%')};
+  }
 
   z-index: 1500;
 `;

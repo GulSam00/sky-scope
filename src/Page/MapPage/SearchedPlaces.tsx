@@ -43,7 +43,7 @@ const SearchedPlaces = ({
   return (
     <PlacesContainer>
       {places.length > 0 && (
-        <MarkerGroup>
+        <PlaceGroup>
           {curPage > 1 && <CaretLeft key='leftBtn' onClick={() => handleClickMovePage(-1)} />}
 
           {places.map((place: LocateDataType, index: number) => (
@@ -57,7 +57,7 @@ const SearchedPlaces = ({
             </div>
           ))}
           {curPage < maxPage && <CaretRight key='rightBtn' onClick={() => handleClickMovePage(1)} />}
-        </MarkerGroup>
+        </PlaceGroup>
       )}
     </PlacesContainer>
   );
@@ -76,7 +76,7 @@ const PlacesContainer = styled.div`
   z-index: 1500;
 `;
 
-const MarkerGroup = styled.div`
+const PlaceGroup = styled.div`
   display: flex;
 
   justify-content: center;
@@ -85,7 +85,7 @@ const MarkerGroup = styled.div`
   > * {
     width: 4rem;
     height: 5rem;
-    padding: 0.5rem;
+    padding: 0.25rem;
 
     border: 1px solid #dfe2e5;
     border-radius: 1rem;
@@ -101,9 +101,9 @@ const MarkerGroup = styled.div`
 
   > div {
     width: 6rem;
-    margin: 0 4px;
+    margin: 0 2px;
 
-    font-size: 1.2rem;
+    font-size: 0.8rem;
     display: flex;
     justify-content: center;
     align-items: center;
