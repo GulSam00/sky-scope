@@ -1,4 +1,4 @@
-import { useState, useRef, memo } from 'react';
+import { useState, useRef, memo, useEffect } from 'react';
 
 import { BlinkComponent } from '@src/Util';
 import { KakaoSearchType } from '@src/Queries/useLiveDataQuery';
@@ -36,6 +36,18 @@ const FooterPlaces = ({
       state === 1 ? BlinkComponent({ targetRef: bookmarkRef }) : BlinkComponent({ targetRef: currentRef });
     }
   };
+
+  useEffect(() => {
+    if (!bookmarkPlaces.length) return;
+    if (footerState) setFooterState(1);
+    BlinkComponent({ targetRef: bookmarkRef });
+  }, [bookmarkPlaces]);
+
+  useEffect(() => {
+    if (!currentPlaces.length) return;
+    if (footerState) setFooterState(2);
+    BlinkComponent({ targetRef: currentRef });
+  }, [currentPlaces]);
 
   return (
     <FooterPlacesContainer>
