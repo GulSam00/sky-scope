@@ -25,6 +25,8 @@ const FooterPlaces = ({
   onDeletePlace,
 }: IProps) => {
   const [footerState, setFooterState] = useState<number>(0);
+  const prevCurrentPlaces = useRef<number>(0);
+  const prevBookmarkPlaces = useRef<number>(0);
   const bookmarkRef = useRef<HTMLDivElement>(null);
   const currentRef = useRef<HTMLDivElement>(null);
 
@@ -38,12 +40,22 @@ const FooterPlaces = ({
   };
 
   useEffect(() => {
+    if (prevBookmarkPlaces.current > bookmarkPlaces.length) {
+      prevBookmarkPlaces.current = bookmarkPlaces.length;
+      return;
+    }
+    prevBookmarkPlaces.current = bookmarkPlaces.length;
     if (!bookmarkPlaces.length) return;
     if (footerState) setFooterState(1);
     BlinkComponent({ targetRef: bookmarkRef });
   }, [bookmarkPlaces]);
 
   useEffect(() => {
+    if (prevCurrentPlaces.current > currentPlaces.length) {
+      prevCurrentPlaces.current = currentPlaces.length;
+      return;
+    }
+    prevCurrentPlaces.current = currentPlaces.length;
     if (!currentPlaces.length) return;
     if (footerState) setFooterState(2);
     BlinkComponent({ targetRef: currentRef });
@@ -51,7 +63,7 @@ const FooterPlaces = ({
 
   return (
     <FooterPlacesContainer>
-      <FooterButtons>
+      <FooterLists>
         <div ref={bookmarkRef} onClick={() => onClickFooter(1)}>
           <img src='/icons/star-fill.svg' alt='북마크' width={24} />
           북마크
@@ -60,7 +72,7 @@ const FooterPlaces = ({
           <img src='/icons/search.svg' alt='검색' width={24} />
           조회
         </div>
-      </FooterButtons>
+      </FooterLists>
 
       {footerState !== 0 && (
         <DynamicPlaces
@@ -86,7 +98,7 @@ const FooterPlacesContainer = styled.div`
   background-color: white;
 `;
 
-const FooterButtons = styled.div`
+const FooterLists = styled.div`
   display: flex;
   width: 100%;
   height: 3rem;
