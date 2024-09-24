@@ -5,6 +5,8 @@ import { KakaoSearchType } from '@src/Queries/useLiveDataQuery';
 import DynamicPlaces from './DynamicPlaces';
 import styled from 'styled-components';
 
+import { gsap } from 'gsap';
+
 interface IProps {
   currentPlaces: KakaoSearchType[];
   bookmarkPlaces: KakaoSearchType[];
@@ -31,8 +33,9 @@ const FooterPlaces = ({
   const currentRef = useRef<HTMLDivElement>(null);
 
   const onClickFooter = (state: number) => {
-    if (footerState === state) setFooterState(0);
-    else {
+    if (footerState === state) {
+      setFooterState(0);
+    } else {
       setFooterState(state);
       if (!bookmarkRef.current || !currentRef.current) return;
       state === 1 ? BlinkComponent({ targetRef: bookmarkRef }) : BlinkComponent({ targetRef: currentRef });
@@ -60,6 +63,23 @@ const FooterPlaces = ({
     if (footerState) setFooterState(2);
     BlinkComponent({ targetRef: currentRef });
   }, [currentPlaces]);
+
+  useEffect(() => {
+    switch (footerState) {
+      case 0:
+        gsap.to(currentRef.current, { width: '50%', duration: 0.5 });
+        gsap.to(bookmarkRef.current, { width: '50%', duration: 0.5 });
+        break;
+      case 1:
+        gsap.to(bookmarkRef.current, { width: '80%', duration: 0.5 });
+        gsap.to(currentRef.current, { width: '20%', duration: 0.5 });
+        break;
+      case 2:
+        gsap.to(currentRef.current, { width: '80%', duration: 0.5 });
+        gsap.to(bookmarkRef.current, { width: '20%', duration: 0.5 });
+        break;
+    }
+  }, [footerState]);
 
   return (
     <FooterPlacesContainer>
