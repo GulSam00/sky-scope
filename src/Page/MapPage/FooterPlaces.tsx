@@ -1,6 +1,6 @@
 import { useState, useRef, memo, useEffect } from 'react';
 
-import { BlinkComponent } from '@src/Util';
+import { blinkComponent } from '@src/Util';
 import { KakaoSearchType } from '@src/Queries/useLiveDataQuery';
 import DynamicPlaces from './DynamicPlaces';
 import styled from 'styled-components';
@@ -38,7 +38,7 @@ const FooterPlaces = ({
     } else {
       setFooterState(state);
       if (!bookmarkRef.current || !currentRef.current) return;
-      state === 1 ? BlinkComponent({ targetRef: bookmarkRef }) : BlinkComponent({ targetRef: currentRef });
+      state === 1 ? blinkComponent({ targetRef: bookmarkRef }) : blinkComponent({ targetRef: currentRef });
     }
   };
 
@@ -50,7 +50,7 @@ const FooterPlaces = ({
     prevBookmarkPlaces.current = bookmarkPlaces.length;
     if (!bookmarkPlaces.length) return;
     if (footerState) setFooterState(1);
-    BlinkComponent({ targetRef: bookmarkRef });
+    blinkComponent({ targetRef: bookmarkRef });
   }, [bookmarkPlaces]);
 
   useEffect(() => {
@@ -61,7 +61,7 @@ const FooterPlaces = ({
     prevCurrentPlaces.current = currentPlaces.length;
     if (!currentPlaces.length) return;
     if (footerState) setFooterState(2);
-    BlinkComponent({ targetRef: currentRef });
+    blinkComponent({ targetRef: currentRef });
   }, [currentPlaces]);
 
   useEffect(() => {

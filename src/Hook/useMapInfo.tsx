@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 
-import { errorAccured } from '@src/Store/RequestStatusSlice';
+import { errorAccured } from '@src/Store/requestStatusSlice';
 import { LocateDataType, KakaoSearchType, KakaoMapMarkerType, markerStatus } from '@src/Queries/useLiveDataQuery';
 import { transLocaleToCoord } from '@src/Util';
 

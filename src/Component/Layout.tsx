@@ -12,7 +12,7 @@ import { Github, Phone, PhoneFill } from 'react-bootstrap-icons';
 import { styled } from 'styled-components';
 
 const Layout = () => {
-  const { isLoading, errorMessage } = useSelector((state: RootState) => state.RequestStatusSliceReducer);
+  const { isLoading, errorMessage } = useSelector((state: RootState) => state.requestStatusSliceReducer);
   const { isPhone } = useSelector((state: RootState) => state.globalDataSliceReducer);
 
   const dispatch = useDispatch();

@@ -2,7 +2,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import kakaoModalSliceReducer from '@src/Store/kakaoModalSlice';
 import shortDataSliceReducer from '@src/Store/shortDataSlice';
 import locationDataSliceReducer from '@src/Store/locationDataSlice';
-import RequestStatusSliceReducer from '@src/Store/RequestStatusSlice';
+import requestStatusSliceReducer from '@src/Store/requestStatusSlice';
 import globalDataSliceReducer from '@src/Store/globalDataSlice';
 
 export const store = configureStore({
@@ -10,7 +10,7 @@ export const store = configureStore({
     kakaoModalSliceReducer,
     shortDataSliceReducer,
     locationDataSliceReducer,
-    RequestStatusSliceReducer,
+    requestStatusSliceReducer,
     globalDataSliceReducer,
   },
 });

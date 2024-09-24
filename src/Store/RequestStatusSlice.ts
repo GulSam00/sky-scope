@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-export const RequestStatusSlice = createSlice({
+export const requestStatusSlice = createSlice({
   name: 'requestStatus',
   initialState: {
     isLoading: false,
@@ -22,6 +22,6 @@ export const RequestStatusSlice = createSlice({
   },
 });
 
-export const { loadingData, loadedData, errorAccured, handledError } = RequestStatusSlice.actions;
+export const { loadingData, loadedData, errorAccured, handledError } = requestStatusSlice.actions;
 
-export default RequestStatusSlice.reducer;
+export default requestStatusSlice.reducer;

@@ -5,8 +5,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useLiveDataQuery } from '@src/Queries';
 import { KakaoSearchType } from '@src/Queries/useLiveDataQuery';
 import { RootState } from '@src/Store/store';
-import { loadingData, loadedData, errorAccured } from '@src/Store/RequestStatusSlice';
-import { BlinkComponent } from '@src/Util';
+import { loadingData, loadedData, errorAccured } from '@src/Store/requestStatusSlice';
+import { blinkComponent } from '@src/Util';
 
 import { Spinner } from 'react-bootstrap';
 import { styled } from 'styled-components';
@@ -55,7 +55,7 @@ const PlaceWeather = ({
 
   const BlinkPlace = () => {
     if (!firstPlaceRef) return;
-    BlinkComponent({ targetRef: firstPlaceRef });
+    blinkComponent({ targetRef: firstPlaceRef });
 
     onBlinkPlace();
   };

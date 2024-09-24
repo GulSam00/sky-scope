@@ -4,7 +4,7 @@ interface Props {
   targetRef: React.RefObject<HTMLDivElement>;
 }
 
-const BlinkComponent = ({ targetRef }: Props) => {
+const blinkComponent = ({ targetRef }: Props) => {
   const ref = targetRef.current;
 
   gsap.to(ref, {
@@ -16,4 +16,4 @@ const BlinkComponent = ({ targetRef }: Props) => {
   });
 };
 
-export default BlinkComponent;
+export default blinkComponent;
