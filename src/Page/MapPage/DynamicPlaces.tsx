@@ -1,6 +1,6 @@
 import { useState, memo, useEffect, useRef } from 'react';
 
-import { KakaoSearchType } from '@src/Queries/useLiveDataQuery';
+import { KakaoSearchType } from '@src/Types/liveDataType';
 import PlaceWeather from './PlaceWeather';
 import styled from 'styled-components';
 

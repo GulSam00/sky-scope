@@ -2,11 +2,10 @@ import { useState, useEffect, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { errorAccured } from '@src/Store/requestStatusSlice';
-import { LocateDataType, KakaoSearchType, KakaoMapMarkerType, markerStatus } from '@src/Queries/useLiveDataQuery';
+import { LocateDataType, KakaoSearchType, KakaoMapMarkerType, markerStatus } from '@src/Types/liveDataType';
 import { transLocaleToCoord } from '@src/Util';
 
 import { addToast } from '@src/Store/toastWeatherSlice';
-import { IParseObj } from '@src/API/getWeatherLive';
 
 interface Props {
   map: kakao.maps.Map | null;
@@ -80,7 +79,6 @@ const useMapInfo = ({ map }: Props) => {
     (place: KakaoSearchType) => {
       isSwapPlace(place.placeId);
       focusMap(place.position);
-      // dispatch(addToast(place));
     },
     [currentPlaces, bookmarkPlaces, mapMarkers],
   );

@@ -5,7 +5,7 @@ import { Map, MapMarker } from 'react-kakao-maps-sdk';
 import { useKakaoLoader } from '@src/Hook';
 
 import { ICoord } from '@src/API/getWeatherShort';
-import { LocateDataType } from '@src/Queries/useLiveDataQuery';
+import { LocateDataType } from '@src/Types/liveDataType';
 
 import { errorAccured } from '@src/Store/requestStatusSlice';
 import { close } from '@src/Store/kakaoModalSlice';

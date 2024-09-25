@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import { LoadingSpinner } from '@src/Component';
 import { useLiveDataQuery } from '@src/Queries';
-import { KakaoSearchType } from '@src/Queries/useLiveDataQuery';
+import { KakaoSearchType } from '@src/Types/liveDataType';
 import { RootState } from '@src/Store/store';
 import { loadingData, loadedData, errorAccured } from '@src/Store/requestStatusSlice';
 import { blinkComponent } from '@src/Util';

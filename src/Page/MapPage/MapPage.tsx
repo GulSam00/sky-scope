@@ -4,7 +4,7 @@ import { Map, MapMarker } from 'react-kakao-maps-sdk';
 
 import { LoadingState } from '@src/Component';
 import { useKakaoLoader, useMapInfo, useAutoSearch } from '@src/Hook';
-import { KakaoMapMarkerType, LocateDataType } from '@src/Queries/useLiveDataQuery';
+import { KakaoMapMarkerType, LocateDataType } from '@src/Types/liveDataType';
 
 import { RootState } from '@src/Store/store';
 import { handleResize } from '@src/Store/kakaoModalSlice';

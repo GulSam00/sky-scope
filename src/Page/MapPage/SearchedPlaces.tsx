@@ -1,6 +1,6 @@
 import { memo } from 'react';
 
-import { LocateDataType } from '@src/Queries/useLiveDataQuery';
+import { LocateDataType } from '@src/Types/liveDataType';
 
 import styled from 'styled-components';
 import { CaretLeft, CaretRight } from 'react-bootstrap-icons';

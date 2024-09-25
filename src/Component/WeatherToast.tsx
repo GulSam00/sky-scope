@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 
-import { KakaoSearchType } from '@src/Queries/useLiveDataQuery';
+import { KakaoSearchType } from '@src/Types/liveDataType';
 import { useLiveDataQuery } from '@src/Queries';
 import { removeToast } from '@src/Store/toastWeatherSlice';
 import { LoadingSpinner } from '@src/Component';

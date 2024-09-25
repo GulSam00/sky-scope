@@ -1,7 +1,7 @@
 import { useState, useRef, memo, useEffect } from 'react';
 
 import { blinkComponent } from '@src/Util';
-import { KakaoSearchType } from '@src/Queries/useLiveDataQuery';
+import { KakaoSearchType } from '@src/Types/liveDataType';
 import DynamicPlaces from './DynamicPlaces';
 import styled from 'styled-components';
 
