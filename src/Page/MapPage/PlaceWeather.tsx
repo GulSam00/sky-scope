@@ -6,7 +6,7 @@ import { LoadingSpinner } from '@src/Component';
 import { useLiveDataQuery } from '@src/Queries';
 import { KakaoSearchType } from '@src/Types/liveDataType';
 import { RootState } from '@src/Store/store';
-import { loadingData, loadedData, errorAccured } from '@src/Store/requestStatusSlice';
+import { loadingData, loadedData, errorAccured } from '@src/Store/RequestStatusSlice';
 import { blinkComponent } from '@src/Util';
 
 import { styled } from 'styled-components';

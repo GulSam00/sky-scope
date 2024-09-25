@@ -7,7 +7,7 @@ import { ICoord } from '@src/API/getWeatherShort';
 
 import { RootState } from '@src/Store/store';
 import { open } from '@src/Store/kakaoModalSlice';
-import { errorAccured } from '@src/Store/requestStatusSlice';
+import { errorAccured } from '@src/Store/RequestStatusSlice';
 import { setCity, setProvince, initLocation } from '@src/Store/locationDataSlice';
 
 import { transLocaleToCoord, setLocalCoordInfo } from '@src/Util';

@@ -7,7 +7,7 @@ import { useKakaoLoader } from '@src/Hook';
 import { ICoord } from '@src/API/getWeatherShort';
 import { LocateDataType } from '@src/Types/liveDataType';
 
-import { errorAccured } from '@src/Store/requestStatusSlice';
+import { errorAccured } from '@src/Store/RequestStatusSlice';
 import { close } from '@src/Store/kakaoModalSlice';
 import { setCity, setProvince } from '@src/Store/locationDataSlice';
 

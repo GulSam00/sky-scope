@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { addToast } from '@src/Store/toastWeatherSlice';
-import { errorAccured } from '@src/Store/requestStatusSlice';
+import { errorAccured } from '@src/Store/RequestStatusSlice';
 import { LocateDataType, KakaoSearchType, KakaoMapMarkerType, markerStatus } from '@src/Types/liveDataType';
 import { transLocaleToCoord } from '@src/Util';
 

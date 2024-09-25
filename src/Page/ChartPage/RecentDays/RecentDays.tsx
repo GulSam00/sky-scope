@@ -13,8 +13,8 @@ import { useShortDataQuery } from '@src/Queries';
 
 import { RootState } from '@src/Store/store';
 import { setCoord } from '@src/Store/shortDataSlice';
-import { loadingData } from '@src/Store/requestStatusSlice';
-import { errorAccured } from '@src/Store/requestStatusSlice';
+import { loadingData } from '@src/Store/RequestStatusSlice';
+import { errorAccured } from '@src/Store/RequestStatusSlice';
 
 import { addDays } from 'date-fns';
 import { styled } from 'styled-components';
