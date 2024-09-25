@@ -61,7 +61,7 @@ const WeatherToast = ({ content, index }: Props) => {
     animation
       .fromTo(
         ref,
-        { y: 50 + index * 90, opacity: 0 }, // Toast의 y 위치를 index에 따라 다르게 적용
+        { y: 50 + index * 100, opacity: 0 }, // Toast의 y 위치를 index에 따라 다르게 적용
         {
           y: 0,
           opacity: 1, // 보이기
@@ -96,7 +96,7 @@ const WeatherToast = ({ content, index }: Props) => {
           </div>
 
           <div className='content'>
-            <img width='12' src='icons/humidity.svg' alt='humidity' />
+            <img width='16' src='icons/humidity.svg' alt='humidity' />
             <div>{data.REH}%</div>
           </div>
 
@@ -123,8 +123,8 @@ const ToastContainer = styled.div`
     justify-content: center;
     align-items: center;
 
-    width: 110px;
-    height: 90px;
+    width: 140px;
+    height: 100px;
     border-radius: 2rem;
     margin: 0 0.5rem;
 
@@ -141,12 +141,12 @@ const ToastContent = styled.div`
   width: 100%;
   height: 100%;
 
-  font-size: 0.75rem;
+  font-size: 16px;
   .content {
     display: flex;
     align-items: center;
     gap: 0.25rem;
-    width: 80px;
+    width: 100px;
 
     white-space: nowrap;
     overflow: hidden;

@@ -103,7 +103,7 @@ const PlaceGroup = styled.div`
     width: 6rem;
     margin: 0 2px;
 
-    font-size: 0.8rem;
+    font-size: 20px;
     display: flex;
     justify-content: center;
     align-items: center;
