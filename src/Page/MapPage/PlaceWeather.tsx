@@ -1,14 +1,14 @@
 import { useEffect, useRef, memo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { gsap } from 'gsap';
 
+import { LoadingSpinner } from '@src/Component';
 import { useLiveDataQuery } from '@src/Queries';
-import { KakaoSearchType } from '@src/Queries/useLiveDataQuery';
+import { KakaoSearchType } from '@src/Types/liveDataType';
 import { RootState } from '@src/Store/store';
-import { loadingData, loadedData, errorAccured } from '@src/Store/RequestStatusSlice';
+import { loadingData, loadedData, errorAccured } from '@src/Store/requestStatusSlice';
+import { blinkComponent } from '@src/Util';
 
-import { Spinner } from 'react-bootstrap';
 import { styled } from 'styled-components';
 
 import {
@@ -54,16 +54,9 @@ const PlaceWeather = ({
   const firstPlaceRef = useRef<HTMLDivElement>(null);
 
   const BlinkPlace = () => {
-    const ref = firstPlaceRef.current;
-    if (!ref) return;
+    if (!firstPlaceRef) return;
+    blinkComponent({ targetRef: firstPlaceRef });
 
-    gsap.to(ref, {
-      backgroundColor: '#0d6efd',
-      duration: 0.25,
-      onComplete: () => {
-        gsap.to(ref, { backgroundColor: '#ffffff', duration: 0.25 });
-      },
-    });
     onBlinkPlace();
   };
 
@@ -120,7 +113,7 @@ const PlaceWeather = ({
   }, [isLoading, isFirstPlace, isBlinkPlace]);
 
   return (
-    <PlaceWeatherContainer ref={firstPlaceRef} phone={isPhone}>
+    <PlaceWeatherContainer ref={firstPlaceRef} phone={isPhone.toString()}>
       {data ? (
         <div onClick={() => handleClickPlace(place)}>
           <div className='bookmark' onClick={e => handleClickBookmark(e)}>
@@ -161,11 +154,7 @@ const PlaceWeather = ({
           </div>
         </div>
       ) : (
-        <SpinnerContainer>
-          <Spinner animation='border' role='status'>
-            <span className='visually-hidden'>Loading...</span>
-          </Spinner>
-        </SpinnerContainer>
+        <LoadingSpinner />
       )}
     </PlaceWeatherContainer>
   );
@@ -174,20 +163,20 @@ const PlaceWeather = ({
 export default memo(PlaceWeather);
 
 interface StyleProps {
-  phone: boolean;
+  phone: string;
 }
 
 const PlaceWeatherContainer = styled.div<StyleProps>`
   position: relative;
 
   @media (min-width: 640px) {
-    width: ${props => (props.phone ? '99%' : '32%')};
+    width: ${props => (props.phone === 'true' ? '99%' : '32%')};
   }
   width: 99%;
   margin: 0.5%;
   min-height: 9rem;
   padding: 10px;
-  border: 1px solid;
+  border: 1px solid #dfe2e5;
   border-radius: 5px;
   cursor: pointer;
   scroll-snap-align: center;
@@ -238,11 +227,4 @@ const PlaceWeatherContainer = styled.div<StyleProps>`
       gap: 0.5rem;
     }
   }
-`;
-
-const SpinnerContainer = styled.div`
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
 `;

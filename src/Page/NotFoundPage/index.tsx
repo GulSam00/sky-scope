@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 
-import { loadedData } from '@src/Store/RequestStatusSlice';
+import { loadedData } from '@src/Store/requestStatusSlice';
 import { styled } from 'styled-components';
 
 const NotFoundPage = () => {

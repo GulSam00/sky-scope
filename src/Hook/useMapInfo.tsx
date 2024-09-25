@@ -1,8 +1,9 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 
-import { errorAccured } from '@src/Store/RequestStatusSlice';
-import { LocateDataType, KakaoSearchType, KakaoMapMarkerType, markerStatus } from '@src/Queries/useLiveDataQuery';
+import { addToast } from '@src/Store/toastWeatherSlice';
+import { errorAccured } from '@src/Store/requestStatusSlice';
+import { LocateDataType, KakaoSearchType, KakaoMapMarkerType, markerStatus } from '@src/Types/liveDataType';
 import { transLocaleToCoord } from '@src/Util';
 
 interface Props {
@@ -10,7 +11,7 @@ interface Props {
 }
 
 const useMapInfo = ({ map }: Props) => {
-  const [footerPlaces, setFooterPlaces] = useState<LocateDataType[]>([]);
+  const [searchPlaces, setSearchPlaces] = useState<LocateDataType[]>([]);
   const [currentPlaces, setCurrentPlaces] = useState<KakaoSearchType[]>([]);
   const [bookmarkPlaces, setBookmarkPlaces] = useState<KakaoSearchType[]>([]);
   const [mapMarkers, setMapMarkers] = useState<KakaoMapMarkerType[]>([]);
@@ -32,7 +33,7 @@ const useMapInfo = ({ map }: Props) => {
     onClickFooterPlace(marker);
   };
 
-  const searchPlaces = (keyword: string, page: number, setMaxPage: React.Dispatch<React.SetStateAction<number>>) => {
+  const onSearchPlace = (keyword: string, page: number, setMaxPage: React.Dispatch<React.SetStateAction<number>>) => {
     if (!map) return;
 
     const ps = new kakao.maps.services.Places();
@@ -63,7 +64,7 @@ const useMapInfo = ({ map }: Props) => {
             bounds.extend(new kakao.maps.LatLng(position.lat, position.lng));
           });
           changeOnMapMarkers(parsedOnMapMarkers);
-          setFooterPlaces([...kakaoSearchMarkers]);
+          setSearchPlaces([...kakaoSearchMarkers]);
           map.setBounds(bounds);
         } else {
           dispatch(errorAccured('검색 결과가 없습니다.'));
@@ -77,6 +78,7 @@ const useMapInfo = ({ map }: Props) => {
     (place: KakaoSearchType) => {
       isSwapPlace(place.placeId);
       focusMap(place.position);
+      dispatch(addToast(place));
     },
     [currentPlaces, bookmarkPlaces, mapMarkers],
   );
@@ -101,7 +103,7 @@ const useMapInfo = ({ map }: Props) => {
       const deleteIndex = mapMarkers.findIndex(item => item.placeId === dstOnMapMarker.placeId);
       const pinStatus = 'pin' as markerStatus;
 
-      if (footerPlaces.find((place: LocateDataType) => place.placeId === dstOnMapMarker.placeId)) {
+      if (searchPlaces.find((place: LocateDataType) => place.placeId === dstOnMapMarker.placeId)) {
         // 삭제하려는 마커가 footerPlaces에 있으면 status를 pin으로 변경
         // 이미지 파일도 pin으로 변경
         const newMapMarkers = mapMarkers.map((marker, i) =>
@@ -221,6 +223,10 @@ const useMapInfo = ({ map }: Props) => {
       }
 
       const { nx, ny, province, city, localeCode } = result;
+      const apiLocalPosition = { lat: ny, lng: nx };
+      Object.assign(newPlace, { province, city, localeCode, apiLocalPosition, isBookmarked: false });
+
+      dispatch(addToast(newPlace));
 
       if (currentPlaces.length || bookmarkPlaces.length) {
         // currentPlaces나 bookmarkPlaces에 이미 존재하면 순서를 바꾸고 종료
@@ -228,8 +234,6 @@ const useMapInfo = ({ map }: Props) => {
         if (isSwapPlace(clickedFooterPlace.placeId) !== 0) return;
       }
 
-      const apiLocalPosition = { lat: ny, lng: nx };
-      Object.assign(newPlace, { province, city, localeCode, apiLocalPosition, isBookmarked: false });
       setCurrentPlaces(prevCurrentPlaces => [newPlace, ...prevCurrentPlaces]);
       changeOnMapMarker(clickedFooterPlace, 'search');
     },
@@ -291,13 +295,13 @@ const useMapInfo = ({ map }: Props) => {
   }, []);
 
   return {
-    footerPlaces,
+    searchPlaces,
     currentPlaces,
     bookmarkPlaces,
     mapMarkers,
     isBlinkPlaces,
     onClickMarker,
-    searchPlaces,
+    onSearchPlace,
     onFocusPlace,
     onTogglePlace,
     onDeletePlace,

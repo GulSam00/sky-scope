@@ -1,7 +1,7 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, memo } from 'react';
 import { useDispatch } from 'react-redux';
 
-import { handledError } from '@src/Store/RequestStatusSlice';
+import { handledError } from '@src/Store/requestStatusSlice';
 import { styled } from 'styled-components';
 import { gsap } from 'gsap';
 
@@ -55,7 +55,7 @@ const Toast = ({ content }: Props) => {
   );
 };
 
-export default Toast;
+export default memo(Toast);
 
 const ToastContainer = styled.div`
   position: fixed;

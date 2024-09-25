@@ -1,115 +1,134 @@
-import { memo } from 'react';
+import { useState, useRef, memo, useEffect } from 'react';
 
-import { LocateDataType } from '@src/Queries/useLiveDataQuery';
-
+import { blinkComponent } from '@src/Util';
+import { KakaoSearchType } from '@src/Types/liveDataType';
+import DynamicPlaces from './DynamicPlaces';
 import styled from 'styled-components';
-import { CaretLeft, CaretRight } from 'react-bootstrap-icons';
+
+import { gsap } from 'gsap';
 
 interface Props {
-  curPage: number;
-  maxPage: number;
-  places: LocateDataType[];
-  handlePageMove: (page: number) => void;
-  onHoverPlace: (position: { lat: number; lng: number }) => void;
-  onHoverOutPlace: () => void;
-  onClickFooterPlace: (place: LocateDataType) => void;
+  currentPlaces: KakaoSearchType[];
+  bookmarkPlaces: KakaoSearchType[];
+  isBlinkPlace: boolean[];
+  onBlinkPlace: () => void;
+  onFocusPlace: (place: KakaoSearchType) => void;
+  onTogglePlace: (placeId: string, isBookmarked: boolean) => void;
+  onDeletePlace: (placeId: string, isBookmarked: boolean) => void;
 }
+
 const FooterPlaces = ({
-  curPage,
-  maxPage,
-  places,
-  handlePageMove,
-  onClickFooterPlace,
-  onHoverPlace,
-  onHoverOutPlace,
+  currentPlaces,
+  bookmarkPlaces,
+  isBlinkPlace,
+  onBlinkPlace,
+  onFocusPlace,
+  onTogglePlace,
+  onDeletePlace,
 }: Props) => {
-  const overMarkerPos = (place: LocateDataType) => {
-    const position = place.position;
-    onHoverPlace(position);
+  const [footerState, setFooterState] = useState<number>(0);
+  const prevCurrentPlaces = useRef<number>(0);
+  const prevBookmarkPlaces = useRef<number>(0);
+  const bookmarkRef = useRef<HTMLDivElement>(null);
+  const currentRef = useRef<HTMLDivElement>(null);
+
+  const onClickFooter = (state: number) => {
+    if (footerState === state) {
+      setFooterState(0);
+    } else {
+      setFooterState(state);
+      if (!bookmarkRef.current || !currentRef.current) return;
+      state === 1 ? blinkComponent({ targetRef: bookmarkRef }) : blinkComponent({ targetRef: currentRef });
+    }
   };
 
-  const handleHoverOut = () => {
-    onHoverOutPlace();
-  };
+  useEffect(() => {
+    if (prevBookmarkPlaces.current > bookmarkPlaces.length) {
+      prevBookmarkPlaces.current = bookmarkPlaces.length;
+      return;
+    }
+    prevBookmarkPlaces.current = bookmarkPlaces.length;
+    if (!bookmarkPlaces.length) return;
+    if (footerState) setFooterState(1);
+    blinkComponent({ targetRef: bookmarkRef });
+  }, [bookmarkPlaces]);
 
-  const handleClickMarker = (index: number) => {
-    onClickFooterPlace(places[index]);
-  };
+  useEffect(() => {
+    if (prevCurrentPlaces.current > currentPlaces.length) {
+      prevCurrentPlaces.current = currentPlaces.length;
+      return;
+    }
+    prevCurrentPlaces.current = currentPlaces.length;
+    if (!currentPlaces.length) return;
+    if (footerState) setFooterState(2);
+    blinkComponent({ targetRef: currentRef });
+  }, [currentPlaces]);
 
-  const handleClickMovePage = (page: number) => {
-    handlePageMove(page);
-  };
+  useEffect(() => {
+    switch (footerState) {
+      case 0:
+        gsap.to(currentRef.current, { width: '50%', duration: 0.5 });
+        gsap.to(bookmarkRef.current, { width: '50%', duration: 0.5 });
+        break;
+      case 1:
+        gsap.to(bookmarkRef.current, { width: '75%', duration: 0.5 });
+        gsap.to(currentRef.current, { width: '25%', duration: 0.5 });
+        break;
+      case 2:
+        gsap.to(currentRef.current, { width: '75%', duration: 0.5 });
+        gsap.to(bookmarkRef.current, { width: '25%', duration: 0.5 });
+        break;
+    }
+  }, [footerState]);
 
   return (
-    <PlacesContainer>
-      {places.length > 0 && (
-        <MarkerGroup>
-          {curPage > 1 && <CaretLeft key='leftBtn' onClick={() => handleClickMovePage(-1)} />}
+    <FooterPlacesContainer>
+      <FooterLists>
+        <div ref={bookmarkRef} onClick={() => onClickFooter(1)}>
+          <img src='/icons/star-fill.svg' alt='북마크' width={24} />
+        </div>
+        <div ref={currentRef} onClick={() => onClickFooter(2)}>
+          <img src='/icons/search.svg' alt='검색' width={24} />
+        </div>
+      </FooterLists>
 
-          {places.map((place: LocateDataType, index: number) => (
-            <div
-              key={'place' + index}
-              onMouseOver={() => overMarkerPos(place)}
-              onMouseOut={handleHoverOut}
-              onClick={() => handleClickMarker(index)}
-            >
-              {place.placeName}
-            </div>
-          ))}
-          {curPage < maxPage && <CaretRight key='rightBtn' onClick={() => handleClickMovePage(1)} />}
-        </MarkerGroup>
+      {footerState !== 0 && (
+        <DynamicPlaces
+          type={footerState === 1 ? 'bookmark' : 'current'}
+          places={footerState === 1 ? bookmarkPlaces : currentPlaces}
+          isBlinkPlace={isBlinkPlace[footerState - 1]}
+          onBlinkPlace={onBlinkPlace}
+          onFocusPlace={onFocusPlace}
+          onTogglePlace={onTogglePlace}
+          onDeletePlace={onDeletePlace}
+        />
       )}
-    </PlacesContainer>
+    </FooterPlacesContainer>
   );
 };
 
 export default memo(FooterPlaces);
 
-const PlacesContainer = styled.div`
+const FooterPlacesContainer = styled.div`
   display: flex;
   flex-direction: column;
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
 
-  margin: 0 auto;
-  bottom: 1rem;
-  z-index: 1500;
+  background-color: white;
 `;
 
-const MarkerGroup = styled.div`
+const FooterLists = styled.div`
   display: flex;
-
-  justify-content: center;
-  padding: 0 0.5rem;
-
-  > * {
-    width: 4rem;
-    height: 5rem;
-    padding: 0.5rem;
-
-    border: 1px solid;
-    border-radius: 1rem;
-
-    background-color: white;
-    cursor: pointer;
-    text-align: center;
-  }
-
-  *:active {
-    background-color: #dfe2e5;
-  }
+  width: 100%;
+  height: 3rem;
+  align-items: center;
 
   > div {
-    width: 6rem;
-    margin: 0 4px;
-
-    font-size: 1.2rem;
     display: flex;
-    justify-content: center;
     align-items: center;
-
-    overflow: hidden;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    border: 1px solid #dfe2e5;
   }
 `;

@@ -1,11 +1,11 @@
 import { Pagination } from 'react-bootstrap';
 import styled from 'styled-components';
-interface IProps {
+interface Props {
   curPage: number;
   maxPage: number;
   handlePageMove: (page: number) => void;
 }
-const SearchResultPagination = ({ curPage, maxPage, handlePageMove }: IProps) => {
+const SearchResultPagination = ({ curPage, maxPage, handlePageMove }: Props) => {
   return (
     <PaginationContainer>
       <Pagination size='lg' className='pagination'>
