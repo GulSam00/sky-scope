@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { KakaoSearchType } from '@src/Queries/useLiveDataQuery';
+import { KakaoSearchType } from '@src/Types/liveDataType';
 
 export const toastWeatherSlice = createSlice({
   name: 'toastWeather',

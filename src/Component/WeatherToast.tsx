@@ -25,9 +25,10 @@ interface Props {
   index: number; // Toast가 몇 번째로 추가된 것인지 구분
 }
 
-const Toast = ({ content, index }: Props) => {
+const WeatherToast = ({ content, index }: Props) => {
   const dispatch = useDispatch();
   const toastRef = useRef<HTMLDivElement>(null);
+
   const { isLoading, data, error } = useLiveDataQuery(new Date(), content);
 
   const transformSkyCode = (skyCode: string) => {
@@ -60,7 +61,7 @@ const Toast = ({ content, index }: Props) => {
     animation
       .fromTo(
         ref,
-        { y: 50 + index * 100, opacity: 0 }, // Toast의 y 위치를 index에 따라 다르게 적용
+        { y: 50 + index * 90, opacity: 0 }, // Toast의 y 위치를 index에 따라 다르게 적용
         {
           y: 0,
           opacity: 1, // 보이기
@@ -72,7 +73,7 @@ const Toast = ({ content, index }: Props) => {
         opacity: 0, // 페이드 아웃
         duration: 0.25, // 페이드 아웃 지속 시간
         ease: 'power3.inOut',
-        delay: 111, // 페이드 아웃 전 대기 시간
+        delay: 3, // 페이드 아웃 전 대기 시간
         onComplete: () => {
           dispatch(removeToast());
           animation.kill(); // 애니메이션 정리
@@ -86,49 +87,44 @@ const Toast = ({ content, index }: Props) => {
 
   return (
     <ToastContainer ref={toastRef}>
-      {/* {data ? (
+      {data ? (
         <ToastContent>
-          <div className='location'>
-            {data.province} {data.city}
+          <div className='content'>{data.content}</div>
+          <div className='content'>
+            <ThermometerHigh />
+            <div>{data.T1H}°C</div>
           </div>
-          <div className='place'>{data.content}</div>
 
           <div className='content'>
-            <div>
-              <ThermometerHigh />
-              <div>{data.T1H}°C</div>
-            </div>
+            <img width='12' src='icons/humidity.svg' alt='humidity' />
+            <div>{data.REH}%</div>
+          </div>
 
-            <div>
-              <img width='12' src='icons/humidity.svg' alt='humidity' />
-              <div>{data.REH}%</div>
-            </div>
-
-            <div>
-              <div>{transformSkyCode(data.PTY)}</div>
-              <div>{data.RN1}mm</div>
-            </div>
+          <div className='content'>
+            <div>{transformSkyCode(data.PTY)}</div>
+            <div>{data.RN1}mm</div>
           </div>
         </ToastContent>
       ) : (
-        <LoadingSpinner />
-      )} */}
-      test
+        <ToastContent>
+          <LoadingSpinner />
+        </ToastContent>
+      )}
     </ToastContainer>
   );
 };
 
-export default Toast;
+export default WeatherToast;
 
 const ToastContainer = styled.div`
   > div {
     display: flex;
+
     justify-content: center;
     align-items: center;
-    text-align: center;
 
-    width: 140px;
-    height: 100px;
+    width: 110px;
+    height: 90px;
     border-radius: 2rem;
     margin: 0 0.5rem;
 
@@ -142,10 +138,18 @@ const ToastContent = styled.div`
   display: flex;
   flex-direction: column;
 
+  width: 100%;
+  height: 100%;
+
   font-size: 0.75rem;
-  .content > div {
+  .content {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.25rem;
+    width: 80px;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 `;
