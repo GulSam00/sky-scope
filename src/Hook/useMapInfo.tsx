@@ -5,7 +5,6 @@ import { addToast } from '@src/Store/toastWeatherSlice';
 import { errorAccured } from '@src/Store/requestStatusSlice';
 import { LocateDataType, KakaoSearchType, KakaoMapMarkerType, markerStatus } from '@src/Types/liveDataType';
 import { transLocaleToCoord } from '@src/Util';
-import { useLiveDataQuery } from '@src/Queries';
 
 interface Props {
   map: kakao.maps.Map | null;
