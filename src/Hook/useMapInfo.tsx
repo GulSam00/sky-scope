@@ -5,6 +5,9 @@ import { errorAccured } from '@src/Store/requestStatusSlice';
 import { LocateDataType, KakaoSearchType, KakaoMapMarkerType, markerStatus } from '@src/Queries/useLiveDataQuery';
 import { transLocaleToCoord } from '@src/Util';
 
+import { addToast } from '@src/Store/toastWeatherSlice';
+import { IParseObj } from '@src/API/getWeatherLive';
+
 interface Props {
   map: kakao.maps.Map | null;
 }
@@ -77,6 +80,7 @@ const useMapInfo = ({ map }: Props) => {
     (place: KakaoSearchType) => {
       isSwapPlace(place.placeId);
       focusMap(place.position);
+      // dispatch(addToast(place));
     },
     [currentPlaces, bookmarkPlaces, mapMarkers],
   );
@@ -221,6 +225,8 @@ const useMapInfo = ({ map }: Props) => {
       }
 
       const { nx, ny, province, city, localeCode } = result;
+      const apiLocalPosition = { lat: ny, lng: nx };
+      Object.assign(newPlace, { province, city, localeCode, apiLocalPosition, isBookmarked: false });
 
       if (currentPlaces.length || bookmarkPlaces.length) {
         // currentPlaces나 bookmarkPlaces에 이미 존재하면 순서를 바꾸고 종료
@@ -228,8 +234,6 @@ const useMapInfo = ({ map }: Props) => {
         if (isSwapPlace(clickedFooterPlace.placeId) !== 0) return;
       }
 
-      const apiLocalPosition = { lat: ny, lng: nx };
-      Object.assign(newPlace, { province, city, localeCode, apiLocalPosition, isBookmarked: false });
       setCurrentPlaces(prevCurrentPlaces => [newPlace, ...prevCurrentPlaces]);
       changeOnMapMarker(clickedFooterPlace, 'search');
     },

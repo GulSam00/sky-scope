@@ -9,7 +9,6 @@ import { KakaoMapMarkerType, LocateDataType } from '@src/Queries/useLiveDataQuer
 import { RootState } from '@src/Store/store';
 import { handleResize } from '@src/Store/kakaoModalSlice';
 import { errorAccured } from '@src/Store/requestStatusSlice';
-import { addToast } from '@src/Store/toastWeatherSlice';
 
 import { Form, Button, ListGroup } from 'react-bootstrap';
 import FooterPlaces from './FooterPlaces';
@@ -118,7 +117,6 @@ const MapPage = () => {
   const handleClickFooterPlace = useCallback(
     (place: LocateDataType) => {
       onClickFooterPlace(place);
-      dispatch(addToast(place));
 
       if (!map) return;
       const position = place.position;
@@ -222,7 +220,7 @@ const MapPage = () => {
         <ToastLists />
       </KakaoMapContainer>
 
-      <FixedContainer phone={isPhone}>
+      <FixedContainer phone={isPhone.toString()}>
         <SearchedPlaces
           curPage={curPage}
           maxPage={maxPage}
@@ -250,7 +248,7 @@ const MapPage = () => {
 export default MapPage;
 
 interface Props {
-  phone: boolean;
+  phone: string;
 }
 
 const MapContainer = styled.div`
@@ -348,7 +346,7 @@ const FixedContainer = styled.div<Props>`
   bottom: 0;
 
   @media (min-width: 640px) {
-    width: ${props => (props.phone ? '400px' : '100%')};
+    width: ${props => (props.phone === 'true' ? '400px' : '100%')};
   }
   width: 100%;
 

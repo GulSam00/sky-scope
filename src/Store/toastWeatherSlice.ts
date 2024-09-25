@@ -1,12 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { IParseObj } from '@src/API/getWeatherLive';
+import { KakaoSearchType } from '@src/Queries/useLiveDataQuery';
 
 export const toastWeatherSlice = createSlice({
   name: 'toastWeather',
-  initialState: [] as IParseObj[],
+  initialState: [] as KakaoSearchType[],
   reducers: {
     addToast: (state, action) => {
-      if (state.map(toast => toast.placeId).includes(action.payload.placeId)) return;
+      if (state.map(toast => toast.localeCode).includes(action.payload.localeCode)) return;
       state.push(action.payload);
     },
     removeToast: state => {

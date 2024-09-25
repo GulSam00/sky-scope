@@ -9,13 +9,12 @@ import styled from 'styled-components';
 const ToastLists = () => {
   const toastList = useSelector((state: RootState) => state.toastWeatherSliceReducer);
 
-  console.log('toastList', toastList);
   return (
     <ToastContainer>
       {toastList.map((toast, index) => (
         // key값은 고유한 값으로 설정해야 함
         // index로 설정 시 목표했던 대로 동작하지 않을 수 있음
-        <WeatherToast key={toast.placeId} content={index + 'content'} index={index} />
+        <WeatherToast key={toast.localeCode} content={toast} index={index} />
       ))}
     </ToastContainer>
   );
