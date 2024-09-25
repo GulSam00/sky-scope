@@ -4,7 +4,7 @@ import { ResponsiveLine } from '@nivo/line';
 import { styled } from 'styled-components';
 import { IDateData } from '@src/API/getWeatherShort';
 
-interface IProps {
+interface Props {
   recentData: IDateData;
   callbackLoadedData: () => void;
 }
@@ -14,7 +14,7 @@ interface rainDataTypes {
   y: number;
 }
 
-const RainLineGraph = ({ recentData, callbackLoadedData }: IProps) => {
+const RainLineGraph = ({ recentData, callbackLoadedData }: Props) => {
   const [rainProb, setRainProb] = useState<rainDataTypes[]>([]);
   const [rainAmount, setRainAmount] = useState<rainDataTypes[]>([]);
   const data = [

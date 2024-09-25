@@ -4,11 +4,11 @@ import { ICoord } from '@src/API/getWeatherShort';
 
 import styled from 'styled-components';
 
-interface IProps {
+interface Props {
   handleChangeCoord: (coord: ICoord) => void;
 }
 
-const MapModal = ({ handleChangeCoord }: IProps) => {
+const MapModal = ({ handleChangeCoord }: Props) => {
   return (
     <MapModalContainer>
       <MapModalBody>

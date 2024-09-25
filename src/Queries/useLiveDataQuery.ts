@@ -44,6 +44,7 @@ const useLiveDataQuery = (today: Date, marker: KakaoSearchType) => {
   const { data, isLoading, error, status } = useQuery<IParseObj | undefined>({
     queryKey: ['live', marker.localeCode, marker.placeName],
     queryFn: async () => {
+      // 퀴리키가 없을 떄, 새로 요청할 때 호출
       const location: ICoord = {
         nx: marker.apiLocalPosition ? marker.apiLocalPosition.lng : 0,
         ny: marker.apiLocalPosition ? marker.apiLocalPosition.lat : 0,
@@ -56,6 +57,7 @@ const useLiveDataQuery = (today: Date, marker: KakaoSearchType) => {
       return result;
     },
     select: data => {
+      // 캐시된 데이터를 사용할 때 호출
       if (data && marker) {
         data.province = marker.province;
         data.city = marker.city;

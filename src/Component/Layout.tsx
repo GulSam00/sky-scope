@@ -12,7 +12,7 @@ import { Github, Phone, PhoneFill } from 'react-bootstrap-icons';
 import { styled } from 'styled-components';
 
 const Layout = () => {
-  const { isLoading, errorMessage } = useSelector((state: RootState) => state.RequestStatusSliceReducer);
+  const { isLoading, errorMessage } = useSelector((state: RootState) => state.requestStatusSliceReducer);
   const { isPhone } = useSelector((state: RootState) => state.globalDataSliceReducer);
 
   const dispatch = useDispatch();
@@ -29,11 +29,11 @@ const Layout = () => {
   };
 
   return (
-    <GlobalLayoutContainer phone={isPhone}>
+    <GlobalLayoutContainer phone={isPhone.toString()}>
       {isLoading && <LoadingState />}
       {errorMessage && <Toast content={errorMessage} />}
 
-      <NavContainer phone={isPhone}>
+      <NavContainer phone={isPhone.toString()}>
         {/* <Nav>
           <Nav.Item>
             <Nav.Link href='/' disabled={location.pathname === '/'}>
@@ -79,7 +79,7 @@ const Layout = () => {
 export default Layout;
 
 interface Props {
-  phone: boolean;
+  phone: string;
 }
 
 const GlobalLayoutContainer = styled.div<Props>`
@@ -87,7 +87,7 @@ const GlobalLayoutContainer = styled.div<Props>`
   margin-right: auto;
 
   @media (min-width: 640px) {
-    width: ${props => (props.phone ? '400px' : '100%')};
+    width: ${props => (props.phone === 'true' ? '400px' : '100%')};
   }
   height: 100dvh;
 
@@ -105,7 +105,7 @@ const NavContainer = styled.div<Props>`
 
   // 임의로 400px, 375px면 화면 넘어감(wrap)
   @media (min-width: 640px) {
-    width: ${props => (props.phone ? '400px' : '100%')};
+    width: ${props => (props.phone === 'true' ? '400px' : '100%')};
   }
   width: 100%;
   height: 3rem;

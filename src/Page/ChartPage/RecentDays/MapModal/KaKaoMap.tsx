@@ -5,9 +5,9 @@ import { Map, MapMarker } from 'react-kakao-maps-sdk';
 import { useKakaoLoader } from '@src/Hook';
 
 import { ICoord } from '@src/API/getWeatherShort';
-import { LocateDataType } from '@src/Queries/useLiveDataQuery';
+import { LocateDataType } from '@src/Types/liveDataType';
 
-import { errorAccured } from '@src/Store/RequestStatusSlice';
+import { errorAccured } from '@src/Store/requestStatusSlice';
 import { close } from '@src/Store/kakaoModalSlice';
 import { setCity, setProvince } from '@src/Store/locationDataSlice';
 
@@ -17,11 +17,11 @@ import SearchResultPagination from './SearchResultPagination';
 import { Form, Button, ListGroup } from 'react-bootstrap';
 import styled from 'styled-components';
 
-interface IProps {
+interface Props {
   handleChangeCoord: (coord: ICoord) => void;
 }
 
-const KaKaoMap = ({ handleChangeCoord }: IProps) => {
+const KaKaoMap = ({ handleChangeCoord }: Props) => {
   const [map, setMap] = useState<kakao.maps.Map | null>(null);
   const [places, setPlaces] = useState<LocateDataType[]>([]);
   const [tempSelectedIndex, setTempSelectedIndex] = useState<number>(-1);
@@ -45,7 +45,7 @@ const KaKaoMap = ({ handleChangeCoord }: IProps) => {
 
   const insertAddress = () => {
     setCurPage(1);
-    searchPlaces(searchWord, 1);
+    onSearchPlace(searchWord, 1);
     searchRef.current = searchWord;
     setSearchWord('');
   };
@@ -72,7 +72,7 @@ const KaKaoMap = ({ handleChangeCoord }: IProps) => {
     }
   };
 
-  const searchPlaces = (keyword: string, page: number) => {
+  const onSearchPlace = (keyword: string, page: number) => {
     if (!map) return;
     const ps = new kakao.maps.services.Places();
 
@@ -124,7 +124,7 @@ const KaKaoMap = ({ handleChangeCoord }: IProps) => {
   const handlePageMove = (page: number) => {
     if (page < 1 || page > maxPage) return;
     setCurPage(page);
-    searchPlaces(searchRef.current, page);
+    onSearchPlace(searchRef.current, page);
     setTempSelectedIndex(-1);
   };
 
@@ -291,7 +291,7 @@ const ConfirmModalContent = styled.div`
   height: 50dvh;
   padding: 20px;
 
-  border: 1px solid black;
+  border: 1px solid #dfe2e5;
   border-radius: 10px;
   background-color: white;
 

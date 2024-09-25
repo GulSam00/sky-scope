@@ -4,18 +4,18 @@ import { Map, MapMarker } from 'react-kakao-maps-sdk';
 
 import { LoadingState } from '@src/Component';
 import { useKakaoLoader, useMapInfo, useAutoSearch } from '@src/Hook';
-import { KakaoMapMarkerType, LocateDataType } from '@src/Queries/useLiveDataQuery';
+import { KakaoMapMarkerType, LocateDataType } from '@src/Types/liveDataType';
 
 import { RootState } from '@src/Store/store';
 import { handleResize } from '@src/Store/kakaoModalSlice';
-import { errorAccured } from '@src/Store/RequestStatusSlice';
+import { errorAccured } from '@src/Store/requestStatusSlice';
 
 import { Form, Button, ListGroup } from 'react-bootstrap';
-import DynamicPlaces from './DynamicPlaces';
 import FooterPlaces from './FooterPlaces';
+import SearchedPlaces from './SearchedPlaces';
+import ToastLists from './ToastLists';
 
 import styled from 'styled-components';
-import { setISOWeekYear } from 'date-fns';
 
 const MapPage = () => {
   const [map, setMap] = useState<kakao.maps.Map | null>(null);
@@ -25,13 +25,13 @@ const MapPage = () => {
   const [originLevel, setOriginLevel] = useState<number>(4);
 
   const {
-    footerPlaces,
+    searchPlaces,
     currentPlaces,
     bookmarkPlaces,
     isBlinkPlaces,
     mapMarkers,
     onClickMarker,
-    searchPlaces,
+    onSearchPlace,
     onFocusPlace,
     onTogglePlace,
     onDeletePlace,
@@ -52,6 +52,7 @@ const MapPage = () => {
 
   const { kakaoLoading, kakaoError } = useKakaoLoader();
   const { isResized } = useSelector((state: RootState) => state.kakaoModalSliceReducer);
+  const { isPhone } = useSelector((state: RootState) => state.globalDataSliceReducer);
 
   const dispatch = useDispatch();
 
@@ -64,7 +65,7 @@ const MapPage = () => {
     const ps = new kakao.maps.services.Places();
     ps.keywordSearch(address, (data, status, pagination) => {
       if (status === kakao.maps.services.Status.OK) {
-        searchPlaces(address, 1, setMaxPage);
+        onSearchPlace(address, 1, setMaxPage);
         onClickSearchButton(true);
       } else {
         dispatch(errorAccured('검색 결과가 없습니다.'));
@@ -104,7 +105,7 @@ const MapPage = () => {
     (weight: number) => {
       const page = curPage + weight;
       setCurPage(page);
-      searchPlaces(lastSearchWord, page, setMaxPage);
+      onSearchPlace(lastSearchWord, page, setMaxPage);
     },
     [curPage, maxPage, mapMarkers],
   );
@@ -116,6 +117,7 @@ const MapPage = () => {
   const handleClickFooterPlace = useCallback(
     (place: LocateDataType) => {
       onClickFooterPlace(place);
+
       if (!map) return;
       const position = place.position;
 
@@ -124,7 +126,7 @@ const MapPage = () => {
       setOriginPos(map.getCenter());
       setOriginLevel(map.getLevel());
     },
-    [map, footerPlaces, currentPlaces, bookmarkPlaces, originPos],
+    [map, searchPlaces, currentPlaces, bookmarkPlaces, originPos],
   );
 
   const onHoverPlace = useCallback(
@@ -133,14 +135,14 @@ const MapPage = () => {
       map.setLevel(2);
       map.setCenter(new kakao.maps.LatLng(position.lat, position.lng));
     },
-    [map, footerPlaces, originPos],
+    [map, searchPlaces, originPos],
   );
 
   const onHoverOutPlace = useCallback(() => {
     if (!map || !originPos) return;
     map.setLevel(originLevel);
     map.setCenter(originPos);
-  }, [map, footerPlaces, originPos]);
+  }, [map, searchPlaces, originPos]);
 
   useEffect(() => {
     if (isResized) {
@@ -154,27 +156,6 @@ const MapPage = () => {
   return (
     <MapContainer>
       {kakaoLoading && <LoadingState />}
-      <PlacesContainer>
-        <DynamicPlaces
-          type='bookmark'
-          places={bookmarkPlaces}
-          isBlinkPlace={isBlinkPlaces[0]}
-          onBlinkPlace={handleBlinkPlace}
-          onFocusPlace={onFocusPlace}
-          onTogglePlace={onTogglePlace}
-          onDeletePlace={onDeletePlace}
-        />
-
-        <DynamicPlaces
-          type='current'
-          places={currentPlaces}
-          isBlinkPlace={isBlinkPlaces[1]}
-          onBlinkPlace={handleBlinkPlace}
-          onFocusPlace={onFocusPlace}
-          onTogglePlace={onTogglePlace}
-          onDeletePlace={onDeletePlace}
-        />
-      </PlacesContainer>
 
       <FormContainer>
         <Form>
@@ -235,31 +216,46 @@ const MapPage = () => {
         <WholeMap onClick={() => showWholeMarker()}>
           <img src='/icons/crosshair.svg' alt='crosshair' />
         </WholeMap>
+
+        <ToastLists />
       </KakaoMapContainer>
 
-      <FooterPlaces
-        curPage={curPage}
-        maxPage={maxPage}
-        places={footerPlaces}
-        handlePageMove={handlePageMove}
-        onClickFooterPlace={handleClickFooterPlace}
-        onHoverPlace={onHoverPlace}
-        onHoverOutPlace={onHoverOutPlace}
-      />
+      <FixedContainer phone={isPhone.toString()}>
+        <SearchedPlaces
+          curPage={curPage}
+          maxPage={maxPage}
+          places={searchPlaces}
+          handlePageMove={handlePageMove}
+          onClickFooterPlace={handleClickFooterPlace}
+          onHoverPlace={onHoverPlace}
+          onHoverOutPlace={onHoverOutPlace}
+        />
+
+        <FooterPlaces
+          currentPlaces={currentPlaces}
+          bookmarkPlaces={bookmarkPlaces}
+          isBlinkPlace={isBlinkPlaces}
+          onBlinkPlace={handleBlinkPlace}
+          onFocusPlace={onFocusPlace}
+          onTogglePlace={onTogglePlace}
+          onDeletePlace={onDeletePlace}
+        />
+      </FixedContainer>
     </MapContainer>
   );
 };
 
 export default MapPage;
 
+interface Props {
+  phone: string;
+}
+
 const MapContainer = styled.div`
   overflow: hidden;
   width: 100%;
 `;
 
-const PlacesContainer = styled.div`
-  display: flex;
-`;
 const FormContainer = styled.div`
   display: flex;
   justify-content: space-between;
@@ -296,7 +292,7 @@ const KakaoMapContainer = styled.div`
   width: 100%;
 
   #kakao-map {
-    height: 70vh;
+    height: 80vh;
     width: 100%;
   }
 `;
@@ -340,4 +336,19 @@ const WholeMap = styled.div`
     width: 2rem;
     height: 2rem;
   }
+`;
+
+const FixedContainer = styled.div<Props>`
+  display: flex;
+  flex-direction: column;
+
+  position: fixed;
+  bottom: 0;
+
+  @media (min-width: 640px) {
+    width: ${props => (props.phone === 'true' ? '400px' : '100%')};
+  }
+  width: 100%;
+
+  z-index: 1500;
 `;

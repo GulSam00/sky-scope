@@ -5,18 +5,18 @@ import TempertureLineGraph from './TempertureLineGraph';
 import RainLineGraph from './RainLineGraph';
 
 import { getDayOfWeek } from '@src/Util';
-import { loadedData } from '@src/Store/RequestStatusSlice';
+import { loadedData } from '@src/Store/requestStatusSlice';
 import { IDateData } from '@src/API/getWeatherShort';
 
 import { Button } from 'react-bootstrap';
 import { styled } from 'styled-components';
 
-interface IProps {
+interface Props {
   recentData: IDateData;
   keyDate: string;
   baseDate: Date;
 }
-const RecentDay = ({ recentData, keyDate, baseDate }: IProps) => {
+const RecentDay = ({ recentData, keyDate, baseDate }: Props) => {
   const dispatch = useDispatch();
   const [tab, setTab] = useState<string>('temperture');
 
