@@ -8,7 +8,7 @@ import { KakaoMapMarkerType, LocateDataType } from '@src/Types/liveDataType';
 
 import { RootState } from '@src/Store/store';
 import { handleResize } from '@src/Store/kakaoModalSlice';
-import { errorAccured } from '@src/Store/RequestStatusSlice';
+import { errorAccured } from '@src/Store/requestStatusSlice';
 
 import { Form, Button, ListGroup } from 'react-bootstrap';
 import FooterPlaces from './FooterPlaces';
