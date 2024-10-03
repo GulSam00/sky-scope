@@ -39,7 +39,7 @@ const BrowserRouter = createBrowserRouter([
       },
 
       {
-        path: '/oauth',
+        path: '/oauth/*',
         element: (
           <LazyComponent>
             <OAuthPage />
