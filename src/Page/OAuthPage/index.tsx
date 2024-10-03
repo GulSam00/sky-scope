@@ -3,9 +3,6 @@ import { useLocation, useNavigate } from 'react-router-dom';
 
 import { getNaverToken } from '@src/API';
 
-const naver_id = import.meta.env.VITE_NAVER_ID;
-const naver_sercret = import.meta.env.VITE_NAVER_SECRET;
-
 const OAuthPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -20,14 +17,13 @@ const OAuthPage = () => {
     const type = pathSegments.pop();
     switch (type) {
       case 'naver': {
-        const url = `/token?grant_type=authorization_code&client_id=${naver_id}&client_secret=${naver_sercret}&code=${code}&state=1234`;
-        const result = await getNaverToken(url);
+        const result = await getNaverToken('authorization_code', `code=${code}&state=1234`);
         if (!result) return;
         const { access_token, refresh_token } = result;
         localStorage.setItem('accessToken', access_token);
         localStorage.setItem('refreshToken', refresh_token);
         localStorage.setItem('oauthType', 'naver');
-        navigate('/');
+        // navigate('/');
         break;
       }
       default:

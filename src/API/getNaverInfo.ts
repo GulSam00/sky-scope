@@ -1,8 +1,8 @@
 import axios, { AxiosInstance } from 'axios';
 
+import getNaverToken from './getNaverToken';
+
 const url = import.meta.env.VITE_NAVER_URL;
-const client_id = import.meta.env.VITE_NAVER_ID;
-const client_secret = import.meta.env.VITE_NAVER_SECRET;
 
 const instance: AxiosInstance = axios.create({
   baseURL: url,
@@ -25,11 +25,21 @@ const getNaverInfo = async () => {
     const response = await instance.get('/v1/nid/me');
     const data = response.data.response;
     return data;
-  } catch (e) {
+  } catch (e: any) {
     console.log('error : ', e);
     let message;
+    if (e.response.status === 401) {
+      const refreshToken = localStorage.getItem('refreshToken');
+      const result = await getNaverToken('refresh_token', `refresh_token=${refreshToken}`);
+      if (!result) return null; // result가 없으면 null 반환;
+      localStorage.setItem('accessToken', result.access_token);
+      localStorage.setItem('refreshToken', result.refresh_token);
+      const response = await instance.get('/v1/nid/me');
+      const data = response.data.response;
+      return data;
+    }
     if (e instanceof Error) message = e.message;
-    else message = '/getUltraSrtNcst error';
+    else message = '/getNaverInfo error';
     console.error(message);
   }
 };
