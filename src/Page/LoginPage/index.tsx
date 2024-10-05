@@ -1,14 +1,26 @@
 import { styled } from 'styled-components';
 
-import { getNaverInfo } from '@src/API';
-const api_url = import.meta.env.VITE_NAVER_TOKEN_URL;
-const client_id = import.meta.env.VITE_NAVER_ID;
-const redirect_uri = import.meta.env.VITE_NAVER_REDIRECT;
+import { getNaverInfo, getKakaoInfo } from '@src/API';
+const naver_api_url = import.meta.env.VITE_NAVER_OAUTH_URL;
+const naver_client_id = import.meta.env.VITE_NAVER_ID;
+const naver_redirect_uri = import.meta.env.VITE_NAVER_REDIRECT;
+
+const kakao_api_url = import.meta.env.VITE_KAKAO_OAUTH_URL;
+const kakao_client_id = import.meta.env.VITE_KAKAO_REST_KEY;
+const kakao_redirect_uri = import.meta.env.VITE_KAKAO_REDIRECT;
 
 const LoginPage = () => {
-  const onClickNaver = async () => {
+  const onClickNaver = () => {
     const url =
-      api_url + `/authorize?response_type=code&client_id=${client_id}&redirect_uri=${redirect_uri}&state=1234`;
+      naver_api_url +
+      `/authorize?response_type=code&client_id=${naver_client_id}&redirect_uri=${naver_redirect_uri}&state=1234`;
+    console.log(url);
+    window.location.href = url;
+  };
+
+  const onClickKakao = () => {
+    const url =
+      kakao_api_url + `/authorize?response_type=code&client_id=${kakao_client_id}&redirect_uri=${kakao_redirect_uri}`;
     console.log(url);
     window.location.href = url;
   };
@@ -18,6 +30,11 @@ const LoginPage = () => {
     console.log('onClickTestNaver : ', result);
   };
 
+  const onClickTestKakao = async () => {
+    const result = await getKakaoInfo();
+    console.log('onClickTestKakao : ', result);
+  };
+
   return (
     <LoginPageContainer>
       <h1>Login Page</h1>
@@ -25,6 +42,9 @@ const LoginPage = () => {
       <img onClick={onClickNaver} src='/login_naver/btnW_완성형.png' alt='naver_login' />
 
       <button onClick={onClickTestNaver}>test naver Info</button>
+
+      <div onClick={onClickKakao}>카카오 로그인</div>
+      <button onClick={onClickTestKakao}>test kakao Info</button>
     </LoginPageContainer>
   );
 };

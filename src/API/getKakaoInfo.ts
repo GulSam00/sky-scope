@@ -1,14 +1,15 @@
 import axios, { AxiosInstance } from 'axios';
 
-import getNaverToken from './getNaverToken';
+import getKakaoToken from './getKakaoToken';
 
-const url = import.meta.env.VITE_NAVER_URL;
+const url = import.meta.env.VITE_KAKAO_URL;
 
 const instance: AxiosInstance = axios.create({
   baseURL: url,
   timeout: 3000,
   headers: {
-    'Content-Type': 'application/json',
+    'Content-Type': 'application/x-www-form-urlencoded',
+    charset: 'utf-8',
   },
 });
 
@@ -20,21 +21,22 @@ instance.interceptors.request.use(config => {
   return config;
 });
 
-const getNaverInfo = async () => {
+const getKakaoInfo = async () => {
   try {
-    const response = await instance.get('/nid/me');
-    const data = response.data.response;
+    const response = await instance.get('/user/me');
+    console.log('response : ', response);
+    const data = response.data;
     return data;
   } catch (e: any) {
     console.log('error : ', e);
     let message;
     if (e.response.status === 401) {
       const refreshToken = localStorage.getItem('refreshToken');
-      const result = await getNaverToken('refresh_token', `refresh_token=${refreshToken}`);
+      const result = await getKakaoToken('refresh_token', `refresh_token=${refreshToken}`);
       if (!result) return null; // result가 없으면 null 반환;
       localStorage.setItem('accessToken', result.access_token);
       localStorage.setItem('refreshToken', result.refresh_token);
-      const response = await instance.get('/nid/me');
+      const response = await instance.get('/user/me');
       const data = response.data.response;
       return data;
     }
@@ -44,4 +46,4 @@ const getNaverInfo = async () => {
   }
 };
 
-export default getNaverInfo;
+export default getKakaoInfo;

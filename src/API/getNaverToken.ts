@@ -1,6 +1,6 @@
 import axios, { AxiosInstance } from 'axios';
 
-const url = import.meta.env.VITE_NAVER_TOKEN_URL;
+const url = import.meta.env.VITE_NAVER_OAUTH_URL;
 const naver_id = import.meta.env.VITE_NAVER_ID;
 const naver_sercret = import.meta.env.VITE_NAVER_SECRET;
 

@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-import { getNaverToken } from '@src/API';
+import { getNaverToken, getKakaoToken } from '@src/API';
 
 const OAuthPage = () => {
   const location = useLocation();
@@ -23,6 +23,16 @@ const OAuthPage = () => {
         localStorage.setItem('accessToken', access_token);
         localStorage.setItem('refreshToken', refresh_token);
         localStorage.setItem('oauthType', 'naver');
+        // navigate('/');
+        break;
+      }
+      case 'kakao': {
+        const result = await getKakaoToken('authorization_code', `code=${code}`);
+        if (!result) return;
+        const { access_token, refresh_token } = result;
+        localStorage.setItem('accessToken', access_token);
+        localStorage.setItem('refreshToken', refresh_token);
+        localStorage.setItem('oauthType', 'kakao');
         // navigate('/');
         break;
       }
