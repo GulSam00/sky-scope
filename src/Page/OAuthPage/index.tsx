@@ -66,6 +66,7 @@ const OAuthPage = () => {
   useEffect(() => {
     getToken();
   }, [pathSegments]);
+
   return (
     <div>
       <LoadingState />

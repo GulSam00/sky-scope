@@ -1,8 +1,11 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
+import { onLogin } from '@src/Store/globalDataSlice';
+
 import Lottie from 'react-lottie';
 
+import { getNaverInfo, getKakaoInfo } from '@src/API';
 import { RootState } from '@src/Store/store';
 import { errorAccured } from '@src/Store/requestStatusSlice';
 
@@ -54,7 +57,34 @@ const LoginPage = () => {
     window.location.href = url;
   };
 
+  const handleGetInfo = async (type: string) => {
+    switch (type) {
+      case 'naver': {
+        const info = await getNaverInfo();
+        const { id } = info;
+        dispatch(onLogin({ id, type: 'naver' }));
+        break;
+      }
+      case 'kakao': {
+        const info = await getKakaoInfo();
+        const { id } = info;
+        dispatch(onLogin({ id, type: 'kakao' }));
+        break;
+      }
+      default: {
+        dispatch(errorAccured('잘못된 접근입니다.'));
+        navigate('/');
+      }
+    }
+  };
+
   useEffect(() => {
+    const oauthType = localStorage.getItem('oauthType');
+
+    if (oauthType) {
+      handleGetInfo(oauthType);
+    }
+
     if (isLogin) {
       navigate('/');
       dispatch(errorAccured('이미 로그인 되어있습니다.'));

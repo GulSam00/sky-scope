@@ -11,6 +11,7 @@ import { Github, Phone, PhoneFill } from 'react-bootstrap-icons';
 import { Nav } from 'react-bootstrap';
 
 import { styled } from 'styled-components';
+import { useEffect } from 'react';
 
 const Layout = () => {
   const { isLoading, errorMessage } = useSelector((state: RootState) => state.requestStatusSliceReducer);
