@@ -165,6 +165,7 @@ const useMapInfo = ({ map }: Props) => {
     (placeId: string, isBookmarked: boolean) => {
       if (isBookmarked === false) {
         // 북마크 추가
+        // 로그인 확인 로직 추가
         const index = currentPlaces.findIndex(item => item.placeId === placeId);
         const firstMarker = { ...currentPlaces[index], isBookmarked: true }; // Immutably change the bookmark state
         const newCurrentPlaces = currentPlaces.filter((_, i) => i !== index);

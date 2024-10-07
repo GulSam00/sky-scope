@@ -11,15 +11,19 @@ const OAuthPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
   const code = new URLSearchParams(location.search).get('code');
-  // naver인지, kakao인지 구분해야함
   const pathSegments = location.pathname.split('/'); // 경로를 '/'로 나눠 배열로 저장
-  console.log('code : ', code);
-  console.log('pathSegments : ', pathSegments);
 
   const getToken = async () => {
+    // naver인지, kakao인지 구분해야함
     const type = pathSegments.pop();
+
+    if (!code) {
+      dispatch(errorAccured('잘못된 접근입니다.'));
+      navigate('/');
+      return;
+    }
+
     switch (type) {
       case 'naver': {
         const result = await getNaverToken('authorization_code', `code=${code}&state=1234`);
@@ -54,14 +58,14 @@ const OAuthPage = () => {
         break;
       }
       default:
-      // dispatch(errorAccured('로그인에 실패했습니다.'));
-      // navigate('/error');
+      // dispatch(errorAccured('잘못된 접근입니다.'));
+      // navigate('/');
     }
   };
 
   useEffect(() => {
     getToken();
-  }, []);
+  }, [pathSegments]);
   return (
     <div>
       <LoadingState />

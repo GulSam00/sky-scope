@@ -6,8 +6,9 @@ import { setResize } from '@src/Store/kakaoModalSlice';
 import { phoneModeSwitch } from '@src/Store/globalDataSlice';
 
 import { LoadingState, Toast } from '@src/Component';
-import { Nav } from 'react-bootstrap';
 import { Github, Phone, PhoneFill } from 'react-bootstrap-icons';
+
+import { Nav } from 'react-bootstrap';
 
 import { styled } from 'styled-components';
 
