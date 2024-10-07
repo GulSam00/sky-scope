@@ -324,30 +324,6 @@ const useMapInfo = ({ map }: Props) => {
 
   useEffect(() => {
     getFirestoreData();
-
-    const localBookmarks = localStorage.getItem('bookmarks');
-    if (localBookmarks) {
-      const parsedBookmarks: KakaoSearchType[] = JSON.parse(localBookmarks);
-      setBookmarkPlaces(parsedBookmarks);
-
-      const parsedOnMapMarkers: KakaoMapMarkerType[] = parsedBookmarks.map((bookmark: KakaoSearchType) => {
-        const image = getNewImage('bookmark');
-        const { position, placeName, placeId } = bookmark;
-        const status = 'bookmark';
-        return { placeName, placeId, position, status, image };
-      });
-      changeOnMapMarkers(parsedOnMapMarkers);
-
-      // parsedOnMapMarkers의 length가 있을 때만 bound 설정
-      if (map && parsedOnMapMarkers.length) {
-        const bounds = new kakao.maps.LatLngBounds();
-        parsedOnMapMarkers.forEach((marker: KakaoMapMarkerType) => {
-          const position = new kakao.maps.LatLng(marker.position.lat, marker.position.lng);
-          bounds.extend(position);
-        });
-        map.setBounds(bounds);
-      }
-    }
   }, [map]);
 
   useEffect(() => {
