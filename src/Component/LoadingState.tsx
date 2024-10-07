@@ -5,10 +5,12 @@ import styled from 'styled-components';
 const LoadingState = () => {
   return (
     <EmptyGraphContainer>
-      <Spinner animation='border' role='status'>
-        <span className='visually-hidden'>Loading</span>
-      </Spinner>
-      <h1>로딩중입니다...</h1>
+      <LoadingConetent>
+        <Spinner animation='border' role='status'>
+          <span className='visually-hidden'>Loading</span>
+        </Spinner>
+        <div className='text'>로딩중입니다...</div>
+      </LoadingConetent>
     </EmptyGraphContainer>
   );
 };
@@ -29,15 +31,26 @@ const EmptyGraphContainer = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+`;
+
+const LoadingConetent = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 
   * {
-    margin: 1rem;
     width: 8rem;
     height: 8rem;
   }
-  h1 {
-    width: 15rem;
-    font-size: 2rem;
-    text-align: center;
+
+  .text {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    width: 20rem;
+    font-size: 2.5rem;
+    font-weight: 700;
   }
 `;
