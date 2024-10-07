@@ -24,7 +24,6 @@ instance.interceptors.request.use(config => {
 const getKakaoInfo = async () => {
   try {
     const response = await instance.get('/user/me');
-    console.log('response : ', response);
     const data = response.data;
     return data;
   } catch (e: any) {

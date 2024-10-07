@@ -1,8 +1,11 @@
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 
+import { getNaverInfo, getKakaoInfo } from '@src/API';
 import { RootState } from '@src/Store/store';
 import { setResize } from '@src/Store/kakaoModalSlice';
+import { onLogin } from '@src/Store/globalDataSlice';
+
 import { phoneModeSwitch } from '@src/Store/globalDataSlice';
 
 import { LoadingState, Toast } from '@src/Component';
@@ -29,6 +32,31 @@ const Layout = () => {
     }
     dispatch(setResize());
   };
+
+  const handleGetInfo = async (type: string) => {
+    switch (type) {
+      case 'naver': {
+        const info = await getNaverInfo();
+        const { id } = info;
+        dispatch(onLogin({ id, type: 'naver' }));
+        break;
+      }
+      case 'kakao': {
+        const info = await getKakaoInfo();
+        const { id } = info;
+        dispatch(onLogin({ id, type: 'kakao' }));
+        break;
+      }
+    }
+  };
+
+  useEffect(() => {
+    const oauthType = localStorage.getItem('oauthType');
+
+    if (oauthType) {
+      handleGetInfo(oauthType);
+    }
+  }, []);
 
   return (
     <GlobalLayoutContainer phone={isPhone.toString()}>

@@ -1,11 +1,9 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { onLogin } from '@src/Store/globalDataSlice';
 
 import Lottie from 'react-lottie';
 
-import { getNaverInfo, getKakaoInfo } from '@src/API';
 import { RootState } from '@src/Store/store';
 import { errorAccured } from '@src/Store/requestStatusSlice';
 
@@ -46,45 +44,16 @@ const LoginPage = () => {
     const url =
       naver_api_url +
       `/authorize?response_type=code&client_id=${naver_client_id}&redirect_uri=${naver_redirect_uri}&state=1234`;
-    console.log(url);
     window.location.href = url;
   };
 
   const onClickKakao = () => {
     const url =
       kakao_api_url + `/authorize?response_type=code&client_id=${kakao_client_id}&redirect_uri=${kakao_redirect_uri}`;
-    console.log(url);
     window.location.href = url;
   };
 
-  const handleGetInfo = async (type: string) => {
-    switch (type) {
-      case 'naver': {
-        const info = await getNaverInfo();
-        const { id } = info;
-        dispatch(onLogin({ id, type: 'naver' }));
-        break;
-      }
-      case 'kakao': {
-        const info = await getKakaoInfo();
-        const { id } = info;
-        dispatch(onLogin({ id, type: 'kakao' }));
-        break;
-      }
-      default: {
-        dispatch(errorAccured('잘못된 접근입니다.'));
-        navigate('/');
-      }
-    }
-  };
-
   useEffect(() => {
-    const oauthType = localStorage.getItem('oauthType');
-
-    if (oauthType) {
-      handleGetInfo(oauthType);
-    }
-
     if (isLogin) {
       navigate('/');
       dispatch(errorAccured('이미 로그인 되어있습니다.'));
