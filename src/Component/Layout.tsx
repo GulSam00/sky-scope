@@ -8,22 +8,19 @@ import { Github, Phone, PhoneFill } from 'react-bootstrap-icons';
 import { getNaverInfo, getKakaoInfo } from '@src/API';
 import { RootState } from '@src/Store/store';
 import { setResize } from '@src/Store/kakaoModalSlice';
-import { onLogin } from '@src/Store/globalDataSlice';
+import { onLogin, onLogout } from '@src/Store/globalDataSlice';
 import { phoneModeSwitch } from '@src/Store/globalDataSlice';
 
 import { styled } from 'styled-components';
 import { gsap } from 'gsap';
-import { is } from 'date-fns/locale';
-import { set } from 'date-fns';
 
 const Layout = () => {
   const [isUserModal, setIsUserModal] = useState(false);
 
   const { isLoading, errorMessage } = useSelector((state: RootState) => state.requestStatusSliceReducer);
-  const { isPhone } = useSelector((state: RootState) => state.globalDataSliceReducer);
+  const { isPhone, isLogin, nickname } = useSelector((state: RootState) => state.globalDataSliceReducer);
 
   const dispatch = useDispatch();
-  const location = useLocation();
   const navigate = useNavigate();
 
   const modalRef = useRef<HTMLDivElement>(null);
@@ -42,6 +39,19 @@ const Layout = () => {
       gsap.to(modalRef.current, { opacity: 0, x: 100, duration: 0.5, onComplete: () => setIsUserModal(false) });
     } else {
       setIsUserModal(true);
+    }
+  };
+
+  const handleUserInOut = () => {
+    if (isLogin) {
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshToken');
+      localStorage.removeItem('oauthType');
+      dispatch(onLogout());
+      // 새로 고침, refresh
+      location.reload();
+    } else {
+      navigate('/login');
     }
   };
 
@@ -68,14 +78,13 @@ const Layout = () => {
 
   useEffect(() => {
     const oauthType = localStorage.getItem('oauthType');
-
     if (oauthType) {
       handleGetInfo(oauthType);
     }
   }, []);
 
   useEffect(() => {
-    gsap.fromTo(modalRef.current, { opacity: 0, x: 100 }, { opacity: 1, x: -100, duration: 0.5 });
+    gsap.fromTo(modalRef.current, { opacity: 0, x: 100 }, { opacity: 1, x: -50, duration: 0.5 });
   }, [modalRef, isUserModal]);
 
   return (
@@ -98,7 +107,12 @@ const Layout = () => {
             <img src='/icons/user.svg' alt='' width={24} />
             {isUserModal && (
               <div className='info' ref={modalRef}>
-                user
+                <div>
+                  안녕하세요, <br /> {isLogin ? nickname : 'Guest'}님!
+                </div>
+                <div className='button' onClick={handleUserInOut}>
+                  {isLogin ? '로그아웃' : '로그인'}
+                </div>
               </div>
             )}
           </div>
@@ -186,10 +200,26 @@ const IconContainer = styled.div`
     position: absolute;
     top: 60px;
 
-    width: 100px;
+    width: 150px;
     height: 100px;
     background-color: white;
     border: 1px solid #dfe2e5;
     border-radius: 5px;
+
+    text-align: center;
+    font-size: 1rem;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    .button {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #f7f7f7;
+      height: 4rem;
+      cursor: pointer;
+    }
   }
 `;
