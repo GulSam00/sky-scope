@@ -1,5 +1,14 @@
 {
 "rewrites": [
-    { "source": "/(.*)", "destination": "/" }
+    { "source": "/(.*)", "destination": "/" },
+    {"source": "/api/naver/oauth/:path*", 
+    "destination": "https://nid.naver.com/oauth2.0/:path*"},
+    {"source": "/api/naver/info/:path*", 
+    "destination": "https://openapi.naver.com/v1/:path*"},
+
+    {"source": "/api/kakao/oauth/:path*", 
+    "destination": "https://kauth.kakao.com/oauth/:path*"},
+    {"source": "/api/kakao/info/:path*", 
+    "destination": "https://kapi.kakao.com/v2/:path*"}
 ]
 }
