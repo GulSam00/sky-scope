@@ -1,6 +1,5 @@
 {
 "rewrites": [
-    { "source": "/(.*)", "destination": "/" },
     {"source": "/api/naver/oauth/:path*", 
     "destination": "https://nid.naver.com/oauth2.0/:path*"},
     {"source": "/api/naver/info/:path*", 
