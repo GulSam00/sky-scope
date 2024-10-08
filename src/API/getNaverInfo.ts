@@ -20,7 +20,12 @@ instance.interceptors.request.use(config => {
   return config;
 });
 
-const getNaverInfo = async () => {
+export interface getInfoReturn {
+  id: string;
+  nickname: string;
+}
+
+const getNaverInfo = async (): Promise<getInfoReturn | null> => {
   try {
     const response = await instance.get('/nid/me');
     const data = response.data.response;
@@ -41,6 +46,7 @@ const getNaverInfo = async () => {
     if (e instanceof Error) message = e.message;
     else message = '/getNaverInfo error';
     console.error(message);
+    return null;
   }
 };
 

@@ -1,8 +1,9 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 
 import Lottie from 'react-lottie';
+import gsap from 'gsap';
 
 import { RootState } from '@src/Store/store';
 import { errorAccured } from '@src/Store/requestStatusSlice';
@@ -22,6 +23,7 @@ const kakao_redirect_uri = import.meta.env.VITE_KAKAO_REDIRECT;
 const LoginPage = () => {
   const { isLogin } = useSelector((state: RootState) => state.globalDataSliceReducer);
 
+  const titleRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -60,10 +62,23 @@ const LoginPage = () => {
     }
   }, [isLogin]);
 
+  useEffect(() => {
+    gsap.to(titleRef.current, {
+      opacity: 0.25, // 최종 투명도
+      y: 10,
+      duration: 1, // 애니메이션 실행 시간
+      repeat: -1, // 무한 반복
+      yoyo: true, // 앞뒤로 반복
+      ease: 'power1.inOut',
+    });
+  }, [titleRef]);
+
   return (
     <LoginPageContainer>
       <LoginPageContent>
-        <div className='header'>찾아낸 지역들을 저장하세요</div>
+        <div className='header' ref={titleRef}>
+          찾아낸 지역들을 저장하세요
+        </div>
 
         <Lottie options={scopeOptions} height={200} width={200} />
 

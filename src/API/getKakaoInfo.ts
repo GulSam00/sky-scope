@@ -21,11 +21,18 @@ instance.interceptors.request.use(config => {
   return config;
 });
 
-const getKakaoInfo = async () => {
+export interface getInfoReturn {
+  id: string;
+  nickname: string;
+}
+
+const getKakaoInfo = async (): Promise<getInfoReturn | null> => {
   try {
     const response = await instance.get('/user/me');
     const data = response.data;
-    return data;
+    const id = data.id;
+    const nickname = data.properties.nickname;
+    return { id, nickname };
   } catch (e: any) {
     console.log('error : ', e);
     let message;
@@ -37,11 +44,14 @@ const getKakaoInfo = async () => {
       localStorage.setItem('refreshToken', result.refresh_token);
       const response = await instance.get('/user/me');
       const data = response.data.response;
-      return data;
+      const id = data.id;
+      const nickname = data.properties.nickname;
+      return { id, nickname };
     }
     if (e instanceof Error) message = e.message;
     else message = '/getNaverInfo error';
     console.error(message);
+    return null;
   }
 };
 

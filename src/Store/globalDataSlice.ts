@@ -7,6 +7,7 @@ export const globalDataSlice = createSlice({
     isLogin: false,
     loginType: '',
     id: '',
+    nickname: '',
   },
   reducers: {
     phoneModeSwitch: state => {
@@ -15,13 +16,15 @@ export const globalDataSlice = createSlice({
     },
     onLogin: (state, action) => {
       state.isLogin = true;
-      const { id, type } = action.payload;
+      const { id, nickname, type } = action.payload;
       state.id = id;
+      state.nickname = nickname;
       state.loginType = type;
     },
     onLogout: state => {
       state.isLogin = false;
       state.id = '';
+      state.nickname = '';
       state.loginType = '';
     },
   },

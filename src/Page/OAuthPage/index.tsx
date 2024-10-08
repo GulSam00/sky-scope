@@ -35,10 +35,13 @@ const OAuthPage = () => {
         localStorage.setItem('accessToken', access_token);
         localStorage.setItem('refreshToken', refresh_token);
         localStorage.setItem('oauthType', 'naver');
+
         const info = await getNaverInfo();
-        const { id } = info;
-        dispatch(onLogin({ id, type: 'naver' }));
-        navigate('/');
+        if (info) {
+          const { id, nickname } = info;
+          dispatch(onLogin({ id, nickname, type: 'naver' }));
+          navigate('/');
+        }
         break;
       }
       case 'kakao': {
@@ -52,8 +55,12 @@ const OAuthPage = () => {
         localStorage.setItem('refreshToken', refresh_token);
         localStorage.setItem('oauthType', 'kakao');
         const info = await getKakaoInfo();
-        const { id } = info;
-        dispatch(onLogin({ id, type: 'kakao' }));
+        if (info) {
+          const { id, nickname } = info;
+          dispatch(onLogin({ id, nickname, type: 'kakao' }));
+          navigate('/');
+        }
+
         navigate('/');
         break;
       }

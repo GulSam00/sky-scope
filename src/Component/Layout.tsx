@@ -1,22 +1,22 @@
+import { useState, useEffect } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
+
+import { LoadingState, Toast } from '@src/Component';
+import { Github, Phone, PhoneFill } from 'react-bootstrap-icons';
+import SideModal from './SideModal';
 
 import { getNaverInfo, getKakaoInfo } from '@src/API';
 import { RootState } from '@src/Store/store';
 import { setResize } from '@src/Store/kakaoModalSlice';
 import { onLogin } from '@src/Store/globalDataSlice';
-
 import { phoneModeSwitch } from '@src/Store/globalDataSlice';
 
-import { LoadingState, Toast } from '@src/Component';
-import { Github, Phone, PhoneFill } from 'react-bootstrap-icons';
-
-import { Nav } from 'react-bootstrap';
-
 import { styled } from 'styled-components';
-import { useEffect } from 'react';
 
 const Layout = () => {
+  const [isUserModal, setIsUserModal] = useState(false);
+
   const { isLoading, errorMessage } = useSelector((state: RootState) => state.requestStatusSliceReducer);
   const { isPhone } = useSelector((state: RootState) => state.globalDataSliceReducer);
 
@@ -33,18 +33,26 @@ const Layout = () => {
     dispatch(setResize());
   };
 
+  const handleToggleUserModal = () => {
+    setIsUserModal(!isUserModal);
+  };
+
   const handleGetInfo = async (type: string) => {
     switch (type) {
       case 'naver': {
         const info = await getNaverInfo();
-        const { id } = info;
-        dispatch(onLogin({ id, type: 'naver' }));
+        if (info) {
+          const { id, nickname } = info;
+          dispatch(onLogin({ id, nickname, type: 'naver' }));
+        }
         break;
       }
       case 'kakao': {
         const info = await getKakaoInfo();
-        const { id } = info;
-        dispatch(onLogin({ id, type: 'kakao' }));
+        if (info) {
+          const { id, nickname } = info;
+          dispatch(onLogin({ id, nickname, type: 'kakao' }));
+        }
         break;
       }
     }
@@ -64,28 +72,6 @@ const Layout = () => {
       {errorMessage && <Toast content={errorMessage} />}
 
       <NavContainer phone={isPhone.toString()}>
-        {/* <Nav>
-          <Nav.Item>
-            <Nav.Link href='/' disabled={location.pathname === '/'}>
-              실시간 날씨
-            </Nav.Link>
-          </Nav.Item>
-          <Nav.Item>
-            <Nav.Link href='/chart' disabled={location.pathname === '/chart'}>
-              예보 차트
-            </Nav.Link>
-          </Nav.Item>
-          <Nav.Item>
-            <IconContainer>
-              <Github onClick={() => window.open('https://github.com/GulSam00/sky-scope')} />
-            </IconContainer>
-          </Nav.Item>
-          <Nav.Item>
-            <IconContainer>
-              {!isPhone ? <Phone onClick={switchPhone} /> : <PhoneFill onClick={switchPhone} />}
-            </IconContainer>
-          </Nav.Item>
-        </Nav> */}
         <Title onClick={() => navigate('/')}>
           <img src='/scope.png' alt='logo' />
           <div>Skyscope</div>
@@ -96,6 +82,10 @@ const Layout = () => {
             <Github onClick={() => window.open('https://github.com/GulSam00/sky-scope')} />
           </div>
           <div>{!isPhone ? <Phone onClick={switchPhone} /> : <PhoneFill onClick={switchPhone} />}</div>
+          <div onClick={handleToggleUserModal}>
+            <img src='/icons/user.svg' alt='' width={24} />
+            {isUserModal && <SideModal>user modal</SideModal>}
+          </div>
         </IconContainer>
       </NavContainer>
 
@@ -141,6 +131,7 @@ const NavContainer = styled.div<Props>`
   height: 3rem;
 
   margin: 0 auto;
+  padding: 0 1rem;
   border-bottom: 1px solid #dfe2e5;
   background-color: white;
 `;
@@ -164,12 +155,13 @@ const Title = styled.div`
 
 const IconContainer = styled.div`
   display: flex;
-
-  div {
+  gap: 1rem;
+  > div {
+    position: relative;
     display: flex;
     align-items: center;
+    justify-content: center;
 
-    padding: 0 10px;
     height: 100%;
     cursor: pointer;
   }
