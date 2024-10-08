@@ -1,10 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { LoadingState, Toast } from '@src/Component';
 import { Github, Phone, PhoneFill } from 'react-bootstrap-icons';
-import SideModal from './SideModal';
 
 import { getNaverInfo, getKakaoInfo } from '@src/API';
 import { RootState } from '@src/Store/store';
@@ -13,6 +12,9 @@ import { onLogin } from '@src/Store/globalDataSlice';
 import { phoneModeSwitch } from '@src/Store/globalDataSlice';
 
 import { styled } from 'styled-components';
+import { gsap } from 'gsap';
+import { is } from 'date-fns/locale';
+import { set } from 'date-fns';
 
 const Layout = () => {
   const [isUserModal, setIsUserModal] = useState(false);
@@ -24,6 +26,8 @@ const Layout = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
+  const modalRef = useRef<HTMLDivElement>(null);
+
   const switchPhone = () => {
     if (!isPhone) {
       dispatch(phoneModeSwitch());
@@ -34,7 +38,11 @@ const Layout = () => {
   };
 
   const handleToggleUserModal = () => {
-    setIsUserModal(!isUserModal);
+    if (isUserModal) {
+      gsap.to(modalRef.current, { opacity: 0, x: 100, duration: 0.5, onComplete: () => setIsUserModal(false) });
+    } else {
+      setIsUserModal(true);
+    }
   };
 
   const handleGetInfo = async (type: string) => {
@@ -66,6 +74,10 @@ const Layout = () => {
     }
   }, []);
 
+  useEffect(() => {
+    gsap.fromTo(modalRef.current, { opacity: 0, x: 100 }, { opacity: 1, x: -100, duration: 0.5 });
+  }, [modalRef, isUserModal]);
+
   return (
     <GlobalLayoutContainer phone={isPhone.toString()}>
       {isLoading && <LoadingState />}
@@ -84,7 +96,11 @@ const Layout = () => {
           <div>{!isPhone ? <Phone onClick={switchPhone} /> : <PhoneFill onClick={switchPhone} />}</div>
           <div onClick={handleToggleUserModal}>
             <img src='/icons/user.svg' alt='' width={24} />
-            {isUserModal && <SideModal>user modal</SideModal>}
+            {isUserModal && (
+              <div className='info' ref={modalRef}>
+                user
+              </div>
+            )}
           </div>
         </IconContainer>
       </NavContainer>
@@ -164,5 +180,16 @@ const IconContainer = styled.div`
 
     height: 100%;
     cursor: pointer;
+  }
+
+  .info {
+    position: absolute;
+    top: 60px;
+
+    width: 100px;
+    height: 100px;
+    background-color: white;
+    border: 1px solid #dfe2e5;
+    border-radius: 5px;
   }
 `;

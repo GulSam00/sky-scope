@@ -60,8 +60,6 @@ const OAuthPage = () => {
           dispatch(onLogin({ id, nickname, type: 'kakao' }));
           navigate('/');
         }
-
-        navigate('/');
         break;
       }
       default:
