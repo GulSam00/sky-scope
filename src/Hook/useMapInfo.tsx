@@ -1,10 +1,17 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
+import { RootState } from '@src/Store/store';
 import { addToast } from '@src/Store/toastWeatherSlice';
 import { errorAccured } from '@src/Store/requestStatusSlice';
 import { LocateDataType, KakaoSearchType, KakaoMapMarkerType, markerStatus } from '@src/Types/liveDataType';
 import { transLocaleToCoord } from '@src/Util';
+
+// import { doc, collection, getDoc, setDoc, updateDoc, deleteDoc } from 'firebase/firestore/lite';
+import { doc, getDoc, setDoc, updateDoc } from '@firebase/firestore/lite';
+
+import db from '@src/firebase';
 
 interface Props {
   map: kakao.maps.Map | null;
@@ -19,7 +26,9 @@ const useMapInfo = ({ map }: Props) => {
 
   const [viewportWidth, setViewportWidth] = useState(window.innerWidth);
 
+  const { isLogin, id } = useSelector((state: RootState) => state.globalDataSliceReducer);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const focusMap = (position: { lat: number; lng: number }) => {
     if (!map) return;
@@ -165,28 +174,40 @@ const useMapInfo = ({ map }: Props) => {
     (placeId: string, isBookmarked: boolean) => {
       if (isBookmarked === false) {
         // 북마크 추가
+        // 로그인 확인 로직 추가
+        if (!isLogin) {
+          dispatch(errorAccured('로그인 후 이용해주세요.'));
+          navigate('/login');
+          return;
+        }
         const index = currentPlaces.findIndex(item => item.placeId === placeId);
         const firstMarker = { ...currentPlaces[index], isBookmarked: true }; // Immutably change the bookmark state
         const newCurrentPlaces = currentPlaces.filter((_, i) => i !== index);
+        const newBookmarkPlaces = [firstMarker, ...bookmarkPlaces];
         setCurrentPlaces(newCurrentPlaces);
-        setBookmarkPlaces(prevBookmarkPlaces => [firstMarker, ...prevBookmarkPlaces]);
+        setBookmarkPlaces(newBookmarkPlaces);
 
         const position = firstMarker.position;
         changeOnMapMarker(firstMarker, 'bookmark');
         focusMap(position);
-        localStorage.setItem('bookmarks', JSON.stringify([firstMarker, ...bookmarkPlaces]));
+
+        postFirestoreData(newBookmarkPlaces);
+        // localStorage.setItem('bookmarks', JSON.stringify([firstMarker, ...bookmarkPlaces]));
       } else {
         // 북마크 해제
         const index = bookmarkPlaces.findIndex(item => item.placeId === placeId);
         const firstMarker = { ...bookmarkPlaces[index], isBookmarked: false }; // Immutably change the bookmark state
         const newBookmarkPlaces = bookmarkPlaces.filter((_, i) => i !== index);
+        const newCurrentPlaces = [firstMarker, ...currentPlaces];
         setBookmarkPlaces(newBookmarkPlaces);
-        setCurrentPlaces(prevCurrentPlaces => [firstMarker, ...prevCurrentPlaces]);
+        setCurrentPlaces(newCurrentPlaces);
 
         const position = firstMarker.position;
         changeOnMapMarker(firstMarker, 'search');
         focusMap(position);
-        localStorage.setItem('bookmarks', JSON.stringify(newBookmarkPlaces));
+
+        postFirestoreData(newBookmarkPlaces);
+        // localStorage.setItem('bookmarks', JSON.stringify(newBookmarkPlaces));
       }
     },
     [currentPlaces, bookmarkPlaces, mapMarkers],
@@ -199,8 +220,9 @@ const useMapInfo = ({ map }: Props) => {
         const deleteMarker = bookmarkPlaces[index];
         const newBookmarkPlaces = bookmarkPlaces.filter((_, i) => i !== index);
         setBookmarkPlaces(newBookmarkPlaces);
+        postFirestoreData(newBookmarkPlaces);
         changeOnMapMarker(deleteMarker, 'delete');
-        localStorage.setItem('bookmarks', JSON.stringify(newBookmarkPlaces));
+        // localStorage.setItem('bookmarks', JSON.stringify(newBookmarkPlaces));
       } else {
         const index = currentPlaces.findIndex(item => item.placeId === placeId);
         const deleteMarker = currentPlaces[index];
@@ -260,12 +282,26 @@ const useMapInfo = ({ map }: Props) => {
     setViewportWidth(window.innerWidth);
   };
 
-  useEffect(() => {
-    const localBookmarks = localStorage.getItem('bookmarks');
-    if (localBookmarks) {
-      const parsedBookmarks: KakaoSearchType[] = JSON.parse(localBookmarks);
-      setBookmarkPlaces(parsedBookmarks);
+  const postFirestoreData = async (newBookmarkPlaces: KakaoSearchType[]) => {
+    const data = JSON.stringify(newBookmarkPlaces);
+    const docRef = doc(db, 'mapData', id + '');
+    await setDoc(
+      docRef,
+      {
+        bookmarks: data,
+      },
+      { merge: true },
+    );
+  };
 
+  const getFirestoreData = async () => {
+    // firebase
+    const docRef = doc(db, 'mapData', id + '');
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      const result = docSnap.data();
+      const parsedBookmarks: KakaoSearchType[] = JSON.parse(result.bookmarks);
+      setBookmarkPlaces(parsedBookmarks);
       const parsedOnMapMarkers: KakaoMapMarkerType[] = parsedBookmarks.map((bookmark: KakaoSearchType) => {
         const image = getNewImage('bookmark');
         const { position, placeName, placeId } = bookmark;
@@ -284,6 +320,10 @@ const useMapInfo = ({ map }: Props) => {
         map.setBounds(bounds);
       }
     }
+  };
+
+  useEffect(() => {
+    getFirestoreData();
   }, [map]);
 
   useEffect(() => {

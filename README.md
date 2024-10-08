@@ -57,8 +57,8 @@ https://github.com/user-attachments/assets/b080192e-c021-49f9-acfb-e729f1f4bd1b
   
 </div>
 
+https://github.com/user-attachments/assets/6d1fd416-d302-434f-9ecd-82f9bbd27eb8
 
-</div>
 
 # 프로젝트 기록
 
@@ -66,7 +66,8 @@ https://github.com/user-attachments/assets/b080192e-c021-49f9-acfb-e729f1f4bd1b
 - 2024.5.17 : 날씨 차트(예보차트 페이지) 추가
 - 2024.7.16 : 카카오 지도(실시간날씨 페이지) 추가
 - 2024.7.27 : 실시간날씨 페이지 - 자동완성 기능 추가, 컴포넌트 최적화 작업
-- 2024.8.12 : 반응형 디자인 반영, UI 개선
+- 2024.9.25 : 디자인 리펙토링, Toast 기능 추가
+- 2024.10.8 : 네이버, 카카오 Oauth 추가. firebase 연동. 디자인 개선.
 
 # 회고
 

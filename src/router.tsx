@@ -8,6 +8,8 @@ const MapPage = lazy(() => import('@src/Page/MapPage'));
 const ChartPage = lazy(() => import('@src/Page/ChartPage'));
 const ErrorPage = lazy(() => import('@src/Page/ErrorPage'));
 const NotFoundPage = lazy(() => import('@src/Page/NotFoundPage'));
+const LoginPage = lazy(() => import('@src/Page/LoginPage'));
+const OAuthPage = lazy(() => import('@src/Page/OAuthPage'));
 
 const LazyComponent = ({ children }: { children: React.ReactNode }) => {
   return <Suspense fallback={<LoadingState />}>{children}</Suspense>;
@@ -26,15 +28,24 @@ const BrowserRouter = createBrowserRouter([
           </LazyComponent>
         ),
       },
-      // {
-      //   path: '/chart',
-      //   element: (
-      //     <LazyComponent>
-      //       <ChartPage />
-      //     </LazyComponent>
-      //   ),
-      // },
 
+      {
+        path: '/login',
+        element: (
+          <LazyComponent>
+            <LoginPage />
+          </LazyComponent>
+        ),
+      },
+
+      {
+        path: '/oauth/*',
+        element: (
+          <LazyComponent>
+            <OAuthPage />
+          </LazyComponent>
+        ),
+      },
       {
         path: '/error',
         element: (
