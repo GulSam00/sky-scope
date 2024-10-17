@@ -65,6 +65,10 @@ https://github.com/user-attachments/assets/6d1fd416-d302-434f-9ecd-82f9bbd27eb8
 # 프로젝트 기록
 
 <div align="left">
+  
+> [Velog 기록](https://velog.io/@sham/series/SkyScope-%EA%B0%9C%EB%B0%9C%EC%9D%BC%EC%A7%80)
+
+
 
 - 2024.3.13 : 프로젝트 시작
 - 2024.5.17 : 날씨 차트(예보차트 페이지) 추가
