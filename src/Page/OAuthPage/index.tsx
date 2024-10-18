@@ -29,6 +29,7 @@ const OAuthPage = () => {
         const result = await getNaverToken('authorization_code', `code=${code}&state=1234`);
         if (!result) {
           dispatch(errorAccured('네이버 로그인에 실패했습니다.'));
+          navigate('/login');
           return;
         }
         const { access_token, refresh_token } = result;
@@ -41,6 +42,10 @@ const OAuthPage = () => {
           const { id, nickname } = info;
           dispatch(onLogin({ id, nickname, type: 'naver' }));
           navigate('/');
+        } else {
+          dispatch(errorAccured('네이버 로그인에 실패했습니다.'));
+          navigate('/login');
+          return;
         }
         break;
       }
@@ -48,6 +53,7 @@ const OAuthPage = () => {
         const result = await getKakaoToken('authorization_code', `code=${code}`);
         if (!result) {
           dispatch(errorAccured('카카오 로그인에 실패했습니다.'));
+          navigate('/login');
           return;
         }
         const { access_token, refresh_token } = result;
@@ -59,6 +65,10 @@ const OAuthPage = () => {
           const { id, nickname } = info;
           dispatch(onLogin({ id, nickname, type: 'kakao' }));
           navigate('/');
+        } else {
+          dispatch(errorAccured('카카오 로그인에 실패했습니다.'));
+          navigate('/login');
+          return;
         }
         break;
       }

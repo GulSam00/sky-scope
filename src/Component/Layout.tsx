@@ -8,7 +8,7 @@ import { Github, Phone, PhoneFill } from 'react-bootstrap-icons';
 import { getNaverInfo, getKakaoInfo } from '@src/API';
 import { RootState } from '@src/Store/store';
 import { setResize } from '@src/Store/kakaoModalSlice';
-import { onLogin, onLogout } from '@src/Store/globalDataSlice';
+import { onLogin, onLogout, resetAskLogin } from '@src/Store/globalDataSlice';
 import { phoneModeSwitch } from '@src/Store/globalDataSlice';
 
 import { styled } from 'styled-components';
@@ -18,12 +18,13 @@ const Layout = () => {
   const [isUserModal, setIsUserModal] = useState(false);
 
   const { isLoading, errorMessage } = useSelector((state: RootState) => state.requestStatusSliceReducer);
-  const { isPhone, isLogin, nickname } = useSelector((state: RootState) => state.globalDataSliceReducer);
+  const { isPhone, isLogin, nickname, isAskLogin } = useSelector((state: RootState) => state.globalDataSliceReducer);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const modalRef = useRef<HTMLDivElement>(null);
+  const infoModalRef = useRef<HTMLDivElement>(null);
+  const loginModalRef = useRef<HTMLDivElement>(null);
 
   const switchPhone = () => {
     if (!isPhone) {
@@ -36,7 +37,7 @@ const Layout = () => {
 
   const handleToggleUserModal = () => {
     if (isUserModal) {
-      gsap.to(modalRef.current, { opacity: 0, x: 100, duration: 0.5, onComplete: () => setIsUserModal(false) });
+      gsap.to(infoModalRef.current, { opacity: 0, x: 100, duration: 0.5, onComplete: () => setIsUserModal(false) });
     } else {
       setIsUserModal(true);
     }
@@ -76,6 +77,11 @@ const Layout = () => {
     }
   };
 
+  const onClickAskLogin = () => {
+    dispatch(resetAskLogin());
+    navigate('/login');
+  };
+
   useEffect(() => {
     const oauthType = localStorage.getItem('oauthType');
     if (oauthType) {
@@ -84,8 +90,21 @@ const Layout = () => {
   }, []);
 
   useEffect(() => {
-    gsap.fromTo(modalRef.current, { opacity: 0, x: 100 }, { opacity: 1, x: -50, duration: 0.5 });
-  }, [modalRef, isUserModal]);
+    gsap.fromTo(infoModalRef.current, { opacity: 0, x: 100 }, { opacity: 1, x: -50, duration: 0.5 });
+  }, [infoModalRef, isUserModal]);
+
+  useEffect(() => {
+    const animation = gsap.timeline();
+
+    animation
+      .fromTo(loginModalRef.current, { opacity: 0, x: 0 }, { opacity: 1, x: -200, duration: 1.5 })
+      .to(loginModalRef.current, {
+        opacity: 0,
+        x: 0,
+        duration: 1.5,
+        delay: 1.5,
+      });
+  }, [loginModalRef, isAskLogin]);
 
   return (
     <GlobalLayoutContainer phone={isPhone.toString()}>
@@ -100,13 +119,21 @@ const Layout = () => {
 
         <IconContainer>
           <div>
+            <img
+              src='/icons/blog.svg'
+              alt=''
+              width={24}
+              onClick={() => window.open('https://velog.io/@sham/series/SkyScope-%EA%B0%9C%EB%B0%9C%EC%9D%BC%EC%A7%80')}
+            />
+          </div>
+          <div>
             <Github onClick={() => window.open('https://github.com/GulSam00/sky-scope')} />
           </div>
           <div>{!isPhone ? <Phone onClick={switchPhone} /> : <PhoneFill onClick={switchPhone} />}</div>
           <div onClick={handleToggleUserModal}>
             <img src='/icons/user.svg' alt='' width={24} />
             {isUserModal && (
-              <div className='info' ref={modalRef}>
+              <div className='info' ref={infoModalRef}>
                 <div>
                   안녕하세요, <br /> {isLogin ? nickname : 'Guest'}님!
                 </div>
@@ -122,6 +149,11 @@ const Layout = () => {
       <ContentContainer>
         <Outlet />
       </ContentContainer>
+      {isAskLogin && (
+        <div className='ask-modal' onClick={onClickAskLogin} ref={loginModalRef}>
+          로그인해서 북마크한 장소를 어디서든 확인하세요!
+        </div>
+      )}
     </GlobalLayoutContainer>
   );
 };
@@ -143,6 +175,27 @@ const GlobalLayoutContainer = styled.div<Props>`
 
   position: relative;
   overflow: hidden;
+
+  .ask-modal {
+    position: absolute;
+    bottom: 40%;
+    right: -150px;
+
+    z-index: 3000;
+    width: 150px;
+    height: 100px;
+    background-color: white;
+    border: 1px solid #dfe2e5;
+    border-radius: 5px;
+
+    text-align: center;
+    font-size: 1rem;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    cursor: pointer;
+  }
 `;
 
 const NavContainer = styled.div<Props>`
@@ -150,7 +203,7 @@ const NavContainer = styled.div<Props>`
   justify-content: space-between;
 
   position: sticky;
-  z-index: 1000;
+  z-index: 3000;
   top: 0;
 
   // 임의로 400px, 375px면 화면 넘어감(wrap)

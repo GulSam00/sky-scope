@@ -85,10 +85,10 @@ const FooterPlaces = ({
     <FooterPlacesContainer>
       <FooterLists>
         <div ref={bookmarkRef} onClick={() => onClickFooter(1)}>
-          <img src='/icons/star-fill.svg' alt='북마크' width={24} />
+          <img src='/icons/star-fill.svg' alt='북마크' width={36} />
         </div>
         <div ref={currentRef} onClick={() => onClickFooter(2)}>
-          <img src='/icons/search.svg' alt='검색' width={24} />
+          <img src='/icons/search.svg' alt='검색' width={36} />
         </div>
       </FooterLists>
 
@@ -119,7 +119,7 @@ const FooterPlacesContainer = styled.div`
 const FooterLists = styled.div`
   display: flex;
   width: 100%;
-  height: 3rem;
+  height: 4rem;
   align-items: center;
 
   > div {

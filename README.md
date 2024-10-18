@@ -20,13 +20,15 @@
 <img src="https://img.shields.io/badge/vite-123142?style=flat-square&logo=vite&logoColor=white"/>
 <img src="https://img.shields.io/badge/HTML5-E34F26?style=flat-square&logo=html5&logoColor=white"/>
 <img src="https://img.shields.io/badge/styled components-DB7093?style=flat-square&logo=styled-components&logoColor=white"/>
-<img src="https://img.shields.io/badge/Bootstrapap-7952B3?style=flat-square&logo=bootstrap&logoColor=white"/>
+<img src="https://img.shields.io/badge/Bootstrap-7952B3?style=flat-square&logo=bootstrap&logoColor=white"/>
 </div>
 
 <div>
 <img src="https://img.shields.io/badge/Typescript-3178C6?style=flat-square&logo=Typescript&logoColor=white"/>
 <img src="https://img.shields.io/badge/react query-234152?style=flat-square&logo=react-query&logoColor=white"/>
 <img src="https://img.shields.io/badge/redux-223415?style=flat-square&logo=redux&logoColor=white"/>
+<img src="https://img.shields.io/badge/OAuth-EB5424?style=flat-square&logo=auth0&logoColor=white"/>
+<img src="https://img.shields.io/badge/Firebase-DD2C00?style=flat-square&logo=firebase&logoColor=white"/>
 
 </div>
 
@@ -63,13 +65,17 @@ https://github.com/user-attachments/assets/6d1fd416-d302-434f-9ecd-82f9bbd27eb8
 # 프로젝트 기록
 
 <div align="left">
+  
+> [Velog 기록](https://velog.io/@sham/series/SkyScope-%EA%B0%9C%EB%B0%9C%EC%9D%BC%EC%A7%80)
+
+
 
 - 2024.3.13 : 프로젝트 시작
 - 2024.5.17 : 날씨 차트(예보차트 페이지) 추가
 - 2024.7.16 : 카카오 지도(실시간날씨 페이지) 추가
 - 2024.7.27 : 실시간날씨 페이지 - 자동완성 기능 추가, 컴포넌트 최적화 작업
 - 2024.9.25 : 디자인 리펙토링, Toast 기능 추가
-- 2024.10.8 : 네이버, 카카오 Oauth 추가. firebase 연동. 디자인 개선.
+- 2024.10.8 : 네이버, 카카오 OAuth 추가. firebase 연동. 디자인 개선.
 
 </div>
 
@@ -79,23 +85,12 @@ https://github.com/user-attachments/assets/6d1fd416-d302-434f-9ecd-82f9bbd27eb8
 
 <div align="left">
   
-- react-query를 활용하여 API 요청 부분을 별도의 코드로 처리하게 되어 유지보수가 용이해지고 코드 상에서도 더 깔끔하게 사용할 수 있도록 하였습니다.
-- redux를 활용하여 다양한 컴포넌트에서 사용되는 상태들을 전역적으로 관리할 수 있게 되었으며 불필요한 props drilling 현상을 방지할 수 있도록 하였습니다.
-- 기존에 사용했던 CRA 대신 Vite를 활용해서 CRA보다 훨씬 빠르게 빌드가 진행되도록 하였습니다.
-- 타입스크립트를 적용하여 코드의 생산성을 높이고자 하였습니다.
-- 로딩 화면을 도입하여 데이터가 변경되는 동안 사용자의 추가적인 입력을 방지했습니다.
-- 모바일로 접속하는 사용자를 위해 모바일 환경을 고려한 디자인을 고민했습니다.
-- API 에러, 기대하지 않는 동작이 발생했을 때 Toast를 통해 제어하여 주었습니다.
+- 기상청 API 요청 시 지역에 해당하는 파라미터 값을 실제 좌표가 아닌 고유한 좌표로 보내주어야만 했습니다.
+- 카카오 지도 위에 렌더링 될 마커들을 상태에 따라 관리하고 제어해야만 했습니다.
+- 다양한 최적화 방법을 시도하며 성능을 개선했습니다.
+- 인증 과정에서 발생할 수 있는 CORS 및 Vercel의 URL 리다이렉션 문제를 proxy를 활용해 해결했습니다.
+- Firebase를 활용한 OAuth 인증을 통해 기존에 로컬 스토리지로 데이터를 저장하던 불안정성을 개선하였습니다.
   
-</div>
-
-## 개발 과정의 어려움
-
-<div align="left">
-  
-- 기상청 API 요청 시 지역에 해당하는 파라미터 값을 실제 좌표 값이 아닌 고유한 좌표로 보내주어야 했기에 실제 좌표를 기상청 API에서 정한 포맷에 맞춰 변환하는 작업이 필요했습니다.
-- 카카오 지도 API로 특정 장소를 검색했을 때 기상청 API로 받아오는 과정에서 해당 지역에 대한 정보를 기상청이 요구하는 파라미터에 맞게 적절하게 파싱해주는 작업이 필요했습니다.
-
 </div>
   
 ## 무엇을 얻었는지
@@ -103,8 +98,8 @@ https://github.com/user-attachments/assets/6d1fd416-d302-434f-9ecd-82f9bbd27eb8
 <div align="left">
   
 - 서로 다른 API를 목적에 맞게 호환해보는 경험을 얻었습니다.
-- react-query를 사용해서 데이터를 캐싱하는 것으로 불필요한 API 호출을 줄일 수 있었습니다.
-- redux로 상태 값을 관리하며 여러번 API를 호출하는 경우에도 API 호출 도중의 동작, API 에러 발생 시 중복되는 에러 메시지 발생을 제어하여 주었습니다.
+- 커스텀 훅을 통한 UI와 비즈니스 로직 분리를 경험하며 장단점을 파악했습니다.
+- CORS의 발생 원인과 이유, 해결 방안에 대해 고민할 수 있었습니다.
   
 </div>
 

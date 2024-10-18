@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { RootState } from '@src/Store/store';
 import { addToast } from '@src/Store/toastWeatherSlice';
 import { errorAccured } from '@src/Store/requestStatusSlice';
+import { askLogin } from '@src/Store/globalDataSlice';
 import { LocateDataType, KakaoSearchType, KakaoMapMarkerType, markerStatus } from '@src/Types/liveDataType';
 import { transLocaleToCoord } from '@src/Util';
 
@@ -175,11 +176,11 @@ const useMapInfo = ({ map }: Props) => {
       if (isBookmarked === false) {
         // 북마크 추가
         // 로그인 확인 로직 추가
-        if (!isLogin) {
-          dispatch(errorAccured('로그인 후 이용해주세요.'));
-          navigate('/login');
-          return;
-        }
+        // if (!isLogin) {
+        //   dispatch(errorAccured('로그인 후 이용해주세요.'));
+        //   navigate('/login');
+        //   return;
+        // }
         const index = currentPlaces.findIndex(item => item.placeId === placeId);
         const firstMarker = { ...currentPlaces[index], isBookmarked: true }; // Immutably change the bookmark state
         const newCurrentPlaces = currentPlaces.filter((_, i) => i !== index);
@@ -191,8 +192,11 @@ const useMapInfo = ({ map }: Props) => {
         changeOnMapMarker(firstMarker, 'bookmark');
         focusMap(position);
 
-        postFirestoreData(newBookmarkPlaces);
-        // localStorage.setItem('bookmarks', JSON.stringify([firstMarker, ...bookmarkPlaces]));
+        if (isLogin) postFirestoreData(newBookmarkPlaces);
+        else {
+          dispatch(askLogin());
+          localStorage.setItem('bookmarks', JSON.stringify([firstMarker, ...bookmarkPlaces]));
+        }
       } else {
         // 북마크 해제
         const index = bookmarkPlaces.findIndex(item => item.placeId === placeId);
@@ -206,8 +210,8 @@ const useMapInfo = ({ map }: Props) => {
         changeOnMapMarker(firstMarker, 'search');
         focusMap(position);
 
-        postFirestoreData(newBookmarkPlaces);
-        // localStorage.setItem('bookmarks', JSON.stringify(newBookmarkPlaces));
+        if (isLogin) postFirestoreData(newBookmarkPlaces);
+        else localStorage.setItem('bookmarks', JSON.stringify(newBookmarkPlaces));
       }
     },
     [currentPlaces, bookmarkPlaces, mapMarkers],
@@ -220,9 +224,10 @@ const useMapInfo = ({ map }: Props) => {
         const deleteMarker = bookmarkPlaces[index];
         const newBookmarkPlaces = bookmarkPlaces.filter((_, i) => i !== index);
         setBookmarkPlaces(newBookmarkPlaces);
-        postFirestoreData(newBookmarkPlaces);
         changeOnMapMarker(deleteMarker, 'delete');
-        // localStorage.setItem('bookmarks', JSON.stringify(newBookmarkPlaces));
+
+        if (isLogin) postFirestoreData(newBookmarkPlaces);
+        else localStorage.setItem('bookmarks', JSON.stringify(newBookmarkPlaces));
       } else {
         const index = currentPlaces.findIndex(item => item.placeId === placeId);
         const deleteMarker = currentPlaces[index];
@@ -294,36 +299,41 @@ const useMapInfo = ({ map }: Props) => {
     );
   };
 
-  const getFirestoreData = async () => {
+  const initBookmarkData = async () => {
+    let parsedBookmarks;
     // firebase
-    const docRef = doc(db, 'mapData', id + '');
-    const docSnap = await getDoc(docRef);
-    if (docSnap.exists()) {
+    if (isLogin) {
+      const docRef = doc(db, 'mapData', id + '');
+      const docSnap = await getDoc(docRef);
       const result = docSnap.data();
-      const parsedBookmarks: KakaoSearchType[] = JSON.parse(result.bookmarks);
-      setBookmarkPlaces(parsedBookmarks);
-      const parsedOnMapMarkers: KakaoMapMarkerType[] = parsedBookmarks.map((bookmark: KakaoSearchType) => {
-        const image = getNewImage('bookmark');
-        const { position, placeName, placeId } = bookmark;
-        const status = 'bookmark';
-        return { placeName, placeId, position, status, image };
-      });
-      changeOnMapMarkers(parsedOnMapMarkers);
+      if (result) parsedBookmarks = JSON.parse(result.bookmarks);
+    } else {
+      const result = localStorage.getItem('bookmarks');
+      if (result) parsedBookmarks = JSON.parse(result);
+    }
+    if (!parsedBookmarks) return;
+    setBookmarkPlaces(parsedBookmarks);
+    const parsedOnMapMarkers: KakaoMapMarkerType[] = parsedBookmarks.map((bookmark: KakaoSearchType) => {
+      const image = getNewImage('bookmark');
+      const { position, placeName, placeId } = bookmark;
+      const status = 'bookmark';
+      return { placeName, placeId, position, status, image };
+    });
+    changeOnMapMarkers(parsedOnMapMarkers);
 
-      // parsedOnMapMarkers의 length가 있을 때만 bound 설정
-      if (map && parsedOnMapMarkers.length) {
-        const bounds = new kakao.maps.LatLngBounds();
-        parsedOnMapMarkers.forEach((marker: KakaoMapMarkerType) => {
-          const position = new kakao.maps.LatLng(marker.position.lat, marker.position.lng);
-          bounds.extend(position);
-        });
-        map.setBounds(bounds);
-      }
+    // parsedOnMapMarkers의 length가 있을 때만 bound 설정
+    if (map && parsedOnMapMarkers.length) {
+      const bounds = new kakao.maps.LatLngBounds();
+      parsedOnMapMarkers.forEach((marker: KakaoMapMarkerType) => {
+        const position = new kakao.maps.LatLng(marker.position.lat, marker.position.lng);
+        bounds.extend(position);
+      });
+      map.setBounds(bounds);
     }
   };
 
   useEffect(() => {
-    getFirestoreData();
+    initBookmarkData();
   }, [map]);
 
   useEffect(() => {
