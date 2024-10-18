@@ -49,7 +49,7 @@ const getKakaoInfo = async (): Promise<getInfoReturn | null> => {
       return { id, nickname };
     }
     if (e instanceof Error) message = e.message;
-    else message = '/getNaverInfo error';
+    else message = '/getkakaoInfo error';
     console.error(message);
     return null;
   }
