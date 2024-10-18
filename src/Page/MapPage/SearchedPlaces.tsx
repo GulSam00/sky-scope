@@ -84,7 +84,7 @@ const PlaceGroup = styled.div`
 
   > * {
     width: 4rem;
-    height: 5rem;
+    height: 5.5rem;
     padding: 0.25rem;
 
     border: 1px solid #dfe2e5;
@@ -100,7 +100,7 @@ const PlaceGroup = styled.div`
   }
 
   > div {
-    width: 6rem;
+    width: 6.5rem;
     margin: 0 2px;
 
     font-size: 20px;
