@@ -5,6 +5,7 @@ export const globalDataSlice = createSlice({
   initialState: {
     isPhone: localStorage.getItem('isPhone') === 'true',
     isLogin: false,
+    isAskLogin: false,
     loginType: '',
     id: '',
     nickname: '',
@@ -27,9 +28,15 @@ export const globalDataSlice = createSlice({
       state.nickname = '';
       state.loginType = '';
     },
+    askLogin: state => {
+      state.isAskLogin = true;
+    },
+    resetAskLogin: state => {
+      state.isAskLogin = false;
+    },
   },
 });
 
-export const { phoneModeSwitch, onLogin, onLogout } = globalDataSlice.actions;
+export const { phoneModeSwitch, onLogin, onLogout, askLogin, resetAskLogin } = globalDataSlice.actions;
 
 export default globalDataSlice.reducer;
