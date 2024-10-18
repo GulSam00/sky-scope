@@ -100,6 +100,14 @@ const Layout = () => {
 
         <IconContainer>
           <div>
+            <img
+              src='/icons/blog.svg'
+              alt=''
+              width={24}
+              onClick={() => window.open('https://velog.io/@sham/series/SkyScope-%EA%B0%9C%EB%B0%9C%EC%9D%BC%EC%A7%80')}
+            />
+          </div>
+          <div>
             <Github onClick={() => window.open('https://github.com/GulSam00/sky-scope')} />
           </div>
           <div>{!isPhone ? <Phone onClick={switchPhone} /> : <PhoneFill onClick={switchPhone} />}</div>
