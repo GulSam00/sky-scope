@@ -37,8 +37,8 @@
 # 배포
 <div align="center">
 
-서비스 도메인 : [https://skyscope.vercel.app](https://skyscope.vercel.app)
-자체 패키지 : [https://www.npmjs.com/package/ultra-exact-ncst](https://www.npmjs.com/package/ultra-exact-ncst)
+- 서비스 도메인 : [https://skyscope.vercel.app](https://skyscope.vercel.app)
+- 자체 패키지 : [https://www.npmjs.com/package/ultra-exact-ncst](https://www.npmjs.com/package/ultra-exact-ncst)
 </div>
 
 ---
