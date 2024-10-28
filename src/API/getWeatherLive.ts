@@ -1,17 +1,7 @@
-import axios, { AxiosInstance } from 'axios';
-import { format, getMinutes, subHours } from 'date-fns';
+import { getNcst } from 'ultra-exact-ncst';
 
 const url: string = import.meta.env.VITE_API_SHORT_URL;
 const serviceKey: string = import.meta.env.VITE_API_SERVICE_KEY;
-
-const instance: AxiosInstance = axios.create({
-  baseURL: url,
-  timeout: 3000,
-
-  headers: {
-    'Content-Type': 'application/json',
-  },
-});
 
 export interface IParseObj {
   [category: string]: string;
@@ -31,17 +21,6 @@ interface IItem {
   ny: number;
 }
 
-const params = {
-  serviceKey: serviceKey,
-  dataType: 'JSON',
-  base_date: '',
-  base_time: '',
-  numOfRows: '1000',
-  nx: 0,
-  ny: 0,
-};
-// nx와 ny를 조절해서 지역을 변경할 수 있어야 함
-
 const isVaildCategory = (category: string) => {
   const vaildCategory = ['T1H', 'REH', 'PTY', 'RN1'];
   // T1H : 기온, REH : 습도,  PTY : 강수형태, RN1 : 1시간 강수량
@@ -50,27 +29,15 @@ const isVaildCategory = (category: string) => {
 };
 
 const getWeatherLive = async (base_date: Date, location: ICoord): Promise<IParseObj | undefined> => {
-  const url = '/getUltraSrtNcst';
-  const date = format(base_date, 'yyyyMMdd');
-  // 10분 이전이면 1시간 전 데이터를 가져옴
-  if (getMinutes(base_date) <= 10) base_date = subHours(base_date, 1);
-  const hour = format(base_date, 'HH');
-
-  params.base_date = date;
-  params.base_time = hour + '00';
-  params.nx = location.nx;
-  params.ny = location.ny;
-
   const items: IParseObj = {};
 
   try {
-    const response = await instance.get(url, { params });
-    const dataArr = response.data.response.body.items.item;
-    dataArr.forEach((item: IItem) => {
+    const response = await getNcst({ x: location.nx, y: location.ny, ncstKey: serviceKey });
+    if (!response) return undefined;
+    response.forEach((item: IItem) => {
       const { category, obsrValue } = item;
       if (isVaildCategory(category)) items[category] = obsrValue;
     });
-
     return items;
   } catch (e) {
     let message;

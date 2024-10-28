@@ -5,7 +5,6 @@ import { LoadingState } from '@src/Component';
 import { Layout } from '@src/Component';
 
 const MapPage = lazy(() => import('@src/Page/MapPage'));
-const ChartPage = lazy(() => import('@src/Page/ChartPage'));
 const ErrorPage = lazy(() => import('@src/Page/ErrorPage'));
 const NotFoundPage = lazy(() => import('@src/Page/NotFoundPage'));
 const LoginPage = lazy(() => import('@src/Page/LoginPage'));
