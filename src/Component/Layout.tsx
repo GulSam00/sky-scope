@@ -192,9 +192,10 @@ const GlobalLayoutContainer = styled.div<Props>`
     background-color: white;
     border: 1px solid #dfe2e5;
     border-radius: 5px;
+    padding: 10px;
 
     text-align: center;
-    font-size: 1rem;
+    font-size: 24px;
 
     display: flex;
     flex-direction: column;
