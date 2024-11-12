@@ -151,7 +151,10 @@ const Layout = () => {
       </ContentContainer>
       {isAskLogin && (
         <div className='ask-modal' onClick={onClickAskLogin} ref={loginModalRef}>
-          로그인해서 북마크한 장소를 어디서든 확인하세요!
+          로그인해서
+          <br />
+          북마크한 장소를 <br />
+          어디서든 확인하세요!
         </div>
       )}
     </GlobalLayoutContainer>
@@ -171,6 +174,8 @@ const GlobalLayoutContainer = styled.div<Props>`
   @media (min-width: 640px) {
     width: ${props => (props.phone === 'true' ? '400px' : '100%')};
   }
+
+  height: 100vh;
   height: 100dvh;
 
   position: relative;
@@ -182,8 +187,8 @@ const GlobalLayoutContainer = styled.div<Props>`
     right: -150px;
 
     z-index: 3000;
-    width: 150px;
-    height: 100px;
+    width: 30vh;
+    height: 200px;
     background-color: white;
     border: 1px solid #dfe2e5;
     border-radius: 5px;
