@@ -26,6 +26,7 @@ export default NotFoundPage;
 const NotFoundPageContainer = styled.div`
   position: relative;
   width: 100%;
+  height: 100vh;
   height: 100dvh;
 
   background: linear-gradient(to bottom, #78c1ff, #fff);
