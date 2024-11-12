@@ -119,7 +119,7 @@ const FooterPlacesContainer = styled.div`
 const FooterLists = styled.div`
   display: flex;
   width: 100%;
-  height: 4rem;
+  height: 15dvh;
   align-items: center;
 
   > div {

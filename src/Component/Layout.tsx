@@ -187,8 +187,8 @@ const GlobalLayoutContainer = styled.div<Props>`
     right: -150px;
 
     z-index: 3000;
-    width: 150px;
-    height: 100px;
+    width: 30vh;
+    height: 200px;
     background-color: white;
     border: 1px solid #dfe2e5;
     border-radius: 5px;
