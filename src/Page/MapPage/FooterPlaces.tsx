@@ -60,7 +60,8 @@ const FooterPlaces = ({
     }
     prevCurrentPlaces.current = currentPlaces.length;
     if (!currentPlaces.length) return;
-    if (footerState) setFooterState(2);
+    // if (footerState) setFooterState(2);
+    setFooterState(2);
     blinkComponent({ targetRef: currentRef });
   }, [currentPlaces]);
 
