@@ -19,12 +19,11 @@ const transLocaleToCoord = async (position: ICoord) => {
   // x : 경도(lng), y : 위도(lat)
   const result = await getKakaoLocal({ x: position.lng, y: position.lat, kakaoKey: serviceKey });
   if (!result) return null;
-
   const province = transName(result.depth1);
   const city = result.depth2 || province;
-  const { x: nx, y: ny, code: localeCode } = result;
+  const { x: nx, y: ny, code: localeCode, depth3 } = result;
 
-  return { nx, ny, province, city, localeCode };
+  return { nx, ny, province, city, localeCode, depth3 };
 };
 
 export default transLocaleToCoord;
