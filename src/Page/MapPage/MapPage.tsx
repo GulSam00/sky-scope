@@ -3,8 +3,9 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Map, MapMarker } from 'react-kakao-maps-sdk';
 
 import { LoadingState } from '@src/Component';
-import { useKakaoLoader, useMapInfo, useAutoSearch } from '@src/Hook';
+import { useKakaoLoader, useMapInfo, useAutoSearch, useGeolocation } from '@src/Hook';
 import { KakaoMapMarkerType, LocateDataType } from '@src/Types/liveDataType';
+import { transLocaleToCoord } from '@src/Util';
 
 import { RootState } from '@src/Store/store';
 import { handleResize } from '@src/Store/kakaoModalSlice';
@@ -38,6 +39,7 @@ const MapPage = () => {
     onClickFooterPlace,
     setIsBlinkPlaces,
   } = useMapInfo({ map });
+  const location = useGeolocation();
 
   const {
     isAutoSearch,
@@ -88,6 +90,23 @@ const MapPage = () => {
     }
   };
 
+  const showCurrentPlace = async () => {
+    if (!location.coordinates || !map) {
+      dispatch(errorAccured('위치 액세스가 차단되었습니다.'));
+
+      return;
+    }
+    const curPos = location.coordinates;
+    const result = await transLocaleToCoord(curPos);
+    if (!result) return;
+    const { localeCode, depth3 } = result;
+    onClickFooterPlace({ position: curPos, placeName: depth3, placeId: localeCode.toString() });
+    // setCenter 후 setLevel을 호출하면 중심점이 변경되는 이슈
+    // setLevel 호출 후 setCenter을 호출하면 정상적으로 동작
+    map.setLevel(2);
+    map.setCenter(new kakao.maps.LatLng(curPos.lat, curPos.lng));
+  };
+
   const showWholeMarker = () => {
     if (!map || !mapMarkers.length) return;
 
@@ -121,8 +140,8 @@ const MapPage = () => {
       if (!map) return;
       const position = place.position;
 
-      map.setCenter(new kakao.maps.LatLng(position.lat, position.lng));
       map.setLevel(2);
+      map.setCenter(new kakao.maps.LatLng(position.lat, position.lng));
       setOriginPos(map.getCenter());
       setOriginLevel(map.getLevel());
     },
@@ -213,8 +232,13 @@ const MapPage = () => {
             </MapMarker>
           ))}
         </Map>
-        <WholeMap onClick={() => showWholeMarker()}>
+
+        <CurrentPlace onClick={() => showCurrentPlace()}>
           <img src='/icons/crosshair.svg' alt='crosshair' />
+        </CurrentPlace>
+
+        <WholeMap onClick={() => showWholeMarker()}>
+          <img src='/icons/full.svg' alt='full' />
         </WholeMap>
 
         <ToastLists />
@@ -289,11 +313,9 @@ const ListGroupContainer = styled.div`
 const KakaoMapContainer = styled.div`
   position: relative;
   margin: 1rem;
-  width: 100%;
 
   #kakao-map {
     height: 80vh;
-    width: 100%;
   }
 `;
 
@@ -315,9 +337,32 @@ const MapMarkerContent = styled.div`
   }
 `;
 
-const WholeMap = styled.div`
+const CurrentPlace = styled.div`
   position: absolute;
   top: 1rem;
+  left: 1rem;
+  z-index: 1000;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background-color: white;
+  height: 4rem;
+  width: 4rem;
+  border-radius: 50%;
+  border: 1px solid #0d6efd;
+
+  cursor: pointer;
+  img {
+    width: 2rem;
+    height: 2rem;
+  }
+`;
+
+const WholeMap = styled.div`
+  position: absolute;
+  top: 6rem;
   left: 1rem;
   z-index: 1000;
 
