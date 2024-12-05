@@ -163,6 +163,19 @@ const MapPage = () => {
     map.setCenter(originPos);
   }, [map, searchPlaces, originPos]);
 
+  // searchPlaces 기준으로 지도 범위 재설정 시도 -> 실패
+  // useEffect(() => {
+  //   if (!map) return;
+  //   map.relayout();
+  //   const bounds = new kakao.maps.LatLngBounds();
+  //   searchPlaces.forEach((place: LocateDataType) => {
+  //     console.log('place : ', place);
+  //     const position = new kakao.maps.LatLng(place.position.lat, place.position.lng);
+  //     bounds.extend(position);
+  //   });
+  //   map.setBounds(bounds);
+  // }, [map, searchPlaces]);
+
   useEffect(() => {
     if (isResized) {
       if (!map) return;
@@ -233,9 +246,9 @@ const MapPage = () => {
           ))}
         </Map>
 
-        <CurrentPlace onClick={() => showCurrentPlace()}>
+        <CurrentPosition onClick={() => showCurrentPlace()}>
           <img src='/icons/crosshair.svg' alt='crosshair' />
-        </CurrentPlace>
+        </CurrentPosition>
 
         <WholeMap onClick={() => showWholeMarker()}>
           <img src='/icons/full.svg' alt='full' />
@@ -337,7 +350,7 @@ const MapMarkerContent = styled.div`
   }
 `;
 
-const CurrentPlace = styled.div`
+const CurrentPosition = styled.div`
   position: absolute;
   top: 1rem;
   left: 1rem;
