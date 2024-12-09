@@ -9,7 +9,7 @@ import { transLocaleToCoord } from '@src/Util';
 
 import { RootState } from '@src/Store/store';
 import { handleResize } from '@src/Store/kakaoModalSlice';
-import { errorAccured } from '@src/Store/requestStatusSlice';
+import { loadingData, loadedData, errorAccured } from '@src/Store/requestStatusSlice';
 
 import { Form, Button, ListGroup } from 'react-bootstrap';
 import FooterPlaces from './FooterPlaces';
@@ -93,18 +93,22 @@ const MapPage = () => {
   const showCurrentPlace = async () => {
     if (!location.coordinates || !map) {
       dispatch(errorAccured('위치 액세스가 차단되었습니다.'));
-
       return;
     }
+    dispatch(loadingData());
     const curPos = location.coordinates;
     const result = await transLocaleToCoord(curPos);
     if (!result) return;
     const { localeCode, depth3 } = result;
     onClickFooterPlace({ position: curPos, placeName: depth3, placeId: localeCode.toString() });
-    // setCenter 후 setLevel을 호출하면 중심점이 변경되는 이슈
-    // setLevel 호출 후 setCenter을 호출하면 정상적으로 동작
     map.setLevel(2);
     map.setCenter(new kakao.maps.LatLng(curPos.lat, curPos.lng));
+    setOriginLevel(map.getLevel());
+    setOriginPos(map.getCenter());
+    // PlaceWeather의 useEffect에서 dispatch를 처리해준다.
+    // 이는 다른 loading으로 처리해야 할 state를 하나의 loading으로 같이 묶어서 처리하는 결과가 된다.
+    // 의도하지 않았지만, 적절한 방식인지는 고민의 여지.
+    // dispatch(loadedData());
   };
 
   const showWholeMarker = () => {
@@ -184,6 +188,11 @@ const MapPage = () => {
       map.relayout();
     }
   }, [isResized]);
+
+  useEffect(() => {
+    if (!map) dispatch(loadingData());
+    else dispatch(loadedData());
+  }, [map]);
 
   return (
     <MapContainer>
