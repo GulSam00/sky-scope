@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 
 import { RootState } from '@src/Store/store';
 import { addToast } from '@src/Store/toastWeatherSlice';
@@ -29,7 +28,6 @@ const useMapInfo = ({ map }: Props) => {
 
   const { isLogin, id } = useSelector((state: RootState) => state.globalDataSliceReducer);
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   const focusMap = (position: { lat: number; lng: number }) => {
     if (!map) return;
@@ -264,7 +262,7 @@ const useMapInfo = ({ map }: Props) => {
       setCurrentPlaces(prevCurrentPlaces => [newPlace, ...prevCurrentPlaces]);
       changeOnMapMarker(clickedFooterPlace, 'search');
     },
-    [currentPlaces, bookmarkPlaces, mapMarkers],
+    [currentPlaces, bookmarkPlaces, mapMarkers, map],
   );
 
   const getNewImage = (status: markerStatus) => {
