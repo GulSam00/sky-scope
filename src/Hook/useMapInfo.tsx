@@ -23,6 +23,8 @@ const useMapInfo = ({ map }: Props) => {
   const [bookmarkPlaces, setBookmarkPlaces] = useState<KakaoSearchType[]>([]);
   const [mapMarkers, setMapMarkers] = useState<KakaoMapMarkerType[]>([]);
   const [isBlinkPlaces, setIsBlinkPlaces] = useState<boolean[]>([true, true]); // bookmark : 0, current : 1
+  const [originPos, setOriginPos] = useState<kakao.maps.LatLng | null>(null);
+  const [originLevel, setOriginLevel] = useState<number>(4);
 
   const [viewportWidth, setViewportWidth] = useState(window.innerWidth);
 
@@ -73,7 +75,7 @@ const useMapInfo = ({ map }: Props) => {
           });
           changeOnMapMarkers(parsedOnMapMarkers);
           setSearchPlaces([...kakaoSearchMarkers]);
-          map.setBounds(bounds);
+          onChangeBounds(bounds);
         } else {
           dispatch(errorAccured('검색 결과가 없습니다.'));
         }
@@ -244,6 +246,8 @@ const useMapInfo = ({ map }: Props) => {
 
       const result = await transLocaleToCoord(clickedFooterPlace.position);
       if (!result) {
+        dispatch(errorAccured('해당 위치의 정보를 찾을 수 없습니다.'));
+
         return;
       }
 
@@ -327,7 +331,27 @@ const useMapInfo = ({ map }: Props) => {
         bounds.extend(position);
       });
       map.setBounds(bounds);
+      // onChangeBounds(bounds);
     }
+  };
+
+  const onChangeBounds = (bounds: kakao.maps.LatLngBounds) => {
+    if (!map || !bounds) return;
+    map.setBounds(bounds);
+    setOriginLevel(map.getLevel());
+    setOriginPos(map.getCenter());
+  };
+
+  const onChangeCenter = (lat: number, lng: number) => {
+    if (!map) {
+      return;
+    }
+    const latlng = new kakao.maps.LatLng(lat, lng);
+
+    setOriginLevel(2);
+    setOriginPos(latlng);
+    map.setLevel(2);
+    map.setCenter(latlng);
   };
 
   useEffect(() => {
@@ -348,6 +372,8 @@ const useMapInfo = ({ map }: Props) => {
     bookmarkPlaces,
     mapMarkers,
     isBlinkPlaces,
+    originPos,
+    originLevel,
     onClickMarker,
     onSearchPlace,
     onFocusPlace,
@@ -355,6 +381,8 @@ const useMapInfo = ({ map }: Props) => {
     onDeletePlace,
     onClickFooterPlace,
     setIsBlinkPlaces,
+    onChangeBounds,
+    onChangeCenter,
   };
 };
 

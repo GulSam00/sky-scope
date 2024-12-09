@@ -22,8 +22,6 @@ const MapPage = () => {
   const [map, setMap] = useState<kakao.maps.Map | null>(null);
   const [curPage, setCurPage] = useState<number>(1);
   const [maxPage, setMaxPage] = useState<number>(1);
-  const [originPos, setOriginPos] = useState<kakao.maps.LatLng | null>(null);
-  const [originLevel, setOriginLevel] = useState<number>(4);
 
   const {
     searchPlaces,
@@ -31,6 +29,8 @@ const MapPage = () => {
     bookmarkPlaces,
     isBlinkPlaces,
     mapMarkers,
+    originPos,
+    originLevel,
     onClickMarker,
     onSearchPlace,
     onFocusPlace,
@@ -38,8 +38,10 @@ const MapPage = () => {
     onDeletePlace,
     onClickFooterPlace,
     setIsBlinkPlaces,
+    onChangeBounds,
+    onChangeCenter,
   } = useMapInfo({ map });
-  const location = useGeolocation();
+  const { loaded, coordinates } = useGeolocation();
 
   const {
     isAutoSearch,
@@ -91,23 +93,21 @@ const MapPage = () => {
   };
 
   const showCurrentPlace = async () => {
-    if (!location.coordinates || !map) {
-      dispatch(errorAccured('위치 액세스가 차단되었습니다.'));
+    if (!map || !loaded || !coordinates) {
+      dispatch(errorAccured('현재 위치를 찾을 수 없습니다.'));
       return;
     }
     dispatch(loadingData());
-    const curPos = location.coordinates;
+    const curPos = coordinates;
     const result = await transLocaleToCoord(curPos);
     if (!result) {
+      dispatch(errorAccured('현재 위치를 찾을 수 없습니다.'));
       dispatch(loadedData());
       return;
     }
     const { localeCode, depth3 } = result;
     onClickFooterPlace({ position: curPos, placeName: depth3, placeId: localeCode.toString() });
-    map.setLevel(2);
-    map.setCenter(new kakao.maps.LatLng(curPos.lat, curPos.lng));
-    setOriginLevel(map.getLevel());
-    setOriginPos(map.getCenter());
+    onChangeCenter(curPos.lat, curPos.lng);
     dispatch(loadedData());
 
     // PlaceWeather의 useEffect에서 dispatch를 처리해준다.
@@ -124,9 +124,7 @@ const MapPage = () => {
       const position = new kakao.maps.LatLng(marker.position.lat, marker.position.lng);
       bounds.extend(position);
     });
-    map.setBounds(bounds);
-    setOriginPos(map.getCenter());
-    setOriginLevel(map.getLevel());
+    onChangeBounds(bounds);
   };
 
   const handlePageMove = useCallback(
@@ -144,15 +142,10 @@ const MapPage = () => {
 
   const handleClickFooterPlace = useCallback(
     (place: LocateDataType) => {
-      onClickFooterPlace(place);
-
       if (!map) return;
+      onClickFooterPlace(place);
       const position = place.position;
-
-      map.setLevel(2);
-      map.setCenter(new kakao.maps.LatLng(position.lat, position.lng));
-      setOriginPos(map.getCenter());
-      setOriginLevel(map.getLevel());
+      onChangeCenter(position.lat, position.lng);
     },
     [map, searchPlaces, currentPlaces, bookmarkPlaces, originPos],
   );
@@ -172,19 +165,6 @@ const MapPage = () => {
     map.setCenter(originPos);
   }, [map, searchPlaces, originPos]);
 
-  // searchPlaces 기준으로 지도 범위 재설정 시도 -> 실패
-  // useEffect(() => {
-  //   if (!map) return;
-  //   map.relayout();
-  //   const bounds = new kakao.maps.LatLngBounds();
-  //   searchPlaces.forEach((place: LocateDataType) => {
-  //     console.log('place : ', place);
-  //     const position = new kakao.maps.LatLng(place.position.lat, place.position.lng);
-  //     bounds.extend(position);
-  //   });
-  //   map.setBounds(bounds);
-  // }, [map, searchPlaces]);
-
   useEffect(() => {
     if (isResized) {
       if (!map) return;
@@ -196,7 +176,9 @@ const MapPage = () => {
 
   useEffect(() => {
     if (!map) dispatch(loadingData());
-    else dispatch(loadedData());
+    else {
+      dispatch(loadedData());
+    }
   }, [map]);
 
   return (
