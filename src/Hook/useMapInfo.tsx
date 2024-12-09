@@ -34,6 +34,7 @@ const useMapInfo = ({ map }: Props) => {
   const focusMap = (position: { lat: number; lng: number }) => {
     if (!map) return;
     const kakaoPosition = new kakao.maps.LatLng(position.lat, position.lng);
+    console.log('focusMap');
     map.setLevel(2);
     map.setCenter(kakaoPosition);
   };
@@ -106,7 +107,6 @@ const useMapInfo = ({ map }: Props) => {
 
   const changeOnMapMarker = (locateTypeDstOnMapMarker: LocateDataType, status: string) => {
     const changingStatus = status as markerStatus;
-
     // 삭제 할 때 로직
     if (changingStatus === ('delete' as typeof changingStatus)) {
       const dstOnMapMarker = { ...locateTypeDstOnMapMarker } as KakaoSearchType;
@@ -139,13 +139,14 @@ const useMapInfo = ({ map }: Props) => {
       dstOnMapMarker.image = changingImage;
 
       const dupIndex = mapMarkers.findIndex(item => item.placeId === dstOnMapMarker.placeId);
-
       if (dupIndex !== -1) {
         const newMapMarkers: KakaoMapMarkerType[] = mapMarkers.map((marker, i) => {
           return i === dupIndex ? { ...marker, status: changingStatus, image: changingImage } : marker;
         });
         setMapMarkers(newMapMarkers);
       } else {
+        // showCurrentPlace - onClickFooterPlace - changeOnMapMarker 호출 시
+        //  setMapMarkers에서 오류 발생. center 장애 발생
         setMapMarkers(prevMapMarkers => [dstOnMapMarker, ...prevMapMarkers]);
       }
     }
@@ -174,13 +175,6 @@ const useMapInfo = ({ map }: Props) => {
   const onTogglePlace = useCallback(
     (placeId: string, isBookmarked: boolean) => {
       if (isBookmarked === false) {
-        // 북마크 추가
-        // 로그인 확인 로직 추가
-        // if (!isLogin) {
-        //   dispatch(errorAccured('로그인 후 이용해주세요.'));
-        //   navigate('/login');
-        //   return;
-        // }
         const index = currentPlaces.findIndex(item => item.placeId === placeId);
         const firstMarker = { ...currentPlaces[index], isBookmarked: true }; // Immutably change the bookmark state
         const newCurrentPlaces = currentPlaces.filter((_, i) => i !== index);
@@ -247,7 +241,6 @@ const useMapInfo = ({ map }: Props) => {
       const result = await transLocaleToCoord(clickedFooterPlace.position);
       if (!result) {
         dispatch(errorAccured('해당 위치의 정보를 찾을 수 없습니다.'));
-
         return;
       }
 
@@ -264,6 +257,8 @@ const useMapInfo = ({ map }: Props) => {
       }
 
       setCurrentPlaces(prevCurrentPlaces => [newPlace, ...prevCurrentPlaces]);
+
+      // 해당 changeOnMapMarker 함수에서 setCenter 장애 발생
       changeOnMapMarker(clickedFooterPlace, 'search');
     },
     [map, currentPlaces, bookmarkPlaces, mapMarkers],
@@ -330,8 +325,7 @@ const useMapInfo = ({ map }: Props) => {
         const position = new kakao.maps.LatLng(marker.position.lat, marker.position.lng);
         bounds.extend(position);
       });
-      map.setBounds(bounds);
-      // onChangeBounds(bounds);
+      onChangeBounds(bounds);
     }
   };
 
@@ -347,7 +341,6 @@ const useMapInfo = ({ map }: Props) => {
       return;
     }
     const latlng = new kakao.maps.LatLng(lat, lng);
-
     setOriginLevel(2);
     setOriginPos(latlng);
     map.setLevel(2);

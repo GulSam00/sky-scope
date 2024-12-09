@@ -106,8 +106,11 @@ const MapPage = () => {
       return;
     }
     const { localeCode, depth3 } = result;
-    onClickFooterPlace({ position: curPos, placeName: depth3, placeId: localeCode.toString() });
+
     onChangeCenter(curPos.lat, curPos.lng);
+
+    // onClickFooterPlace 호출 시 필연적으로 오류가 발생
+    // onClickFooterPlace({ position: curPos, placeName: depth3, placeId: localeCode.toString() });
     dispatch(loadedData());
 
     // PlaceWeather의 useEffect에서 dispatch를 처리해준다.
