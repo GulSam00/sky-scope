@@ -44,13 +44,11 @@ const LoginPage = () => {
 
   const onClickNaver = () => {
     const url = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${naver_client_id}&redirect_uri=${naver_redirect_uri}&state=1234`;
-    console.log(url);
     window.location.href = url;
   };
 
   const onClickKakao = () => {
     const url = `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${kakao_client_id}&redirect_uri=${kakao_redirect_uri}`;
-    console.log(url);
 
     window.location.href = url;
   };
