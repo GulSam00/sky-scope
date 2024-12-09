@@ -9,7 +9,7 @@ import { transLocaleToCoord } from '@src/Util';
 
 import { RootState } from '@src/Store/store';
 import { handleResize } from '@src/Store/kakaoModalSlice';
-import { errorAccured } from '@src/Store/requestStatusSlice';
+import { loadingData, loadedData, errorAccured } from '@src/Store/requestStatusSlice';
 
 import { Form, Button, ListGroup } from 'react-bootstrap';
 import FooterPlaces from './FooterPlaces';
@@ -17,13 +17,12 @@ import SearchedPlaces from './SearchedPlaces';
 import ToastLists from './ToastLists';
 
 import styled from 'styled-components';
+import { set } from 'date-fns';
 
 const MapPage = () => {
   const [map, setMap] = useState<kakao.maps.Map | null>(null);
   const [curPage, setCurPage] = useState<number>(1);
   const [maxPage, setMaxPage] = useState<number>(1);
-  const [originPos, setOriginPos] = useState<kakao.maps.LatLng | null>(null);
-  const [originLevel, setOriginLevel] = useState<number>(4);
 
   const {
     searchPlaces,
@@ -31,6 +30,8 @@ const MapPage = () => {
     bookmarkPlaces,
     isBlinkPlaces,
     mapMarkers,
+    originPos,
+    originLevel,
     onClickMarker,
     onSearchPlace,
     onFocusPlace,
@@ -38,8 +39,10 @@ const MapPage = () => {
     onDeletePlace,
     onClickFooterPlace,
     setIsBlinkPlaces,
+    onChangeBounds,
+    onChangeCenter,
   } = useMapInfo({ map });
-  const location = useGeolocation();
+  const { loaded, coordinates } = useGeolocation();
 
   const {
     isAutoSearch,
@@ -91,20 +94,32 @@ const MapPage = () => {
   };
 
   const showCurrentPlace = async () => {
-    if (!location.coordinates || !map) {
-      dispatch(errorAccured('위치 액세스가 차단되었습니다.'));
-
+    if (!map || !loaded || !coordinates) {
+      dispatch(errorAccured('현재 위치를 찾을 수 없습니다.'));
       return;
     }
-    const curPos = location.coordinates;
+    dispatch(loadingData());
+    const curPos = coordinates;
     const result = await transLocaleToCoord(curPos);
-    if (!result) return;
+    if (!result) {
+      dispatch(errorAccured('현재 위치를 찾을 수 없습니다.'));
+      dispatch(loadedData());
+      return;
+    }
     const { localeCode, depth3 } = result;
+
+    // onClickFooterPlace + onChangeCenter 동시 호출 시 필연적으로 오류가 발생
+    // showCurrentPlace 호출 시 좌표는 변하지 않게끔 처리하면 해결되기는 하지만...
+
+    // onChangeCenter(curPos.lat, curPos.lng);
+
     onClickFooterPlace({ position: curPos, placeName: depth3, placeId: localeCode.toString() });
-    // setCenter 후 setLevel을 호출하면 중심점이 변경되는 이슈
-    // setLevel 호출 후 setCenter을 호출하면 정상적으로 동작
-    map.setLevel(2);
-    map.setCenter(new kakao.maps.LatLng(curPos.lat, curPos.lng));
+    dispatch(loadedData());
+
+    // PlaceWeather의 useEffect에서 dispatch를 처리해준다.
+    // 이는 다른 loading으로 처리해야 할 state를 하나의 loading으로 같이 묶어서 처리하는 결과가 된다.
+    // 의도하지 않았지만, 적절한 방식인지는 고민의 여지.
+    // dispatch(loadedData());
   };
 
   const showWholeMarker = () => {
@@ -115,9 +130,7 @@ const MapPage = () => {
       const position = new kakao.maps.LatLng(marker.position.lat, marker.position.lng);
       bounds.extend(position);
     });
-    map.setBounds(bounds);
-    setOriginPos(map.getCenter());
-    setOriginLevel(map.getLevel());
+    onChangeBounds(bounds);
   };
 
   const handlePageMove = useCallback(
@@ -135,15 +148,10 @@ const MapPage = () => {
 
   const handleClickFooterPlace = useCallback(
     (place: LocateDataType) => {
-      onClickFooterPlace(place);
-
       if (!map) return;
+      onClickFooterPlace(place);
       const position = place.position;
-
-      map.setLevel(2);
-      map.setCenter(new kakao.maps.LatLng(position.lat, position.lng));
-      setOriginPos(map.getCenter());
-      setOriginLevel(map.getLevel());
+      onChangeCenter(position.lat, position.lng);
     },
     [map, searchPlaces, currentPlaces, bookmarkPlaces, originPos],
   );
@@ -163,19 +171,6 @@ const MapPage = () => {
     map.setCenter(originPos);
   }, [map, searchPlaces, originPos]);
 
-  // searchPlaces 기준으로 지도 범위 재설정 시도 -> 실패
-  // useEffect(() => {
-  //   if (!map) return;
-  //   map.relayout();
-  //   const bounds = new kakao.maps.LatLngBounds();
-  //   searchPlaces.forEach((place: LocateDataType) => {
-  //     console.log('place : ', place);
-  //     const position = new kakao.maps.LatLng(place.position.lat, place.position.lng);
-  //     bounds.extend(position);
-  //   });
-  //   map.setBounds(bounds);
-  // }, [map, searchPlaces]);
-
   useEffect(() => {
     if (isResized) {
       if (!map) return;
@@ -184,6 +179,13 @@ const MapPage = () => {
       map.relayout();
     }
   }, [isResized]);
+
+  useEffect(() => {
+    if (!map) dispatch(loadingData());
+    else {
+      dispatch(loadedData());
+    }
+  }, [map]);
 
   return (
     <MapContainer>
