@@ -262,7 +262,7 @@ const useMapInfo = ({ map }: Props) => {
       setCurrentPlaces(prevCurrentPlaces => [newPlace, ...prevCurrentPlaces]);
       changeOnMapMarker(clickedFooterPlace, 'search');
     },
-    [currentPlaces, bookmarkPlaces, mapMarkers, map],
+    [map, currentPlaces, bookmarkPlaces, mapMarkers],
   );
 
   const getNewImage = (status: markerStatus) => {
