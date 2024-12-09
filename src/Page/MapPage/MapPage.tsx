@@ -17,6 +17,7 @@ import SearchedPlaces from './SearchedPlaces';
 import ToastLists from './ToastLists';
 
 import styled from 'styled-components';
+import { set } from 'date-fns';
 
 const MapPage = () => {
   const [map, setMap] = useState<kakao.maps.Map | null>(null);
@@ -107,10 +108,12 @@ const MapPage = () => {
     }
     const { localeCode, depth3 } = result;
 
-    onChangeCenter(curPos.lat, curPos.lng);
+    // onClickFooterPlace + onChangeCenter 동시 호출 시 필연적으로 오류가 발생
+    // showCurrentPlace 호출 시 좌표는 변하지 않게끔 처리하면 해결되기는 하지만...
 
-    // onClickFooterPlace 호출 시 필연적으로 오류가 발생
-    // onClickFooterPlace({ position: curPos, placeName: depth3, placeId: localeCode.toString() });
+    // onChangeCenter(curPos.lat, curPos.lng);
+
+    onClickFooterPlace({ position: curPos, placeName: depth3, placeId: localeCode.toString() });
     dispatch(loadedData());
 
     // PlaceWeather의 useEffect에서 dispatch를 처리해준다.

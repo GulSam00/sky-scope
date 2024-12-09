@@ -34,7 +34,6 @@ const useMapInfo = ({ map }: Props) => {
   const focusMap = (position: { lat: number; lng: number }) => {
     if (!map) return;
     const kakaoPosition = new kakao.maps.LatLng(position.lat, position.lng);
-    console.log('focusMap');
     map.setLevel(2);
     map.setCenter(kakaoPosition);
   };
@@ -247,7 +246,6 @@ const useMapInfo = ({ map }: Props) => {
       const { nx, ny, province, city, localeCode } = result;
       const apiLocalPosition = { lat: ny, lng: nx };
       Object.assign(newPlace, { province, city, localeCode, apiLocalPosition, isBookmarked: false });
-
       dispatch(addToast(newPlace));
 
       if (currentPlaces.length || bookmarkPlaces.length) {
