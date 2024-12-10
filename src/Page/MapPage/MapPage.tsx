@@ -15,9 +15,9 @@ import { Form, Button, ListGroup } from 'react-bootstrap';
 import FooterPlaces from './FooterPlaces';
 import SearchedPlaces from './SearchedPlaces';
 import ToastLists from './ToastLists';
+import MapLevelSlider from './MapLevelSlider';
 
 import styled from 'styled-components';
-import { set } from 'date-fns';
 
 const MapPage = () => {
   const [map, setMap] = useState<kakao.maps.Map | null>(null);
@@ -41,6 +41,7 @@ const MapPage = () => {
     setIsBlinkPlaces,
     onChangeBounds,
     onChangeCenter,
+    onChangeLevel,
   } = useMapInfo({ map });
   const { loaded, coordinates } = useGeolocation();
 
@@ -107,19 +108,14 @@ const MapPage = () => {
       return;
     }
     const { localeCode, depth3 } = result;
-
-    // onClickFooterPlace + onChangeCenter 동시 호출 시 필연적으로 오류가 발생
-    // showCurrentPlace 호출 시 좌표는 변하지 않게끔 처리하면 해결되기는 하지만...
-
-    // onChangeCenter(curPos.lat, curPos.lng);
-
-    onClickFooterPlace({ position: curPos, placeName: depth3, placeId: localeCode.toString() });
+    await onClickFooterPlace({ position: curPos, placeName: depth3, placeId: localeCode.toString() });
+    // onChangeCenter에서 변경되는 값 useEffect에서 감지하여 처리
+    onChangeCenter(curPos.lat, curPos.lng);
+    onChangeLevel(2);
     dispatch(loadedData());
-
     // PlaceWeather의 useEffect에서 dispatch를 처리해준다.
     // 이는 다른 loading으로 처리해야 할 state를 하나의 loading으로 같이 묶어서 처리하는 결과가 된다.
     // 의도하지 않았지만, 적절한 방식인지는 고민의 여지.
-    // dispatch(loadedData());
   };
 
   const showWholeMarker = () => {
@@ -159,7 +155,6 @@ const MapPage = () => {
   const onHoverPlace = useCallback(
     (position: { lat: number; lng: number }) => {
       if (!map) return;
-      map.setLevel(2);
       map.setCenter(new kakao.maps.LatLng(position.lat, position.lng));
     },
     [map, searchPlaces, originPos],
@@ -167,14 +162,12 @@ const MapPage = () => {
 
   const onHoverOutPlace = useCallback(() => {
     if (!map || !originPos) return;
-    map.setLevel(originLevel);
     map.setCenter(originPos);
   }, [map, searchPlaces, originPos]);
 
   useEffect(() => {
     if (isResized) {
       if (!map) return;
-
       dispatch(handleResize());
       map.relayout();
     }
@@ -257,6 +250,7 @@ const MapPage = () => {
         </WholeMap>
 
         <ToastLists />
+        <MapLevelSlider level={originLevel} onChangeLevel={onChangeLevel} />
       </KakaoMapContainer>
 
       <FixedContainer phone={isPhone.toString()}>
