@@ -11,7 +11,18 @@ interface Props {
 const MapLevelSlider = ({ level, onChangeLevel }: Props) => {
   return (
     <SliderContainer>
-      <Slider reverse vertical min={1} max={10} step={1} value={level} defaultValue={2} onChange={onChangeLevel} />
+      <Slider
+        reverse
+        vertical
+        keyboard
+        dots
+        min={1}
+        max={14}
+        step={1}
+        value={level}
+        defaultValue={2}
+        onChange={onChangeLevel}
+      />
     </SliderContainer>
   );
 };
@@ -28,6 +39,7 @@ const SliderContainer = styled.div`
 
   height: 50dvh;
   z-index: 1000;
+  cursor: pointer;
 
   .rc-slider-rail {
     background-color: #abe2fb;
