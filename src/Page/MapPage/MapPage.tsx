@@ -15,9 +15,9 @@ import { Form, Button, ListGroup } from 'react-bootstrap';
 import FooterPlaces from './FooterPlaces';
 import SearchedPlaces from './SearchedPlaces';
 import ToastLists from './ToastLists';
+import MapLevelSlider from './MapLevelSlider';
 
 import styled from 'styled-components';
-import { set } from 'date-fns';
 
 const MapPage = () => {
   const [map, setMap] = useState<kakao.maps.Map | null>(null);
@@ -41,6 +41,7 @@ const MapPage = () => {
     setIsBlinkPlaces,
     onChangeBounds,
     onChangeCenter,
+    onChangeLevel,
   } = useMapInfo({ map });
   const { loaded, coordinates } = useGeolocation();
 
@@ -174,7 +175,6 @@ const MapPage = () => {
   useEffect(() => {
     if (isResized) {
       if (!map) return;
-
       dispatch(handleResize());
       map.relayout();
     }
@@ -257,6 +257,7 @@ const MapPage = () => {
         </WholeMap>
 
         <ToastLists />
+        <MapLevelSlider level={originLevel} onChangeLevel={onChangeLevel} />
       </KakaoMapContainer>
 
       <FixedContainer phone={isPhone.toString()}>

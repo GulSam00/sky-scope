@@ -8,10 +8,10 @@ import { askLogin } from '@src/Store/globalDataSlice';
 import { LocateDataType, KakaoSearchType, KakaoMapMarkerType, markerStatus } from '@src/Types/liveDataType';
 import { transLocaleToCoord } from '@src/Util';
 
-// import { doc, collection, getDoc, setDoc, updateDoc, deleteDoc } from 'firebase/firestore/lite';
 import { doc, getDoc, setDoc, updateDoc } from '@firebase/firestore/lite';
 
 import db from '@src/firebase';
+import { set } from 'date-fns';
 
 interface Props {
   map: kakao.maps.Map | null;
@@ -345,6 +345,14 @@ const useMapInfo = ({ map }: Props) => {
     map.setCenter(latlng);
   };
 
+  const onChangeLevel = (level: number | number[]) => {
+    if (!map) return;
+    if (typeof level === 'number') {
+      map.setLevel(level);
+      setOriginLevel(level);
+    }
+  };
+
   useEffect(() => {
     initBookmarkData();
   }, [map]);
@@ -374,6 +382,7 @@ const useMapInfo = ({ map }: Props) => {
     setIsBlinkPlaces,
     onChangeBounds,
     onChangeCenter,
+    onChangeLevel,
   };
 };
 
