@@ -32,7 +32,7 @@ const SliderContainer = styled.div`
   transform: translate(-50%, -50%);
   width: 50px;
 
-  height: 60dvh;
+  height: 50dvh;
   z-index: 500;
   cursor: pointer;
   background-color: white;
