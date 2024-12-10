@@ -49,7 +49,7 @@ const FooterPlaces = ({
     }
     prevBookmarkPlaces.current = bookmarkPlaces.length;
     if (!bookmarkPlaces.length) return;
-    if (footerState) setFooterState(1);
+    setFooterState(1);
     blinkComponent({ targetRef: bookmarkRef });
   }, [bookmarkPlaces]);
 

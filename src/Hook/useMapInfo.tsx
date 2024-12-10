@@ -8,7 +8,6 @@ import { askLogin } from '@src/Store/globalDataSlice';
 import { LocateDataType, KakaoSearchType, KakaoMapMarkerType, markerStatus } from '@src/Types/liveDataType';
 import { transLocaleToCoord } from '@src/Util';
 
-// import { doc, collection, getDoc, setDoc, updateDoc, deleteDoc } from 'firebase/firestore/lite';
 import { doc, getDoc, setDoc, updateDoc } from '@firebase/firestore/lite';
 
 import db from '@src/firebase';
@@ -34,7 +33,6 @@ const useMapInfo = ({ map }: Props) => {
   const focusMap = (position: { lat: number; lng: number }) => {
     if (!map) return;
     const kakaoPosition = new kakao.maps.LatLng(position.lat, position.lng);
-    map.setLevel(2);
     map.setCenter(kakaoPosition);
   };
 
@@ -105,6 +103,7 @@ const useMapInfo = ({ map }: Props) => {
   };
 
   const changeOnMapMarker = (locateTypeDstOnMapMarker: LocateDataType, status: string) => {
+    if (!map) return;
     const changingStatus = status as markerStatus;
     // 삭제 할 때 로직
     if (changingStatus === ('delete' as typeof changingStatus)) {
@@ -253,9 +252,7 @@ const useMapInfo = ({ map }: Props) => {
         // currentPlaces, mapMarkers에 추가하지 않는다.
         if (isSwapPlace(clickedFooterPlace.placeId) !== 0) return;
       }
-
       setCurrentPlaces(prevCurrentPlaces => [newPlace, ...prevCurrentPlaces]);
-
       // 해당 changeOnMapMarker 함수에서 setCenter 장애 발생
       changeOnMapMarker(clickedFooterPlace, 'search');
     },
@@ -339,11 +336,22 @@ const useMapInfo = ({ map }: Props) => {
       return;
     }
     const latlng = new kakao.maps.LatLng(lat, lng);
-    setOriginLevel(2);
     setOriginPos(latlng);
-    map.setLevel(2);
-    map.setCenter(latlng);
   };
+
+  const onChangeLevel = (level: number | number[]) => {
+    if (!map) return;
+    if (typeof level === 'number') {
+      map.setLevel(level);
+      setOriginLevel(level);
+    }
+  };
+
+  useEffect(() => {
+    if (originPos && map) {
+      map.setCenter(originPos);
+    }
+  }, [originPos, map]);
 
   useEffect(() => {
     initBookmarkData();
@@ -374,6 +382,7 @@ const useMapInfo = ({ map }: Props) => {
     setIsBlinkPlaces,
     onChangeBounds,
     onChangeCenter,
+    onChangeLevel,
   };
 };
 
