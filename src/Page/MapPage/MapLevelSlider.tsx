@@ -27,9 +27,8 @@ export default MapLevelSlider;
 const SliderContainer = styled.div`
   position: absolute;
   // 우측 중앙에 위치
-  top: 50%;
+  top: 5%;
   left: 95%;
-  transform: translate(-50%, -50%);
   width: 50px;
 
   height: 50dvh;

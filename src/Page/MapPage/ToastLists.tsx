@@ -26,8 +26,8 @@ const ToastContainer = styled.div`
   position: absolute;
   display: flex;
   flex-direction: column;
-  top: 1rem;
-  right: 1rem;
+  top: 16px;
+  right: 80px;
   z-index: 1000;
   gap: 0.5rem;
 `;
