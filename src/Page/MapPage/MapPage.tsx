@@ -111,7 +111,7 @@ const MapPage = () => {
     await onClickFooterPlace({ position: curPos, placeName: depth3, placeId: localeCode.toString() });
     // onChangeCenter에서 변경되는 값 useEffect에서 감지하여 처리
     onChangeCenter(curPos.lat, curPos.lng);
-    onChangeLevel(2);
+    onChangeLevel(4);
     dispatch(loadedData());
     // PlaceWeather의 useEffect에서 dispatch를 처리해준다.
     // 이는 다른 loading으로 처리해야 할 state를 하나의 loading으로 같이 묶어서 처리하는 결과가 된다.
