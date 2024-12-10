@@ -160,7 +160,6 @@ const MapPage = () => {
   const onHoverPlace = useCallback(
     (position: { lat: number; lng: number }) => {
       if (!map) return;
-      map.setLevel(2);
       map.setCenter(new kakao.maps.LatLng(position.lat, position.lng));
     },
     [map, searchPlaces, originPos],
@@ -168,7 +167,6 @@ const MapPage = () => {
 
   const onHoverOutPlace = useCallback(() => {
     if (!map || !originPos) return;
-    map.setLevel(originLevel);
     map.setCenter(originPos);
   }, [map, searchPlaces, originPos]);
 

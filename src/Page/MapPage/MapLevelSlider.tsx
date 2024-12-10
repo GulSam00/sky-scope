@@ -11,18 +11,7 @@ interface Props {
 const MapLevelSlider = ({ level, onChangeLevel }: Props) => {
   return (
     <SliderContainer>
-      <Slider
-        reverse
-        vertical
-        keyboard
-        dots
-        min={1}
-        max={14}
-        step={1}
-        value={level}
-        defaultValue={2}
-        onChange={onChangeLevel}
-      />
+      <Slider reverse vertical keyboard dots min={1} max={14} step={1} value={level} onChange={onChangeLevel} />
     </SliderContainer>
   );
 };

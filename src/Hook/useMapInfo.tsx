@@ -34,7 +34,6 @@ const useMapInfo = ({ map }: Props) => {
   const focusMap = (position: { lat: number; lng: number }) => {
     if (!map) return;
     const kakaoPosition = new kakao.maps.LatLng(position.lat, position.lng);
-    map.setLevel(2);
     map.setCenter(kakaoPosition);
   };
 
@@ -339,9 +338,7 @@ const useMapInfo = ({ map }: Props) => {
       return;
     }
     const latlng = new kakao.maps.LatLng(lat, lng);
-    setOriginLevel(2);
     setOriginPos(latlng);
-    map.setLevel(2);
     map.setCenter(latlng);
   };
 
