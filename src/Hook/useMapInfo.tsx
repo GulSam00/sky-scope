@@ -11,7 +11,6 @@ import { transLocaleToCoord } from '@src/Util';
 import { doc, getDoc, setDoc, updateDoc } from '@firebase/firestore/lite';
 
 import db from '@src/firebase';
-import { set } from 'date-fns';
 
 interface Props {
   map: kakao.maps.Map | null;
@@ -104,6 +103,7 @@ const useMapInfo = ({ map }: Props) => {
   };
 
   const changeOnMapMarker = (locateTypeDstOnMapMarker: LocateDataType, status: string) => {
+    if (!map) return;
     const changingStatus = status as markerStatus;
     // 삭제 할 때 로직
     if (changingStatus === ('delete' as typeof changingStatus)) {
@@ -252,9 +252,7 @@ const useMapInfo = ({ map }: Props) => {
         // currentPlaces, mapMarkers에 추가하지 않는다.
         if (isSwapPlace(clickedFooterPlace.placeId) !== 0) return;
       }
-
       setCurrentPlaces(prevCurrentPlaces => [newPlace, ...prevCurrentPlaces]);
-
       // 해당 changeOnMapMarker 함수에서 setCenter 장애 발생
       changeOnMapMarker(clickedFooterPlace, 'search');
     },
@@ -339,7 +337,6 @@ const useMapInfo = ({ map }: Props) => {
     }
     const latlng = new kakao.maps.LatLng(lat, lng);
     setOriginPos(latlng);
-    map.setCenter(latlng);
   };
 
   const onChangeLevel = (level: number | number[]) => {
@@ -349,6 +346,12 @@ const useMapInfo = ({ map }: Props) => {
       setOriginLevel(level);
     }
   };
+
+  useEffect(() => {
+    if (originPos && map) {
+      map.setCenter(originPos);
+    }
+  }, [originPos, map]);
 
   useEffect(() => {
     initBookmarkData();
