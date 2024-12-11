@@ -342,6 +342,7 @@ const useMapInfo = ({ map }: Props) => {
   const onChangeLevel = (level: number | number[]) => {
     if (!map) return;
     if (typeof level === 'number') {
+      level = level >= 12 ? 12 : level;
       map.setLevel(level);
       setOriginLevel(level);
     }

@@ -176,6 +176,8 @@ const MapPage = () => {
   useEffect(() => {
     if (!map) dispatch(loadingData());
     else {
+      map.setMaxLevel(12);
+      map.setMinLevel(1);
       dispatch(loadedData());
     }
   }, [map]);
@@ -325,6 +327,12 @@ const KakaoMapContainer = styled.div`
 
   #kakao-map {
     height: 80vh;
+  }
+
+  @media (max-width: 640px) {
+    #kakao-map {
+      height: 60vh;
+    }
   }
 `;
 
