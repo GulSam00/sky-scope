@@ -328,6 +328,12 @@ const KakaoMapContainer = styled.div`
   #kakao-map {
     height: 80vh;
   }
+
+  @media (max-width: 640px) {
+    #kakao-map {
+      height: 60vh;
+    }
+  }
 `;
 
 const MapMarkerContent = styled.div`
