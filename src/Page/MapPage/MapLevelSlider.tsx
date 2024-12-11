@@ -14,7 +14,7 @@ const MapLevelSlider = ({ level, onChangeLevel }: Props) => {
       <div className='button top' onClick={() => onChangeLevel(level - 1)}>
         +
       </div>
-      <Slider reverse vertical keyboard dots min={1} max={14} step={1} value={level} onChange={onChangeLevel} />
+      <Slider reverse vertical keyboard dots min={1} max={12} step={1} value={level} onChange={onChangeLevel} />
       <div className='button bottom' onClick={() => onChangeLevel(level + 1)}>
         -
       </div>

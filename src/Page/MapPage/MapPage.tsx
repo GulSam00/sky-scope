@@ -176,6 +176,8 @@ const MapPage = () => {
   useEffect(() => {
     if (!map) dispatch(loadingData());
     else {
+      map.setMaxLevel(12);
+      map.setMinLevel(1);
       dispatch(loadedData());
     }
   }, [map]);
