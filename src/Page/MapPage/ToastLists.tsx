@@ -27,7 +27,11 @@ const ToastContainer = styled.div`
   display: flex;
   flex-direction: column;
   top: 16px;
-  right: 80px;
+  right: 100px;
   z-index: 1000;
   gap: 0.5rem;
+
+  @media (max-width: 640px) {
+    right: 10px;
+  }
 `;
