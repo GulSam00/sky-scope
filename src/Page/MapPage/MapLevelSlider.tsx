@@ -28,7 +28,8 @@ const SliderContainer = styled.div`
   position: absolute;
   // 우측 중앙에 위치
   top: 5%;
-  left: 95%;
+  left: 100%;
+  transform: translate(-150%, 0);
   width: 50px;
 
   height: 50dvh;
