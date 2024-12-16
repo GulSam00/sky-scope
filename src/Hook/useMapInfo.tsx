@@ -25,9 +25,9 @@ const useMapInfo = ({ map }: Props) => {
   const [originPos, setOriginPos] = useState<kakao.maps.LatLng | null>(null);
   const [originLevel, setOriginLevel] = useState<number>(4);
 
-  const [viewportWidth, setViewportWidth] = useState(window.innerWidth);
+  const [viewportWidth, setViewportWidth] = useState<number>(window.innerWidth);
 
-  const { isLogin, id } = useSelector((state: RootState) => state.globalDataSliceReducer);
+  const { isPhone, isLogin, id } = useSelector((state: RootState) => state.globalDataSliceReducer);
   const dispatch = useDispatch();
 
   const focusMap = (position: { lat: number; lng: number }) => {
@@ -48,7 +48,9 @@ const useMapInfo = ({ map }: Props) => {
 
     const contentWidth = 128;
 
-    const contentBerPage = Math.max(Math.min(Math.floor(viewportWidth / contentWidth) - 1, 5), 1);
+    const curViewportWidth = isPhone ? 400 : viewportWidth;
+
+    const contentBerPage = Math.max(Math.min(Math.floor(curViewportWidth / contentWidth) - 1, 5), 1);
     ps.keywordSearch(
       keyword,
       (data, status, pagination) => {

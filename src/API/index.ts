@@ -7,15 +7,5 @@ import getNaverInfo from './getNaverInfo';
 
 import getKakaoToken from './getKakaoToken';
 import getKakaoInfo from './getKakaoInfo';
-// import getKakaoLocal from './getKakaoLocal';
 
-export {
-  getWeatherLive,
-  getWeatherShort,
-  getWeatherLong,
-  getNaverToken,
-  getNaverInfo,
-  getKakaoToken,
-  getKakaoInfo,
-  // getKakaoLocal,
-};
+export { getWeatherLive, getWeatherShort, getWeatherLong, getNaverToken, getNaverInfo, getKakaoToken, getKakaoInfo };

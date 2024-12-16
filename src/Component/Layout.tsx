@@ -100,8 +100,8 @@ const Layout = () => {
       .fromTo(loginModalRef.current, { opacity: 0, x: 0 }, { opacity: 1, x: -200, duration: 1.5 })
       .to(loginModalRef.current, {
         opacity: 0,
-        x: 0,
-        duration: 1.5,
+        x: 200,
+        duration: 3,
         delay: 1.5,
       });
   }, [loginModalRef, isAskLogin]);

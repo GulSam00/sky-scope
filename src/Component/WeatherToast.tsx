@@ -51,7 +51,7 @@ const WeatherToast = ({ content, index }: Props) => {
   };
 
   useEffect(() => {
-    if (!toastRef.current) return;
+    if (!toastRef.current || isLoading) return;
 
     const ref = toastRef.current;
 
@@ -83,11 +83,11 @@ const WeatherToast = ({ content, index }: Props) => {
     return () => {
       animation.kill(); // 컴포넌트 언마운트 시 애니메이션 정리
     };
-  }, [content, index]);
+  }, [isLoading, content, index]);
 
   return (
     <ToastContainer ref={toastRef}>
-      {data ? (
+      {data && (
         <ToastContent>
           <div className='content'>{data.content}</div>
           <div className='content'>
@@ -104,10 +104,6 @@ const WeatherToast = ({ content, index }: Props) => {
             <div>{transformSkyCode(data.PTY)}</div>
             <div>{data.RN1}mm</div>
           </div>
-        </ToastContent>
-      ) : (
-        <ToastContent>
-          <LoadingSpinner />
         </ToastContent>
       )}
     </ToastContainer>
