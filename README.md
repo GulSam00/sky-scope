@@ -46,9 +46,9 @@
 
 # 주요 기능
 
-## 카카오 지도 상에서 검색한 장소 날씨 제공 & 북마크 기능
+## 카카오 지도 상에서 검색한 장소의 실시간 날씨 정보 제공 & 북마크 기능
 
-https://github.com/user-attachments/assets/b080192e-c021-49f9-acfb-e729f1f4bd1b
+https://github.com/user-attachments/assets/b9063c89-c6cc-4b79-8f1a-ee86a1347f59
 
 <div align="left">
 
@@ -60,7 +60,21 @@ https://github.com/user-attachments/assets/b080192e-c021-49f9-acfb-e729f1f4bd1b
   
 </div>
 
-https://github.com/user-attachments/assets/6d1fd416-d302-434f-9ecd-82f9bbd27eb8
+## OAuth 인증으로 검증된 사용자 정보를 Firebase에 저장
+
+https://github.com/user-attachments/assets/f2ff5626-d32a-4d48-a67f-4cad04b886d7
+
+<div align="left">
+
+* Kakao, Naver 플랫폼에서 OAuth 인증을 구현하여 사용자 인증 프로세스를 간소화했습니다.
+* OAuth 인증을 통해 검증된 사용자 정보를 활용하여 Firebase와 통합을 구현했습니다.
+* 로그인하지 않았을 때의 북마크된 장소는 로컬 스토리지에 저장되게끔 하였습니다.
+  
+</div>
+
+## 현재 위치의 날씨 정보 제공
+
+https://github.com/user-attachments/assets/16f52cce-f6af-4433-93e2-6524e4fa770d
 
 
 # 프로젝트 기록
@@ -69,8 +83,6 @@ https://github.com/user-attachments/assets/6d1fd416-d302-434f-9ecd-82f9bbd27eb8
   
 > [Velog 기록](https://velog.io/@sham/series/SkyScope-%EA%B0%9C%EB%B0%9C%EC%9D%BC%EC%A7%80)
 
-
-
 - 2024.3.13 : 프로젝트 시작
 - 2024.5.17 : 날씨 차트(예보차트 페이지) 추가
 - 2024.7.16 : 카카오 지도(실시간날씨 페이지) 추가
@@ -78,6 +90,7 @@ https://github.com/user-attachments/assets/6d1fd416-d302-434f-9ecd-82f9bbd27eb8
 - 2024.9.25 : 디자인 리펙토링, Toast 기능 추가
 - 2024.10.8 : 네이버, 카카오 OAuth 추가. firebase 연동. 디자인 개선.
 - 2024.10.28 : API 요청을 처리하기 위한 [패키지](https://www.npmjs.com/package/ultra-exact-ncst) 제작 및 배포. 프로젝트에 이식 작업 진행.
+- 2024.12.11 : 오류 수정, map level 조절 UI 추가
 
 </div>
 
@@ -102,11 +115,9 @@ https://github.com/user-attachments/assets/6d1fd416-d302-434f-9ecd-82f9bbd27eb8
   
 - 서로 다른 API를 목적에 맞게 호환해보는 경험을 얻었습니다.
 - 커스텀 훅을 통한 UI와 비즈니스 로직 분리를 경험하며 장단점을 파악했습니다.
-- CORS의 발생 원인과 이유, 해결 방안에 대해 고민할 수 있었습니다.
 - 직접 패키지를 만들고 배포하는 과정을 통해 tsconfig 설정에 대해 학습할 수 있었습니다.
   
 </div>
-
 
 </div>
 
