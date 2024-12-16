@@ -51,7 +51,6 @@ const useMapInfo = ({ map }: Props) => {
     const curViewportWidth = isPhone ? 400 : viewportWidth;
 
     const contentBerPage = Math.max(Math.min(Math.floor(curViewportWidth / contentWidth) - 1, 5), 1);
-    console.log('contentBerPage : ', contentBerPage);
     ps.keywordSearch(
       keyword,
       (data, status, pagination) => {
