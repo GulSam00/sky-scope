@@ -165,6 +165,10 @@ const MapPage = () => {
     map.setCenter(originPos);
   }, [map, searchPlaces, originPos]);
 
+  const handleZoomChanged = (target: kakao.maps.Map) => {
+    onChangeLevel(target.getLevel());
+  };
+
   useEffect(() => {
     if (isResized) {
       if (!map) return;
@@ -224,6 +228,7 @@ const MapPage = () => {
           }}
           // ref={mapRef}
           onCreate={setMap}
+          onZoomChanged={handleZoomChanged}
           level={originLevel}
           id='kakao-map'
         >
