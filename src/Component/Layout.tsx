@@ -130,7 +130,7 @@ const Layout = () => {
             <Github onClick={() => window.open('https://github.com/GulSam00/sky-scope')} />
           </div>
           <div>{!isPhone ? <Phone onClick={switchPhone} /> : <PhoneFill onClick={switchPhone} />}</div>
-          <div onClick={handleToggleUserModal}>
+          <div onClick={handleToggleUserModal} className='step6'>
             <img src='/icons/user.svg' alt='' width={24} />
             {isUserModal && (
               <div className='info' ref={infoModalRef}>
