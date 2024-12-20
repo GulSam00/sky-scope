@@ -9,7 +9,7 @@ import { getNaverInfo, getKakaoInfo } from '@src/API';
 import { RootState } from '@src/Store/store';
 import { setResize } from '@src/Store/kakaoModalSlice';
 import { onLogin, onLogout, resetAskLogin } from '@src/Store/globalDataSlice';
-import { phoneModeSwitch } from '@src/Store/globalDataSlice';
+import { phoneModeSwitch, onTutorial } from '@src/Store/globalDataSlice';
 
 import { styled } from 'styled-components';
 import { gsap } from 'gsap';
@@ -118,8 +118,8 @@ const Layout = () => {
         </Title>
 
         <IconContainer>
-          <div>
-            <QuestionCircle />
+          <div className='step7'>
+            <QuestionCircle onClick={() => dispatch(onTutorial())} />
           </div>
           <div>
             <img
