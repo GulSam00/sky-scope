@@ -85,10 +85,10 @@ const FooterPlaces = ({
   return (
     <FooterPlacesContainer>
       <FooterLists>
-        <div ref={bookmarkRef} onClick={() => onClickFooter(1)}>
+        <div ref={bookmarkRef} onClick={() => onClickFooter(1)} className='step3'>
           <img src='/icons/star-fill.svg' alt='북마크' width={36} />
         </div>
-        <div ref={currentRef} onClick={() => onClickFooter(2)}>
+        <div ref={currentRef} onClick={() => onClickFooter(2)} className='step2'>
           <img src='/icons/search.svg' alt='검색' width={36} />
         </div>
       </FooterLists>
