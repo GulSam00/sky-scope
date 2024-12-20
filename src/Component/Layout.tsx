@@ -1,9 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
-import { Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { LoadingState, Toast } from '@src/Component';
-import { Github, Phone, PhoneFill } from 'react-bootstrap-icons';
+import { Github, Phone, PhoneFill, QuestionCircle } from 'react-bootstrap-icons';
 
 import { getNaverInfo, getKakaoInfo } from '@src/API';
 import { RootState } from '@src/Store/store';
@@ -118,6 +118,9 @@ const Layout = () => {
         </Title>
 
         <IconContainer>
+          <div>
+            <QuestionCircle />
+          </div>
           <div>
             <img
               src='/icons/blog.svg'

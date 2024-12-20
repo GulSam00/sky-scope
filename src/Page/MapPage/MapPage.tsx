@@ -1,9 +1,8 @@
 import { useState, useCallback, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Map, MapMarker } from 'react-kakao-maps-sdk';
-import Joyride from 'react-joyride';
 
-import { LoadingState } from '@src/Component';
+import { LoadingState, Tutorial } from '@src/Component';
 import { useKakaoLoader, useMapInfo, useAutoSearch, useGeolocation } from '@src/Hook';
 import { KakaoMapMarkerType, LocateDataType } from '@src/Types/liveDataType';
 import { transLocaleToCoord } from '@src/Util';
@@ -19,35 +18,6 @@ import ToastLists from './ToastLists';
 import MapLevelSlider from './MapLevelSlider';
 
 import styled from 'styled-components';
-
-const steps = [
-  {
-    target: '.step1',
-    content: '날씨를 알고 싶은 장소를 입력해보세요.',
-    disableBeacon: true,
-  },
-  {
-    target: '.step2',
-    content: '검색한 지역은 이곳에서 확인할 수 있습니다.',
-  },
-  {
-    target: '.step3',
-    content: '검색할 지역을 북마크해서 저장해보세요.',
-  },
-  {
-    target: '.step4',
-    content: '현재 위치를 확인할 수도 있습니다.',
-  },
-  {
-    target: '.step5',
-    content: '조회한 모든 장소를 한 눈에 볼 수도 있어요.',
-  },
-
-  {
-    target: '.step6',
-    content: '로그인해서 저장한 지역을 어디서든 확인해보세요.',
-  },
-];
 
 const MapPage = () => {
   const [map, setMap] = useState<kakao.maps.Map | null>(null);
@@ -218,26 +188,7 @@ const MapPage = () => {
 
   return (
     <MapContainer>
-      <Joyride
-        steps={steps}
-        run={true}
-        disableCloseOnEsc
-        disableOverlayClose
-        disableScrolling
-        spotlightPadding={5}
-        continuous
-        showSkipButton
-        showProgress
-        styles={{
-          options: {
-            zIndex: 10000,
-          },
-          spotlight: {
-            borderRadius: '10px', // 하이라이트 모양 변경
-          },
-        }}
-      />
-
+      <Tutorial />
       {kakaoLoading && <LoadingState />}
 
       <FormContainer className='step1'>
