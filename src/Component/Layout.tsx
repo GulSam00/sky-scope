@@ -1,15 +1,15 @@
 import { useState, useEffect, useRef } from 'react';
-import { Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { LoadingState, Toast } from '@src/Component';
-import { Github, Phone, PhoneFill } from 'react-bootstrap-icons';
+import { Github, Phone, PhoneFill, QuestionCircle } from 'react-bootstrap-icons';
 
 import { getNaverInfo, getKakaoInfo } from '@src/API';
 import { RootState } from '@src/Store/store';
 import { setResize } from '@src/Store/kakaoModalSlice';
 import { onLogin, onLogout, resetAskLogin } from '@src/Store/globalDataSlice';
-import { phoneModeSwitch } from '@src/Store/globalDataSlice';
+import { phoneModeSwitch, onTutorial } from '@src/Store/globalDataSlice';
 
 import { styled } from 'styled-components';
 import { gsap } from 'gsap';
@@ -118,6 +118,9 @@ const Layout = () => {
         </Title>
 
         <IconContainer>
+          <div className='step7'>
+            <QuestionCircle onClick={() => dispatch(onTutorial())} />
+          </div>
           <div>
             <img
               src='/icons/blog.svg'
@@ -130,7 +133,7 @@ const Layout = () => {
             <Github onClick={() => window.open('https://github.com/GulSam00/sky-scope')} />
           </div>
           <div>{!isPhone ? <Phone onClick={switchPhone} /> : <PhoneFill onClick={switchPhone} />}</div>
-          <div onClick={handleToggleUserModal}>
+          <div onClick={handleToggleUserModal} className='step6'>
             <img src='/icons/user.svg' alt='' width={24} />
             {isUserModal && (
               <div className='info' ref={infoModalRef}>

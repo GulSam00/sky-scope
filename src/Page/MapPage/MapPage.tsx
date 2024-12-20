@@ -2,7 +2,7 @@ import { useState, useCallback, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Map, MapMarker } from 'react-kakao-maps-sdk';
 
-import { LoadingState } from '@src/Component';
+import { LoadingState, Tutorial } from '@src/Component';
 import { useKakaoLoader, useMapInfo, useAutoSearch, useGeolocation } from '@src/Hook';
 import { KakaoMapMarkerType, LocateDataType } from '@src/Types/liveDataType';
 import { transLocaleToCoord } from '@src/Util';
@@ -165,6 +165,10 @@ const MapPage = () => {
     map.setCenter(originPos);
   }, [map, searchPlaces, originPos]);
 
+  const handleZoomChanged = (target: kakao.maps.Map) => {
+    onChangeLevel(target.getLevel());
+  };
+
   useEffect(() => {
     if (isResized) {
       if (!map) return;
@@ -184,9 +188,10 @@ const MapPage = () => {
 
   return (
     <MapContainer>
+      <Tutorial />
       {kakaoLoading && <LoadingState />}
 
-      <FormContainer>
+      <FormContainer className='step1'>
         <Form>
           <Form.Control
             size='lg'
@@ -224,6 +229,7 @@ const MapPage = () => {
           }}
           // ref={mapRef}
           onCreate={setMap}
+          onZoomChanged={handleZoomChanged}
           level={originLevel}
           id='kakao-map'
         >
@@ -243,11 +249,11 @@ const MapPage = () => {
           ))}
         </Map>
 
-        <CurrentPosition onClick={() => showCurrentPlace()}>
+        <CurrentPosition onClick={() => showCurrentPlace()} className='step4'>
           <img src='/icons/crosshair.svg' alt='crosshair' />
         </CurrentPosition>
 
-        <WholeMap onClick={() => showWholeMarker()}>
+        <WholeMap onClick={() => showWholeMarker()} className='step5'>
           <img src='/icons/full.svg' alt='full' />
         </WholeMap>
 
