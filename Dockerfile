@@ -19,6 +19,7 @@ FROM nginx:alpine
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 # 7. React 빌드 결과를 Nginx의 기본 경로로 복사
+# build가 아니라 dist다!
 COPY --from=builder /app/dist /usr/share/nginx/html
 
 # 8. 컨테이너 포트 설정
